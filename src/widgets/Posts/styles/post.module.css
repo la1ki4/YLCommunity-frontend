@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Roboto-light';
-    src: url('@fonts/Roboto-light.ttf') format('woff2');
+    src: url('@fonts/Roboto-Light.ttf') format('woff2');
 }
 
 @font-face {
@@ -93,41 +93,6 @@
 
 .postActions{
     display: flex;
-}
-
-button.postAction{
-    cursor: pointer;
-}
-
-.postAction{
-    background: none;
-    flex-direction: column;
-    border: none;
-    align-items: center;
-    display: flex;
-    margin-right: 20px;
-}
-
-.postActionIcon{
-    height: 22px;
-    width: 22px;
-}
-
-.postActionCount{
-    color: white;
-    font-family: 'Roboto-regular';
-}
-
-.postViewsContainer{
-    display: flex;
-    align-items: center;
-}
-
-.postViewsCount{
-    color: white;
-    font-family: 'Roboto-regular';
-    opacity: 0.2;
-    margin-left: 10px;
 }
 
 .postAddCommentContainer{

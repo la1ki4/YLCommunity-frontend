@@ -1,10 +1,10 @@
 import postStyles from '@post-widget/styles/post.module.css'
 import postOwnerIcon from '@post-widget/assets/donik.jpg'
 import postPhoto from '@post-widget/assets/postPhoto.jpg'
-import likeIcon from '@post-widget/assets/Like Icon.svg'
-import commentIcon from '@post-widget/assets/Comment Icon.svg'
-import repostIcon from '@post-widget/assets/Repost Icon.svg'
-import viewsIcon from '@post-widget/assets/Views Icon.svg'
+import { Like } from '@features/Like/Like.jsx'
+import { Repost } from '@features/Repost/Repost.jsx'
+import { Comment } from '@features/Comment/Comment.jsx'
+import { View } from '@features/Views/View.jsx'
 import userIcon from '@entities/UserProfile/assets/avatar.jpg'
 
 export function Post(){
@@ -28,23 +28,11 @@ export function Post(){
         </div>
         <div className={postStyles.postActionsContainer}>
             <div className={postStyles.postActions}>
-                <button className={postStyles.postAction}>
-                    <img src={likeIcon} alt="" className={postStyles.postActionIcon} />
-                    <span className={postStyles.postActionCount}>4312</span>
-                </button>
-                <div className={postStyles.postAction}>
-                    <img src={commentIcon} alt="" className={postStyles.postActionIcon} />
-                    <span className={postStyles.postActionCount}>382</span>
-                </div>
-                <button className={postStyles.postAction}>
-                    <img src={repostIcon} alt="" className={postStyles.postActionIcon} />
-                    <span className={postStyles.postActionCount}>49</span>                    
-                </button>
+                <Like/>
+                <Comment/>
+                <Repost/>
             </div>
-            <div className={postStyles.postViewsContainer}>
-                <img src={viewsIcon} alt="Views Icon" className={postStyles.postViewsIcon}/>
-                <span className={postStyles.postViewsCount}>8157</span>
-            </div>
+            <View/>
         </div>
         <div className={postStyles.postAddCommentContainer}>
             <a href="#">

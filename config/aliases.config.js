@@ -9,7 +9,7 @@ export default {
   '@entities': resolve('./src/entities'),
   '@widgets': resolve('./src/widgets'),
   '@processes': resolve('./src/processes'),
-  '@fonts': resolve('./src/shared/assets/fonts'),
+  '@fonts': resolve('./src/app/fonts'),
   '@post-widget' : resolve('./src/widgets/Posts'),
 };
 

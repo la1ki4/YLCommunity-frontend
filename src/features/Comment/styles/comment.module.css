@@ -1,0 +1,23 @@
+@font-face {
+    font-family: 'Roboto-regular';
+    src: url('@fonts/Roboto-Regular.ttf') format('woff2');
+}
+
+.commentBlock{
+    background: none;
+    flex-direction: column;
+    border: none;
+    align-items: center;
+    display: flex;
+    margin-right: 20px;
+    margin-top: 1px;
+}
+
+.commentIcon{
+    height: 22px;
+}
+
+.commentCount{
+    color: white;
+    font-family: 'Roboto-regular';
+}

@@ -65,7 +65,3 @@ select {
     scroll-behavior: auto !important;
   }
 }
-
-.logo{
-  height: 45px;
-}
