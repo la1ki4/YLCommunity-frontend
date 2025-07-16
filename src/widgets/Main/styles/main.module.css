@@ -1,0 +1,10 @@
+.main{
+    width: 100%;
+}
+
+.mainContent{
+    width: 922px;
+    margin: 35px auto 0 auto;
+    height: 100%;
+    border-radius: 20px;
+}

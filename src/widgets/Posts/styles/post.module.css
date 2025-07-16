@@ -1,0 +1,162 @@
+@font-face {
+    font-family: 'Roboto-light';
+    src: url('@fonts/Roboto-light.ttf') format('woff2');
+}
+
+@font-face {
+    font-family: 'Roboto-bold';
+    src: url('@fonts/Roboto-Bold.ttf') format('woff2');
+}
+
+@font-face {
+    font-family: 'Roboto-regular';
+    src: url('@fonts/Roboto-Regular.ttf') format('woff2');
+}
+
+.postContainer{
+    background-color: #111111;
+    border-radius: 20px;
+    padding: 35px;
+    margin: 35px;
+}
+
+.postHeader{
+    display: flex;
+    justify-content: space-between;
+}
+
+.postOwner{
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.postOwnerIcon{
+    margin-right: 15px;
+    color: white;
+    font-family: 'Roboto-light';
+    font-size: 15px;
+    border-radius: 50%;
+    height: 36px;
+}
+
+.postOwnerInfo{
+    display: flex;
+    flex-direction: column;
+}
+
+.postOwnerName{
+    color: white;
+    font-family: 'Roboto-bold';
+    font-size: 20.1px;
+}
+
+.postOwnerRole{
+    color: #DAFFCD;
+    font-size: 12px;
+    font-family: 'Roboto-bold';
+}
+
+.postLocation{
+    color: white;
+    font-family: 'Roboto-regular';
+    font-size: 16px;
+    opacity: 0.5;
+}
+
+.postContentContainer{
+    margin-top: 20px;
+}
+
+.postContent{
+    width: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.postDescriptionContainer{
+    margin-top: 20px;
+}
+
+.postDescription{
+    color: white;
+    font-family: 'Roboto-regular';
+    font-size: 20px;
+}
+
+.postActionsContainer{
+    margin-top: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.postActions{
+    display: flex;
+}
+
+button.postAction{
+    cursor: pointer;
+}
+
+.postAction{
+    background: none;
+    flex-direction: column;
+    border: none;
+    align-items: center;
+    display: flex;
+    margin-right: 20px;
+}
+
+.postActionIcon{
+    height: 22px;
+    width: 22px;
+}
+
+.postActionCount{
+    color: white;
+    font-family: 'Roboto-regular';
+}
+
+.postViewsContainer{
+    display: flex;
+    align-items: center;
+}
+
+.postViewsCount{
+    color: white;
+    font-family: 'Roboto-regular';
+    opacity: 0.2;
+    margin-left: 10px;
+}
+
+.postAddCommentContainer{
+    margin-top: 15px;
+    height: 64px;
+    border: 1px solid rgb(56, 56, 56);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+}
+
+.postAddComment{
+    background: none;
+    border: none;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    color: white;
+    font-family: 'Roboto-regular';
+    outline: none;
+    opacity: 0.5;
+    margin-left: 10px;
+}
+
+.userIcon{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
