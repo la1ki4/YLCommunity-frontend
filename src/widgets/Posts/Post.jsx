@@ -4,7 +4,7 @@ import postPhoto from '@post-widget/assets/postPhoto.jpg'
 import { Like } from '@features/Like/Like.jsx'
 import { Repost } from '@features/Repost/Repost.jsx'
 import { Comment } from '@features/Comment/Comment.jsx'
-import { View } from '@features/Views/View.jsx'
+import { View } from '@features/View/View.jsx'
 import userIcon from '@entities/UserProfile/assets/avatar.jpg'
 
 export function Post(){

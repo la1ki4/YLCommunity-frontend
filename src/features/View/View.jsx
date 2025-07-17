@@ -1,5 +1,5 @@
-import viewStyle from '@features/Views/styles/view.module.css'
-import viewIcon from '@features/Views/assets/Views Icon.svg'
+import viewStyle from '@features/View/styles/view.module.css'
+import viewIcon from '@features/View/assets/Views Icon.svg'
 
 export function View(){
     return(
