@@ -1,0 +1,83 @@
+@font-face {
+    font-family: 'Klavika-bold';
+    src: url('@fonts/klavika-bold.otf') format('woff2');
+}
+
+@font-face {
+    font-family: 'Roboto-medium';
+    src: url('@fonts/Roboto-Medium.ttf') format('woff2');
+}
+
+.authContainer{
+    position: relative;
+    margin: 14px auto;
+    max-width: 1400px;
+}
+
+.authFormContianer{
+    background-color: #121212;
+    border-radius: 20px;
+    margin: 0 269px;
+    z-index: 1;
+}
+
+.authFormBlock{
+    padding: 30px 40px;
+}
+
+.inputContainer{
+    background-color: #1B1B1B;
+    padding: 28px 31px 0;
+    border-radius: 20px;
+}
+
+.inputTitle{
+    color: white;
+    font-family: 'Klavika-bold';
+    font-size: 32px;
+}
+
+.inputBlock{
+    padding: 40px 0;
+}
+
+.additionalLinksBlock{
+    margin: 47px auto;
+    width: 85%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.additionalLink{
+    color: #5D5D5D;
+    font-family: 'Roboto-medium';
+    text-decoration: none;
+}
+
+.contentBlock img{
+    width: 100%;
+}
+
+.backgroundImage{
+    position: absolute;
+    height: 350px;
+    width: 350px;
+    border-radius: 20px;
+    z-index: -1;
+    pointer-events: none;
+    object-fit: cover;
+}
+
+.bg1{
+    left: 90px;
+    top:50px;
+    transform: translateX(-50%);
+    transform: rotate(-15deg);
+}
+
+.bg2{
+    left: 980px;
+    top:350px;
+    transform: translateX(50%);
+    transform: rotate(15deg);
+}

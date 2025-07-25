@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import { Logo } from '@shared/Logo/Logo.jsx'
-import headerStyle from '@widgets/Header/styles/header.module.css'
-import { Menu } from '@processes/Menu/Menu.jsx'
-import { UserProfile } from '@entities/UserProfile/UserProfile.jsx'
+import headerStyle from '@app/styles/header.module.css'
+import iconStyle from '@app/styles/icon.module.css'
+import textStyle from '@app/styles/text.module.css'
+import iconTextStyle from '@app/styles/icon-text.module.css'
+import { Menu } from '@widgets/Menu/Menu.jsx'
+import { Text } from '@shared/Text/Text.jsx'
 import ProfilePopup from '@widgets/Popup/Popup.jsx'
+import {IconText} from '@widgets/IconText/IconText.jsx'
+import userIcon from '@widgets/Header/assets/avatar.jpg'
 
 export function Header(){
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -18,10 +23,18 @@ export function Header(){
                 <Logo/>
                 <Menu/>
                 <ProfilePopup isOpen={isPopupOpen}>
-                    <a className={headerStyle.popupText} href="#">Log out</a>
+                    <Text className={`${textStyle.popUpTextBlock} ${textStyle.defaultWhiteText}` } as="a" text="Log out" href="#"/>
                 </ProfilePopup>
                 <div onClick={togglePopup}>
-                    <UserProfile />
+                <IconText 
+                    image={userIcon}
+                    href="#"
+                    text="Profile"
+                    as="a" 
+                    imageClass={`${iconStyle.userIcon}`} 
+                    textClass={`${textStyle.defaultWhiteText} ${textStyle.leftDistance}`} 
+                    wrapperClass={`${iconTextStyle.iconTextBlock} ${iconTextStyle.clickable} ${iconTextStyle.baloonBlock}`}
+                />
                 </div>
             </div>
         </header>

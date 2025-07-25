@@ -1,4 +1,4 @@
-import mainStyles from '@widgets/Main/styles/main.module.css'
+import mainStyles from '@app/styles/main.module.css'
 import { Post } from '@post-widget/Post.jsx'
 
 export function Main(){

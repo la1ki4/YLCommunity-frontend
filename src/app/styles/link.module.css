@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'Roboto-medium';
+    src: url('@fonts/Roboto-Medium.ttf') format('woff2');
+}
+
+.additionalLink{
+    color: #5D5D5D;
+    font-family: 'Roboto-medium';
+    text-decoration: none;
+}

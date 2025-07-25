@@ -1,0 +1,13 @@
+.popupOverlay{
+    position: fixed;
+    bottom: 0;
+    background-color: #111111;
+    border-radius: 10px;
+    margin-bottom: 105px;
+    z-index: 1;
+}
+
+.popupContent{
+    width: 275px;
+    padding: 15px;
+}

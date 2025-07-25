@@ -1,4 +1,4 @@
-import popupStyle from '@widgets/Popup/styles/popup.module.css'
+import popupStyle from '@app/styles/popup.module.css'
 
 const Popup = ({ isOpen, children }) => {
   if (!isOpen) return null;

@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'Roboto-regular';
+    src: url('@fonts/Roboto-Regular.ttf') format('woff2');
+}
+
+.input{
+    width: 100%;
+    border: none;
+    margin-top: 20px;
+    padding: 25px;
+    font-family: 'Roboto-regular';
+    font-size: 22px;
+    border-radius: 20px;
+    outline: none; 
+}
+
+.input::placeholder {
+  opacity: 1;
+  color: #5D5D5D;
+}

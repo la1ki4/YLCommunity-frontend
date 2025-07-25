@@ -1,0 +1,29 @@
+@font-face {
+    font-family: 'Klavika-bold';
+    src: url('@fonts/klavika-bold.otf') format('woff2');
+}
+
+
+.buttonBlock {
+  background-color: #1B1B1B;
+  margin-top: 15px;
+  border-radius: 20px;
+  padding: 10px 0;
+}
+
+.button {
+  width: 100%;
+  background-color: #9EFF40;
+  background-position: left;
+  background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  border: none;
+  font-size: 34px;
+  font-family: 'Klavika-bold';
+  cursor: pointer;
+
+  padding: 25px 0;
+}

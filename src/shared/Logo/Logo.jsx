@@ -1,5 +1,5 @@
 import logoImg from '@shared/Logo/assets/images/Logo.svg'
-import logoStyle from '@shared/Logo/styles/logo.module.css'
+import logoStyle from '@app/styles/logo.module.css'
 
 export function Logo(){
     return(

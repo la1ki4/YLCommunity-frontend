@@ -1,0 +1,14 @@
+.defaultIconSize{
+    height: 22px;
+}
+
+.rightDistance{
+    margin-right: 5px;
+}
+
+.userIcon{
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}

@@ -1,0 +1,40 @@
+@font-face {
+    font-family: 'Klavika-light';
+    src: url('@fonts/klavika-light.otf') format('woff2');
+}
+
+.popUpTextBlock{
+    display: block;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.defaultWhiteText{
+    font-size: 18px;
+    color: white;
+    font-family: 'Klavika-light';
+    text-decoration: none;
+}
+
+.leftDistance{
+    margin-left: 10px;
+}
+
+.defaultDarkGreyText{
+    font-size: 18px;
+    color: white;
+    font-family: 'Klavika-light';
+    text-decoration: none;
+    opacity: 0.2;
+}
+
+.popUpTextBlock:hover{
+    transition: 0.3s ease;
+    background-color: rgb(32, 32, 32);
+}
+
+.title{
+    color: white;
+    font-family: 'Klavika-bold';
+    font-size: 32px;
+}
