@@ -1,5 +1,5 @@
 import mainStyles from '@app/styles/main.module.css'
-import { Post } from '@post-widget/Post.jsx'
+import { Post } from '@widgets/Posts/Post.jsx'
 
 export function Main(){
     return (

@@ -1,9 +1,9 @@
 import buttonStyle from '@app/styles/button.module.css'
 
-export function Button({label}){
+export function Button({label, type}){
     return(
         <div className={buttonStyle.buttonBlock}>
-            <button className={buttonStyle.button} type="submit">{label}</button>
+            <button className={buttonStyle.button} type={type}>{label}</button>
         </div>
     )
 } 

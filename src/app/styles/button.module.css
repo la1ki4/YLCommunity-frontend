@@ -9,6 +9,7 @@
   margin-top: 15px;
   border-radius: 20px;
   padding: 10px 0;
+  transition: 0.3s ease;
 }
 
 .button {
@@ -26,4 +27,8 @@
   cursor: pointer;
 
   padding: 25px 0;
+}
+
+.buttonBlock:hover{
+  background-color: #272727;
 }

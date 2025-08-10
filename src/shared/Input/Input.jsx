@@ -1,10 +1,19 @@
 export function InputField({
-    type, 
-    placeholder, 
-    className=''}){
-    return(
-        <>
-            <input type={type} placeholder={placeholder} className={className}/>
-        </>
-    )
+  name,
+  type,
+  placeholder,
+  value,
+  onChange,
+  className = ''
+}) {
+  return (
+    <input
+      name={name}
+      type={type}
+      placeholder={placeholder}
+      className={className}
+      value={value}
+      onChange={onChange}
+    />
+  );
 }

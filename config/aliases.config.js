@@ -10,6 +10,5 @@ export default {
   '@widgets': resolve('./src/widgets'),
   '@processes': resolve('./src/processes'),
   '@fonts': resolve('./src/app/fonts'),
-  '@post-widget' : resolve('./src/widgets/Posts'),
 };
 

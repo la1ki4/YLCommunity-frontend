@@ -1,6 +1,6 @@
 import postStyles from '@app/styles/post.module.css'
-import postOwnerIcon from '@post-widget/assets/donik.jpg'
-import postPhoto from '@post-widget/assets/postPhoto.jpg'
+import postOwnerIcon from '@widgets/Posts/assets/John.jpg'
+import postPhoto from '@widgets/Posts/assets/Carolina.jpg'
 import { IconText } from '@widgets/IconText/IconText.jsx'
 import { Text } from '@shared/Text/Text.jsx'
 import { Image } from '@shared/Image/Image.jsx'
@@ -25,16 +25,16 @@ export function Post(){
                 imageClass={postStyles.postOwnerIcon}
                 textClassDirection={postStyles.columnDirection}
                 wrapperClass={postStyles.postOwner} 
-                text={["Никита Доник", "YL Leader"]}
+                text={["John Paul", "YL Leader"]}
                 textClass={[postStyles.postOwnerName, postStyles.postOwnerRole]}
             />
-            <Text className={postStyles.postLocation} text="Naslavchea, Young Life base"/>
+            <Text className={postStyles.postLocation} text="North Carolina, Young Life base"/>
         </div>
         <div className={postStyles.postContentContainer}>
             <Image image={postPhoto} alt="Post Content" className={postStyles.postContent} />
         </div>
         <div className={postStyles.postDescriptionContainer}>
-            <Text className={postStyles.postDescription} text ="YOUNG LIFE В НАСЛАВЧЕ, УРА УРА УРА"/>
+            <Text className={postStyles.postDescription} text ="YOUNG LIFE BASE IS READY FOR A 2025 SUMMER CAMP! YEEEEEEEAAAAHHH!!!"/>
         </div>
         <div className={postStyles.postActionsContainer}>
             <div className={postStyles.postActions}>
