@@ -5,7 +5,6 @@ import loginStyle from '@app/styles/form.module.css';
 import inputStyle from '@app/styles/input.module.css'
 import textStyle from '@app/styles/text.module.css';
 
-import { useNavigate } from 'react-router-dom';
 import { Text } from '@shared/Text/Text.jsx';
 import { Image } from '@shared/Image/Image.jsx';
 import { InputField } from '@shared/Input/Input.jsx';
@@ -13,10 +12,7 @@ import { Button } from '@shared/Button/Button.jsx';
 
 import { useState } from 'react';
 
-const LoginForm = ({ inputs, buttonLabel }) => {
-
-  const navigate = useNavigate();
-  
+const LoginForm = ({ inputs, buttonLabel, onLoginSuccess }) => {
   const [formData, setFormData] = useState(
     Object.fromEntries(inputs.map(input => [input.name, '']))
   );
@@ -31,28 +27,20 @@ const LoginForm = ({ inputs, buttonLabel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    try{
+    try {
       const response = await fetch('http://localhost:8080/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
         credentials: "include"
       });
-      
-      if(response.ok){
-        navigate('/main');
-      }
-      else{
-        throw new Error('Response error!')
-      }
 
-      const data = await response.json();
-      localStorage.setItem("jwt", data.token);
-      console.log(data.token);
+      if (!response.ok) throw new Error('Response error!');
+
+      await response.json();
+      onLoginSuccess();
     } 
-    catch(error){
+    catch (error) {
       console.error("Data send error: ", error);
     }
   };
