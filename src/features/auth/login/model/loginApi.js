@@ -8,5 +8,4 @@ export async function loginRequest(formData, onLoginSuccess) {
 
   if (!response.ok) throw new Error("Login failed");
   return response.json();
-
 }

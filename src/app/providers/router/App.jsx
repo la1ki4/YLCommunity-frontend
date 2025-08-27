@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from '@pages/LoginPage/LoginPage.jsx';
 import MainPage from '@pages/MainPage/MainPage.jsx';
+import '@app/styles/nullstyle.css'
 import ProtectedRoute from '@features/auth-redirect/ProtectedRoute.jsx';
 import useAuth from '@features/auth/model/useAuth.jsx';
 
