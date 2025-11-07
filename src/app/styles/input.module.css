@@ -18,3 +18,7 @@
   opacity: 1;
   color: #5D5D5D;
 }
+
+.inputFileButton {
+    display: none;
+}

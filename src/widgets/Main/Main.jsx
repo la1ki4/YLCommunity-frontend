@@ -1,15 +1,10 @@
 import mainStyles from '@app/styles/main.module.css'
-import { Post } from '@widgets/Posts/Post.jsx'
 
-export function Main(){
+export function Main({children}) {
     return (
         <main className={mainStyles.main}>
             <div className={mainStyles.mainContent}>
-                <Post/>
-                <Post/>
-                <Post/>
-                <Post/>
-                <Post/>
+                {children}
             </div>
         </main>
     )

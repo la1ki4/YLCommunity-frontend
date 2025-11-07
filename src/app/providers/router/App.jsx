@@ -4,6 +4,7 @@ import MainPage from '@pages/MainPage/MainPage.jsx';
 import '@app/styles/nullstyle.css'
 import ProtectedRoute from '@features/auth-redirect/ProtectedRoute.jsx';
 import useAuth from '@features/auth/model/useAuth.jsx';
+import PostCreationPage from '@pages/PostCreationPage/PostCreationPage.jsx'
 
 const App = () => {
   const { isAuthenticated, authChecked, checkAuth } = useAuth();
@@ -27,6 +28,14 @@ const App = () => {
             </ProtectedRoute>
           } 
         />
+          <Route
+              path="/post"
+              element={
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                      <PostCreationPage />
+                  </ProtectedRoute>
+              }
+          />
       </Routes>
     </BrowserRouter>
   );

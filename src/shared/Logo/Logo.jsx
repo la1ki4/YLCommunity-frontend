@@ -3,7 +3,7 @@ import logoStyle from '@app/styles/logo.module.css'
 
 export function Logo(){
     return(
-        <a href="#">
+        <a href="/">
             <img src={logoImg} className={logoStyle.logo}/>
         </a>
     )

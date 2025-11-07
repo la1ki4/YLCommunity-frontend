@@ -50,7 +50,7 @@ export function Menu(){
             />
             <IconText 
                     image={newPostIcon} 
-                    href="#"
+                    href="/post"
                     text="New Post"
                     as="a" 
                     imageClass={iconStyle.defaultIconSize} 
