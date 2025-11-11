@@ -44,3 +44,10 @@
     font-family: 'Klavika-bold';
     font-size: 48px;
 }
+
+.addNewPostText{
+    color: white;
+    font-family: 'Klavika-light';
+    font-size: 24px;
+    opacity: 0.2;
+}
