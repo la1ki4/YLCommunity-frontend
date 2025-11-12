@@ -10,6 +10,7 @@
 }
 
 .blockFile{
+    position: relative;
     width: 100%;
     padding: 200px 0;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -26,6 +27,12 @@
 
 .blockFile:hover{
     border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: 400ms;
+}
+
+.blockFile:hover img,
+.blockFile:hover span{
+    opacity: 0.4;
     transition: 400ms;
 }
 

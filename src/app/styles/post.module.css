@@ -95,17 +95,17 @@
     display: flex;
 }
 
-.postAddCommentContainer{
+.postInputContainer{
     margin-top: 15px;
     height: 64px;
-    border: 1px solid rgb(56, 56, 56);
+    border: 1px solid rgb(256, 256, 256, 0.2);
     border-radius: 20px;
     display: flex;
     align-items: center;
     padding-left: 15px;
 }
 
-.postAddComment{
+.postInput{
     background: none;
     border: none;
     width: 100%;
@@ -116,6 +116,24 @@
     outline: none;
     opacity: 0.5;
     margin-left: 10px;
+}
+
+.postInputContainer:focus-within{
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.postInputContainer:hover{
+    border-color: rgba(255, 255, 255, 0.4);
+    transition: .4s;
+}
+
+.postInput:focus{
+    opacity: 0.7;
+}
+
+.postInput:hover{
+    opacity: 0.7;
+    transition: .4s;
 }
 
 .userIcon{

@@ -3,7 +3,7 @@ import postOwnerIcon from '@widgets/Posts/assets/John.jpg'
 import postPhoto from '@widgets/Posts/assets/Carolina.jpg'
 import { IconText } from '@widgets/IconText/IconText.jsx'
 import { Text } from '@shared/Text/Text.jsx'
-import { Image } from '@shared/Image/Image.jsx'
+import { Media } from '@shared/Image/Media.jsx'
 import { InputField } from '@shared/Input/Input.jsx'
 import userIcon from '@widgets/Posts/assets/avatar.jpg'
 import likeIcon from '@widgets/Posts/assets/like.svg'
@@ -28,10 +28,9 @@ export function Post(){
                 text={["John Paul", "YL Leader"]}
                 textClass={[postStyles.postOwnerName, postStyles.postOwnerRole]}
             />
-            <Text className={postStyles.postLocation} text="North Carolina, Young Life base"/>
         </div>
         <div className={postStyles.postContentContainer}>
-            <Image image={postPhoto} alt="Post Content" className={postStyles.postContent} />
+            <Media image={postPhoto} alt="Post Content" className={postStyles.postContent} />
         </div>
         <div className={postStyles.postDescriptionContainer}>
             <Text className={postStyles.postDescription} text ="YOUNG LIFE BASE IS READY FOR A 2025 SUMMER CAMP! YEEEEEEEAAAAHHH!!!"/>
@@ -72,9 +71,9 @@ export function Post(){
                 wrapperClass={`${iconTextStyle.iconTextBlock}`}
             />
         </div>
-        <div className={postStyles.postAddCommentContainer}>
-            <Image image={userIcon} alt="user icon" className={postStyles.userIcon}/> 
-            <InputField type="text" placeholder='Write a comment...' className={postStyles.postAddComment}/>
+        <div className={postStyles.postInputContainer}>
+            <Media image={userIcon} alt="user icon" className={postStyles.userIcon}/>
+            <InputField type="text" placeholder='Write a comment . . .' className={postStyles.postInput}/>
         </div>
     </div>
     );

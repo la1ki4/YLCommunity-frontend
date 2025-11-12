@@ -1,4 +1,4 @@
-import { Image } from '@shared/Image/Image.jsx';
+import { Media } from '@shared/Image/Media.jsx';
 import { Text } from '@shared/Text/Text.jsx';
 
 export function IconText({
@@ -27,7 +27,7 @@ export function IconText({
 
     return (
         <Component className={wrapperClass} {...restProps}>
-            <Image image={image} className={imageClass} />
+            <Media image={image} className={imageClass} />
             <div className={textClassDirection}>
                 {renderText()}
             </div>

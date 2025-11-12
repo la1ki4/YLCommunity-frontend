@@ -1,19 +1,26 @@
-export function InputField({
-  name,
-  type,
-  placeholder,
-  value,
-  onChange,
-  className = ''
-}) {
-  return (
-    <input
-      name={name}
-      type={type}
-      placeholder={placeholder}
-      className={className}
-      value={value}
-      onChange={onChange}
-    />
-  );
-}
+import {forwardRef} from "react";
+
+export const InputField = forwardRef
+(({
+      name,
+      type,
+      placeholder,
+      value,
+      onChange,
+      className,
+      ...restProps
+  }, ref) => {
+    return(
+        <input
+            name={name}
+            type={type}
+            placeholder={placeholder}
+            className={className}
+            value={value}
+            onChange={onChange}
+            ref={ref}
+            {...restProps}
+        />);
+});
+
+
