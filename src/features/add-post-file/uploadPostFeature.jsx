@@ -10,17 +10,26 @@ export async function uploadPost({description , file}) {
     }
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("media", file);
     formData.append("description", description);
 
     const response = await fetch('http://localhost:8081/post/add', {
         method: 'POST',
         body: formData,
+        credentials: 'include',
     });
 
     if(!response.ok) {
-        throw new Error("Failed to upload post");
+        const errorText = await response.text();
+        console.error("Server error", errorText);
+        throw new Error(errorText || "Upload failed");
     }
 
-    return response.json();
+    const contentType = response.headers.get("Content-Type" || "");
+
+    if(contentType.includes("application/json")){
+        return await response.json();
+    }
+
+    return await response.text();
 }
