@@ -1,6 +1,5 @@
 import postStyles from '@app/styles/post.module.css'
 import postOwnerIcon from '@widgets/Posts/assets/John.jpg'
-import postPhoto from '@widgets/Posts/assets/Carolina.jpg'
 import { IconText } from '@widgets/IconText/IconText.jsx'
 import { Text } from '@shared/Text/Text.jsx'
 import { Media } from '@shared/Image/Media.jsx'
@@ -14,7 +13,7 @@ import iconStyle from '@app/styles/icon.module.css'
 import textStyle from '@app/styles/text.module.css'
 import iconTextStyle from '@app/styles/icon-text.module.css'
 
-export function Post(){
+export function Post({post}){
     return(
     <div className={postStyles.postContainer}>
         <div className={postStyles.postHeader}>
@@ -25,15 +24,15 @@ export function Post(){
                 imageClass={postStyles.postOwnerIcon}
                 textClassDirection={postStyles.columnDirection}
                 wrapperClass={postStyles.postOwner} 
-                text={["John Paul", "YL Leader"]}
+                text={[post.user.firstName + " " + post.user.lastName, "YL Leader"]}
                 textClass={[postStyles.postOwnerName, postStyles.postOwnerRole]}
             />
         </div>
         <div className={postStyles.postContentContainer}>
-            <Media image={postPhoto} alt="Post Content" className={postStyles.postContent} />
+            <Media image={post.filePath} alt="Post Media" className={postStyles.postContent} />
         </div>
         <div className={postStyles.postDescriptionContainer}>
-            <Text className={postStyles.postDescription} text ="YOUNG LIFE BASE IS READY FOR A 2025 SUMMER CAMP! YEEEEEEEAAAAHHH!!!"/>
+            <Text className={postStyles.postDescription} text={post.description} />
         </div>
         <div className={postStyles.postActionsContainer}>
             <div className={postStyles.postActions}>
