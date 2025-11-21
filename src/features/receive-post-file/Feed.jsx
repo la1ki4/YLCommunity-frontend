@@ -1,64 +1,56 @@
 import { useEffect, useState, useRef } from "react";
-import axios from "axios";
-import {Post} from "@widgets/Posts/Post.jsx";
+import { Post } from "@widgets/Posts/Post.jsx";
 
-export default function Feed() {
+export function Feed() {
     const [posts, setPosts] = useState([]);
     const [page, setPage] = useState(0);
-    const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const loaderRef = useRef(null);
+
+    const loadPosts = async (page) => {
+        if (isLoading) return; // ← защита от двойного вызова
+        setIsLoading(true);
+
+        const res = await fetch(`http://localhost:8081/post/feed?page=${page}&size=5`);
+        const data = await res.json();
+
+        if (data.content.length < 5) setHasMore(false);
+
+        setPosts(prev => [...prev, ...data.content]);
+
+        setIsLoading(false);
+    };
 
     useEffect(() => {
         loadPosts(page);
     }, [page]);
 
-    const loadPosts = async (page) => {
-        if (loading) return;
-
-        setLoading(true);
-
-        try {
-            const response = await axios.get("http://localhost:8081/post/feed", {
-                params: { page, size: 5 },
-                withCredentials: true
-            });
-
-            setPosts(prev => [...prev, ...response.data.content]);
-
-            setHasMore(!response.data.last); // last = true → страниц больше нет
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        if (loading) return;
+        if (!hasMore) return;
 
         const observer = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting && hasMore) {
+            if (entries[0].isIntersecting && !isLoading) {
                 setPage(prev => prev + 1);
             }
         });
 
-        if (loaderRef.current) {
-            observer.observe(loaderRef.current);
-        }
+        const currentLoader = loaderRef.current;
 
-        return () => observer.disconnect();
-    }, [hasMore, loading]);
+        if (currentLoader) observer.observe(currentLoader);
+
+        return () => {
+            if (currentLoader) observer.unobserve(currentLoader);
+        };
+    }, [hasMore, isLoading]);
 
     return (
-        <div>
-            {posts.map((post) => (
+        <>
+            {posts.map(post => (
                 <Post key={post.id} post={post} />
             ))}
-
-            {/* Триггерный элемент */}
-            <div ref={loaderRef} style={{ height: 30 }} />
-
-            {loading && <p>Loading...</p>}
-        </div>
+            <div ref={loaderRef} style={{ height: 1 }}></div>
+        </>
     );
 }

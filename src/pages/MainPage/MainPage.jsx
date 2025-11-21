@@ -2,8 +2,7 @@ import { Header } from '@widgets/Header/Header.jsx'
 import '@app/styles/logo.module.css'
 import { Main } from '@widgets/Main/Main.jsx'
 import mainPageStyle from '@app/styles/mainPage.module.css'
-import { PostsList } from '@features/receive-post-file/PostsList.jsx'
-import Feed from "@features/receive-post-file/Feed.jsx";
+import { Feed } from "@features/receive-post-file/Feed.jsx";
 
 export default function MainPage(){
     return(
