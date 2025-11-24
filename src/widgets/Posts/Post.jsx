@@ -14,6 +14,7 @@ import textStyle from '@app/styles/text.module.css'
 import iconTextStyle from '@app/styles/icon-text.module.css'
 
 export function Post({post}){
+    console.log(post);
     return(
     <div className={postStyles.postContainer}>
         <div className={postStyles.postHeader}>
@@ -24,7 +25,7 @@ export function Post({post}){
                 imageClass={postStyles.postOwnerIcon}
                 textClassDirection={postStyles.columnDirection}
                 wrapperClass={postStyles.postOwner} 
-                text={[post.user.firstName + " " + post.user.lastName, "YL Leader"]}
+                text={[post.user.firstName + " " + post.user.lastName, post.user.userRole.roleName]}
                 textClass={[postStyles.postOwnerName, postStyles.postOwnerRole]}
             />
         </div>
