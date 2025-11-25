@@ -14,13 +14,12 @@ import textStyle from '@app/styles/text.module.css'
 import iconTextStyle from '@app/styles/icon-text.module.css'
 
 export function Post({post}){
-    console.log(post);
     return(
     <div className={postStyles.postContainer}>
         <div className={postStyles.postHeader}>
             <IconText
                 as="a"
-                href='#' 
+                href='#'
                 image={postOwnerIcon} 
                 imageClass={postStyles.postOwnerIcon}
                 textClassDirection={postStyles.columnDirection}
