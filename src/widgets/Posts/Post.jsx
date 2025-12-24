@@ -13,7 +13,9 @@ import iconStyle from '@app/styles/icon.module.css'
 import textStyle from '@app/styles/text.module.css'
 import iconTextStyle from '@app/styles/icon-text.module.css'
 
-export function Post({post}){
+export function Post({post, onToggleLike}){
+    const likeCount = post.likes?.likeCount ?? 0;
+
     return(
     <div className={postStyles.postContainer}>
         <div className={postStyles.postHeader}>
@@ -38,8 +40,9 @@ export function Post({post}){
             <div className={postStyles.postActions}>
                 <IconText 
                     image={likeIcon} 
-                    text="2419"
-                    as="button" 
+                    text={String(likeCount)}
+                    as="button"
+                    onClick={() => onToggleLike?.(post.id)}
                     imageClass={iconStyle.defaultIconSize} 
                     textClass={textStyle.defaultWhiteText} 
                     wrapperClass={`${iconTextStyle.verticalIconTextBlock} ${iconTextStyle.clickable}`}
