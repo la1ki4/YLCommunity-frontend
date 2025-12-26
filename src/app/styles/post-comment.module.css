@@ -44,13 +44,16 @@
 
 .postOwner{
     display: flex;
-    justify-content: space-around;
-    align-items: center;
+    flex-shrink: 0;
+    align-items: flex-start;
+    min-width: 120px;
 }
 
 .commentText{
     color: white;
     font-family: Roboto-regular;
     font-size: 11pt;
+    flex: 1;
+    word-break: break-word;
     margin-left: 10px;
 }
