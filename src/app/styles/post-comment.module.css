@@ -1,0 +1,56 @@
+@font-face {
+    font-family: 'Roboto-light';
+    src: url('@fonts/Roboto-Light.ttf') format('woff2');
+}
+
+@font-face {
+    font-family: 'Roboto-regular';
+    src: url('@fonts/Roboto-Regular.ttf') format('woff2');
+}
+
+.commentContainer{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.commentItem{
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.postOwnerIcon{
+    height: 32px;
+    border-radius: 100%;
+    margin-right: 10px;
+}
+
+.columnDirection{
+    display: flex;
+    flex-direction: column;
+}
+.postOwnerName{
+    color: white;
+    font-family: Roboto-regular;
+    font-size: 11pt;
+}
+
+.postOwnerRole{
+    color: white;
+    font-family: Roboto-regular;
+    font-size: 9pt;
+    opacity: 0.6;
+}
+
+.postOwner{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.commentText{
+    color: white;
+    font-family: Roboto-regular;
+    font-size: 11pt;
+    margin-left: 10px;
+}

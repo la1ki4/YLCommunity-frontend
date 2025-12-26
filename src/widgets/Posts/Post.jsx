@@ -1,4 +1,5 @@
 import postStyles from '@app/styles/post.module.css'
+import postCommentStyles from '@app/styles/post-comment.module.css'
 import postOwnerIcon from '@widgets/Posts/assets/John.jpg'
 import { IconText } from '@widgets/IconText/IconText.jsx'
 import { Text } from '@shared/Text/Text.jsx'
@@ -12,9 +13,23 @@ import viewIcon from '@widgets/Posts/assets/Views Icon.svg'
 import iconStyle from '@app/styles/icon.module.css'
 import textStyle from '@app/styles/text.module.css'
 import iconTextStyle from '@app/styles/icon-text.module.css'
+import {useState} from "react";
 
-export function Post({post, onToggleLike}){
+export function Post({post, onToggleLike, onAddComment, onLoadComments}) {
+    const [commentText, setCommentText] = useState("");
+    const [showComments, setShowComments] = useState(false);
     const likeCount = post.likes?.likeCount ?? 0;
+    const commentCount = post.commentCount ?? 0;
+    const comments = post.comments ?? [];
+
+    const handleCommentsClick = () => {
+        setShowComments((prev) => !prev);
+
+        // 🔥 используем onLoadComments
+        if (!post.comments) {
+            onLoadComments?.(post.id);
+        }
+    };
 
     return(
     <div className={postStyles.postContainer}>
@@ -49,19 +64,12 @@ export function Post({post, onToggleLike}){
                 />
                 <IconText 
                     image={commentIcon} 
-                    text="321"
-                    as="div" 
+                    text={String(commentCount)}
+                    as="div"
+                    onClick={handleCommentsClick}
                     imageClass={iconStyle.defaultIconSize} 
                     textClass={textStyle.defaultWhiteText} 
                     wrapperClass={`${iconTextStyle.verticalIconTextBlock} ${iconTextStyle.leftDistance}`}
-                />
-                <IconText 
-                    image={repostIcon} 
-                    text="32"
-                    as="button" 
-                    imageClass={iconStyle.defaultIconSize} 
-                    textClass={textStyle.defaultWhiteText} 
-                    wrapperClass={`${iconTextStyle.verticalIconTextBlock} ${iconTextStyle.leftDistance} ${iconTextStyle.clickable}`}
                 />
             </div>
             <IconText 
@@ -75,8 +83,42 @@ export function Post({post, onToggleLike}){
         </div>
         <div className={postStyles.postInputContainer}>
             <Media image={userIcon} alt="user icon" className={postStyles.userIcon}/>
-            <InputField type="text" placeholder='Write a comment . . .' className={postStyles.postInput}/>
+            <InputField type="text"
+                        placeholder='Write a comment . . .'
+                        className={postStyles.postInput}
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                onAddComment?.(post.id, commentText);
+                                setCommentText("");
+                            }
+                        }}/>
         </div>
+        {showComments && (
+        <div className={postCommentStyles.commentContainer}>
+            {comments.map((c) => (
+                <div key={c.id} className={postCommentStyles.commentItem}>
+                    <IconText
+                        image={postOwnerIcon}
+                        imageClass={postCommentStyles.postOwnerIcon}
+                        textClassDirection={postCommentStyles.columnDirection}
+                        wrapperClass={postCommentStyles.postOwner}
+                        text={[
+                            `${c.author?.firstName ?? ""} ${c.author?.lastName ?? ""}`.trim(),
+                            c.author?.roleName ?? ""
+                        ]}
+                        textClass={[postCommentStyles.postOwnerName, postCommentStyles.postOwnerRole]}
+                    />
+
+                    <Text
+                        className={postCommentStyles.commentText}
+                        text={c.comment ?? ""}
+                    />
+                </div>
+            ))}
+        </div>
+        )}
     </div>
     );
 }

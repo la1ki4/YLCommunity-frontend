@@ -1,4 +1,5 @@
 import { fetchLikesForPosts } from "@features/feed/serverPostLikesCount.js";
+import { fetchCommentCountFromPosts } from "@features/feed/serverPostCommentsCount.js";
 
 export async function serverLoadPosts({
                                     page,
@@ -27,11 +28,14 @@ export async function serverLoadPosts({
 
         const postIds = newPosts.map((p) => p.id);
         const likesByPostId = await fetchLikesForPosts(postIds);
+        const commentsByPostId = await fetchCommentCountFromPosts(postIds);
 
         setPosts((prev) =>
-            prev.map((p) =>
-                likesByPostId[p.id] ? { ...p, likes: likesByPostId[p.id] } : p
-            )
+            prev.map((p) => ({
+                ...p,
+                ...likesByPostId[p.id] ? { ...p, likes: likesByPostId[p.id]} : p,
+                ...(commentsByPostId[p.id] ? { commentCount: commentsByPostId[p.id].commentCount } : {}),
+            }))
         );
     } finally {
         setIsLoading(false);
