@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Post } from "@widgets/Posts/Post.jsx";
 import { serverLoadPosts } from "@features/feed/serverLoadPosts.js";
 import { togglePostLike } from "@features/feed/togglePostLike.js";
-import { addPostComment } from "@features/post-actions/post-add-comment.js";
-import { getPostComments } from "@features/post-actions/get-post-comments.js";
+import { usePostComments } from "@features/feed/usePostComments.js";
 
 export function Feed() {
     const [posts, setPosts] = useState([]);
@@ -13,33 +12,7 @@ export function Feed() {
 
     const loaderRef = useRef(null);
 
-    const onLoadComments = async (postId) => {
-        try {
-            const comments = await getPostComments(postId);
-
-            setPosts(prev =>
-                prev.map(p => (p.id === postId ? { ...p, comments } : p))
-            );
-        } catch (e) {
-            console.error("Load comments failed:", e);
-        }
-    };
-
-    const onAddComment = async (postId, text) => {
-        if (!text.trim()) return;
-
-        try {
-            await addPostComment({ postId, comment: text });
-
-            const comments = await getPostComments(postId);
-
-            setPosts(prev =>
-                prev.map(p => (p.id === postId ? { ...p, comments } : p))
-            );
-        } catch (e) {
-            console.error("Failed to add comment:", e);
-        }
-    };
+    const { onAddComment, onLoadComments } = usePostComments(setPosts);
 
     useEffect(() => {
         serverLoadPosts({

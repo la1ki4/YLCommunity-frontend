@@ -8,7 +8,11 @@ export function usePostComments(setPosts) {
             const comments = await getPostComments(postId);
 
             setPosts(prev =>
-                prev.map(p => (p.id === postId ? { ...p, comments } : p))
+                prev.map(p =>
+                    p.id === postId
+                        ? { ...p, comments, commentCount: comments.length }
+                        : p
+                )
             );
         } catch (e) {
             console.error("Load comments failed:", e);
@@ -24,7 +28,11 @@ export function usePostComments(setPosts) {
             const comments = await getPostComments(postId);
 
             setPosts(prev =>
-                prev.map(p => (p.id === postId ? { ...p, comments } : p))
+                prev.map(p =>
+                    p.id === postId
+                        ? { ...p, comments, commentCount: comments.length }
+                        : p
+                )
             );
         } catch (e) {
             console.error("Failed to add comment:", e);
