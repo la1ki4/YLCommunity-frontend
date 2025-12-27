@@ -3,6 +3,7 @@ import { Post } from "@widgets/Posts/Post.jsx";
 import { serverLoadPosts } from "@features/feed/serverLoadPosts.js";
 import { togglePostLike } from "@features/feed/togglePostLike.js";
 import { usePostComments } from "@features/feed/usePostComments.js";
+import {usePostViews} from "@features/feed/usePostViews.js";
 
 export function Feed() {
     const [posts, setPosts] = useState([]);
@@ -13,6 +14,8 @@ export function Feed() {
     const loaderRef = useRef(null);
 
     const { onAddComment, onLoadComments } = usePostComments(setPosts);
+
+    const { seenViewsRef, onPostViewed } = usePostViews(setPosts);
 
     useEffect(() => {
         serverLoadPosts({
@@ -51,6 +54,8 @@ export function Feed() {
                     onToggleLike={(postId) =>
                         togglePostLike({ postId, setPosts })
                     }
+                    seenViewsRef={seenViewsRef}
+                    onPostViewed={onPostViewed}
                     onAddComment={onAddComment}
                     onLoadComments={onLoadComments}
                 />

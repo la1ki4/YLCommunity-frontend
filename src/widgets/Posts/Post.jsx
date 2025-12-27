@@ -8,31 +8,41 @@ import { InputField } from '@shared/Input/Input.jsx'
 import userIcon from '@widgets/Posts/assets/avatar.jpg'
 import likeIcon from '@widgets/Posts/assets/like.svg'
 import commentIcon from '@widgets/Posts/assets/comment.svg'
-import repostIcon from '@widgets/Posts/assets/repost.svg'
 import viewIcon from '@widgets/Posts/assets/Views Icon.svg'
 import iconStyle from '@app/styles/icon.module.css'
 import textStyle from '@app/styles/text.module.css'
 import iconTextStyle from '@app/styles/icon-text.module.css'
-import {useState} from "react";
+import { useViewTracker } from "@features/feed/useViewTracker.js";
+import {useRef, useState} from "react";
 
-export function Post({post, onToggleLike, onAddComment, onLoadComments}) {
+export function Post({post, onToggleLike, seenViewsRef, onPostViewed, onAddComment, onLoadComments}) {
     const [commentText, setCommentText] = useState("");
+    const postRef = useRef(null);
     const [showComments, setShowComments] = useState(false);
     const likeCount = post.likes?.likeCount ?? 0;
     const commentCount = post.commentCount ?? 0;
     const comments = post.comments ?? [];
 
+
+   useViewTracker({
+        postId: post.id,
+        elementRef: postRef,
+        seenSetRef: seenViewsRef,
+        onViewResult: onPostViewed,
+    });
+
+    const viewCount = post.views?.viewCount ?? 0;
+
     const handleCommentsClick = () => {
         setShowComments((prev) => !prev);
 
-        // 🔥 используем onLoadComments
         if (!post.comments) {
             onLoadComments?.(post.id);
         }
     };
 
     return(
-    <div className={postStyles.postContainer}>
+    <div ref={postRef} className={postStyles.postContainer}>
         <div className={postStyles.postHeader}>
             <IconText
                 as="a"
@@ -74,7 +84,7 @@ export function Post({post, onToggleLike, onAddComment, onLoadComments}) {
             </div>
             <IconText 
                 image={viewIcon} 
-                text="8423"
+                text={String(viewCount)}
                 as="div" 
                 imageClass={`${iconStyle.defaultIconSize} ${iconStyle.rightDistance}`} 
                 textClass={textStyle.defaultDarkGreyText} 
