@@ -2,6 +2,23 @@
     height: 22px;
 }
 
+.liked,
+.liked * {
+    fill: red !important;
+    stroke: red !important;
+}
+
+.actionIcon{
+    transition-duration: 0.4s;
+}
+
+
+.actionIcon:hover{
+    transform: scale(1.1);
+    transition-duration: 0.4s;
+
+}
+
 .rightDistance{
     margin-right: 5px;
 }

@@ -27,7 +27,11 @@ export function IconText({
 
     return (
         <Component className={wrapperClass} {...restProps}>
-            <Media image={image} className={imageClass} />
+            {typeof image === "string" ? (
+                <Media image={image} className={imageClass} />
+            ) : (
+                image
+            )}
             <div className={textClassDirection}>
                 {renderText()}
             </div>

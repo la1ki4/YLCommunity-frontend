@@ -6,7 +6,7 @@ import { Text } from '@shared/Text/Text.jsx'
 import { Media } from '@shared/Image/Media.jsx'
 import { InputField } from '@shared/Input/Input.jsx'
 import userIcon from '@widgets/Posts/assets/avatar.jpg'
-import likeIcon from '@widgets/Posts/assets/like.svg'
+import LikeIcon from "@widgets/Posts/assets/like.svg?react";
 import commentIcon from '@widgets/Posts/assets/comment.svg'
 import viewIcon from '@widgets/Posts/assets/Views Icon.svg'
 import iconStyle from '@app/styles/icon.module.css'
@@ -22,6 +22,7 @@ export function Post({post, onToggleLike, seenViewsRef, onPostViewed, onAddComme
     const likeCount = post.likes?.likeCount ?? 0;
     const commentCount = post.commentCount ?? 0;
     const comments = post.comments ?? [];
+
 
 
    useViewTracker({
@@ -63,23 +64,29 @@ export function Post({post, onToggleLike, seenViewsRef, onPostViewed, onAddComme
         </div>
         <div className={postStyles.postActionsContainer}>
             <div className={postStyles.postActions}>
-                <IconText 
-                    image={likeIcon} 
+                <IconText
+                    image={
+                        <LikeIcon
+                            className={`${iconStyle.defaultIconSize} ${iconStyle.actionIcon} ${
+                                post.likes?.liked ? iconStyle.liked : ""
+                            }`}
+                        />
+                    }
                     text={String(likeCount)}
                     as="button"
+                    type="button"
                     onClick={() => onToggleLike?.(post.id)}
-                    imageClass={iconStyle.defaultIconSize} 
-                    textClass={textStyle.defaultWhiteText} 
+                    textClass={textStyle.defaultWhiteText}
                     wrapperClass={`${iconTextStyle.verticalIconTextBlock} ${iconTextStyle.clickable}`}
                 />
                 <IconText 
                     image={commentIcon} 
                     text={String(commentCount)}
-                    as="div"
+                    as="button"
                     onClick={handleCommentsClick}
-                    imageClass={iconStyle.defaultIconSize} 
+                    imageClass={`${iconStyle.defaultIconSize} ${iconStyle.actionIcon}`}
                     textClass={textStyle.defaultWhiteText} 
-                    wrapperClass={`${iconTextStyle.verticalIconTextBlock} ${iconTextStyle.leftDistance}`}
+                    wrapperClass={`${iconTextStyle.verticalIconTextBlock} ${iconTextStyle.clickable} ${iconTextStyle.leftDistance}`}
                 />
             </div>
             <IconText 
