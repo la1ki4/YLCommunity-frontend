@@ -4,8 +4,8 @@
 
 .liked,
 .liked * {
-    fill: red !important;
-    stroke: red !important;
+    fill: #b30101 !important;
+    stroke: #b30101 !important;
 }
 
 .actionIcon{

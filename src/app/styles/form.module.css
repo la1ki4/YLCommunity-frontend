@@ -15,10 +15,10 @@
 }
 
 .authFormContianer{
+    position: relative;
     background-color: #121212;
     border-radius: 20px;
     margin: 0 269px;
-    z-index: 1;
 }
 
 .authFormBlock{
@@ -39,6 +39,13 @@
 
 .inputBlock{
     padding: 40px 0;
+}
+
+.errorMessage{
+    color: #ff4040;
+    font-family: 'Klavika-bold';
+    font-size: 18px;
+    margin-top: 15px;
 }
 
 .additionalLinksBlock{
@@ -69,15 +76,13 @@
 }
 
 .bg1{
-    left: 90px;
-    top:50px;
-    transform: translateX(-50%);
-    transform: rotate(-15deg);
+    left: 0;
+    top: 50px;
+    transform: translateX(-50%) rotate(-15deg);
 }
 
 .bg2{
-    left: 980px;
-    top:350px;
-    transform: translateX(50%);
-    transform: rotate(15deg);
+    right: 0;
+    top: 350px;
+    transform: translateX(50%) rotate(15deg);
 }

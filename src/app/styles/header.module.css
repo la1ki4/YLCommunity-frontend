@@ -1,9 +1,14 @@
+:root{
+    --sidebar-w: 220px;
+}
+
 .header{
     border-right: 1px solid #333333;
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     height: 100vh;
+    width: var(--sidebar-w);
     background-color: black;
     overflow-y: auto;
     z-index: 1;

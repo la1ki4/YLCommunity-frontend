@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from '@pages/LoginPage/LoginPage.jsx';
 import MainPage from '@pages/MainPage/MainPage.jsx';
+import EventsPage from '@pages/EventsPage/EventsPage.jsx';
 import '@app/styles/nullstyle.css'
 import ProtectedRoute from '@features/auth-redirect/ProtectedRoute.jsx';
 import useAuth from '@features/auth/model/useAuth.jsx';
@@ -33,6 +34,30 @@ const App = () => {
               element={
                   <ProtectedRoute isAuthenticated={isAuthenticated}>
                       <PostCreationPage />
+                  </ProtectedRoute>
+              }
+          />
+          <Route
+              path="/events"
+              element={
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                      <EventsPage />
+                  </ProtectedRoute>
+              }
+          />
+          <Route
+              path="/chat"
+              element={
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                      <EventsPage />
+                  </ProtectedRoute>
+              }
+          />
+          <Route
+              path="/friends"
+              element={
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                      <EventsPage />
                   </ProtectedRoute>
               }
           />

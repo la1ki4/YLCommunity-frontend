@@ -14,7 +14,7 @@ export function Menu(){
         <div className={menuStyle.menu}>
             <IconText 
                     image={eventsIcon} 
-                    href="#"
+                    href="/events"
                     text="Events"
                     as="a" 
                     imageClass={iconStyle.defaultIconSize} 
@@ -23,7 +23,7 @@ export function Menu(){
             />
             <IconText 
                     image={chatIcon} 
-                    href="#"
+                    href="/chat"
                     text="Chat"
                     as="a" 
                     imageClass={iconStyle.defaultIconSize} 
@@ -32,7 +32,7 @@ export function Menu(){
             />
             <IconText 
                     image={friendsIcon} 
-                    href="#"
+                    href="/friends"
                     text="Friends"
                     as="a" 
                     imageClass={iconStyle.defaultIconSize} 

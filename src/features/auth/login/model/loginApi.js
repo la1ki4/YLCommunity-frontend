@@ -1,4 +1,4 @@
-export async function loginRequest(formData, onLoginSuccess) {
+export async function loginRequest(formData) {
   const response = await fetch('http://localhost:8080/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

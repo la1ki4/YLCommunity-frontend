@@ -72,7 +72,8 @@ export function CreationPostBlock() {
                             <Button onClick={(e) => {
                                 e.stopPropagation();
                                 handleRemoveFile();
-                            }} className={fileUploadStyle.removeButton} label="✕">
+                            }} className={fileUploadStyle.removeButton}>
+                                ✕
                             </Button>
                         </motion.div>
                     )}
@@ -89,8 +90,8 @@ export function CreationPostBlock() {
                 <Button className={`${postButtonStyle.button}`}
                         onClick={handleSubmit}
                         type={"submit"}
-                        label={"Add post"}
                         disabled={loading}>
+                    Add post
                 </Button>
             </Block>
         </Block>

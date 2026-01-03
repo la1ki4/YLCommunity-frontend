@@ -19,6 +19,17 @@
   color: #5D5D5D;
 }
 
+.inputError{
+    background-color: #ffcaca;
+    border: 3px solid red;
+    outline: none;
+}
+
+.inputError:focus {
+    border: 3px solid red;
+    outline: none;
+}
+
 .inputFileButton {
     display: none;
 }
