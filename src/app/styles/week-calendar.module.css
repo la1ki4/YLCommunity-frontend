@@ -1,0 +1,262 @@
+.weekCalendar{
+    --timeColW: 70px;
+    --headerPadY: 8px;
+    --headerPadX: 10px;
+    --hourH: 34px;
+    --gridPad: 8px;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: 100%;
+
+    box-sizing: border-box;
+
+    background: #1B1B1B;
+    border-radius: 20px;
+    overflow: auto;
+}
+
+.weekHeaderDays,
+.weekGrid,
+.weekScroll {
+    min-width: 0;
+}
+
+.weekHeader{
+    display: grid;
+    grid-template-columns: var(--timeColW) 1fr;
+    align-items: center;
+
+    background: #242424;
+    padding: var(--headerPadY) var(--headerPadX);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.weekHeaderLeft{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.weekMonth{
+    color: #9EFF40;
+    font-family: 'Roboto-bold';
+    font-size: 14px;
+    line-height: 1;
+}
+
+.weekYear{
+    color: #9EFF40;
+    font-family: 'Roboto-bold';
+    font-size: 14px;
+    line-height: 1;
+}
+
+.weekNav{
+    display: flex;
+    gap: 30px;
+}
+
+.weekNavBtn{
+    all: unset;
+    display: grid;
+    margin-top: var(--headerPadY);
+    place-items: center;
+    cursor: pointer;
+}
+
+.weekNavBtn img{
+    width: 12px;
+    height: 12px;
+    transition: 0.3s ease;
+}
+
+.weekNavBtn img:hover{
+    transform: scale(1.1);
+}
+
+.weekHeaderDays{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0;
+}
+
+.weekHeaderDay{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.weekDayName{
+    color: rgba(255,255,255,0.9);
+    font-family: 'Roboto-regular';
+    font-size: 11px;
+    line-height: 1;
+}
+
+.weekDayNumber{
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+}
+
+.weekDayNumberSelected{
+    background: #9EFF40;
+}
+
+.weekDayNumberText{
+    color: white;
+    font-family: 'Roboto-regular';
+    font-size: 11px;
+    line-height: 1;
+}
+
+.weekDayNumberSelected .weekDayNumberText{
+    color: #0b0b0b;
+}
+
+.weekBody{
+    flex: 1;
+    min-height: 0;
+}
+
+.weekScroll{
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: var(--timeColW) 1fr;
+    overflow: visible;
+}
+
+
+.weekTimes{
+    border-right: 1px solid rgba(255,255,255,0.08);
+    background: #1B1B1B;
+}
+
+.weekTimeRow{
+    height: var(--hourH);
+    display: flex;
+    padding: 8px 0;
+    justify-content: flex-end;
+}
+
+.weekTimeText{
+    color: rgba(255,255,255,0.75);
+    font-family: 'Roboto-regular';
+    padding-right: 8px;
+    font-size: 12px;
+}
+
+.weekGrid{
+    background: #1B1B1B;
+}
+
+.weekGridInner{
+    position: relative;
+    height: calc(var(--hourH) * 24);
+    width: 100%;
+    padding: 0 var(--gridPad);
+    box-sizing: border-box;
+}
+
+.weekVLines{
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    pointer-events: none;
+}
+
+.weekVLineCol{
+    border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+.weekHLines{
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.weekHLineRow{
+    height: var(--hourH);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.weekGridCol{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: calc(100% / 7);
+    border-right: 1px solid rgba(255,255,255,0.08);
+}
+.weekGridCol:nth-child(1){ left: calc((100% / 7) * 0); }
+.weekGridCol:nth-child(2){ left: calc((100% / 7) * 1); }
+.weekGridCol:nth-child(3){ left: calc((100% / 7) * 2); }
+.weekGridCol:nth-child(4){ left: calc((100% / 7) * 3); }
+.weekGridCol:nth-child(5){ left: calc((100% / 7) * 4); }
+.weekGridCol:nth-child(6){ left: calc((100% / 7) * 5); }
+.weekGridCol:nth-child(7){ left: calc((100% / 7) * 6); }
+
+.weekGridRowLine{
+    height: 44px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.weekEventExample{
+    position: absolute;
+    --gridPad: 0px;
+    --dayIndex: 1;
+
+    --gridWidth: calc(100% - (var(--gridPad) * 2));
+    --colWidth: calc(var(--gridWidth) / 7);
+
+    left: calc(var(--gridPad) + (var(--colWidth) * var(--dayIndex)));
+    width: var(--colWidth);
+
+    top: calc(var(--hourH) * 11);
+
+    height: 2px;
+    background: #9EFF40;
+}
+
+
+
+.weekEventExample::before{
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: -3px;
+
+    width: 8px;
+    height: 8px;
+    background: #9EFF40;
+    border-radius: 50%;
+}
+
+@media (max-width: 1100px) {
+
+    .weekHeader{
+        border-radius: 20px 20px 0 0;
+    }
+
+    .weekCalendar{
+        height: auto;
+        overflow: visible;
+    }
+
+    .weekBody{
+        flex: none;
+        min-height: auto;
+    }
+
+    .weekScroll{
+        height: auto;
+        overflow: visible;
+    }
+}

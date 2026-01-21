@@ -1,0 +1,444 @@
+.mainLayer{
+    padding: 35px;
+    height: 100%;
+    min-height: 0;
+}
+
+.mainContainer{
+    display: flex;
+    height: 100%;
+    gap: 24px;
+    min-width: 0;
+    min-height: 0;
+    align-items: stretch;
+}
+
+.menuLayer{
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 300px;
+    width: 300px;
+    min-width: 300px;
+}
+
+.menuButtons{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.btn{
+    display: flex;
+    flex-direction: row;
+}
+
+.iconButton{
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.button {
+    width: 100%;
+    background-color: #9EFF40;
+    background-position: left;
+    background-clip: text;
+
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    border: none;
+    font-size: 24px;
+    font-family: 'Klavika-bold';
+    cursor: pointer;
+    padding: 25px 0;
+}
+
+.buttonBlock {
+    background-color: #1B1B1B;
+    border-radius: 20px;
+    transition: 0.3s ease;
+}
+
+.buttonBlock:hover{
+    background-color: #272727;
+}
+
+.textBlock{
+    margin-left: 20px;
+}
+
+.miniCalendarContainer{
+    margin-top: 25px;
+    width: 100%;
+}
+
+.miniCalendarTextHeader{
+    font-family: 'Roboto-bold';
+    color:white;
+}
+
+.miniCalendarMain{
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    width: 100%;
+    min-width: 0;
+}
+
+.miniCalendarOtherMonth{
+    opacity: 0.25;
+}
+.miniCalendarOtherMonthText{
+    opacity: 0.55;
+}
+
+.miniCalendarDaysOfWeekSection{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background-color: #242424;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+}
+
+.miniCalendarDayOfWeek{
+    color: white;
+    font-family: Roboto-regular;
+    display: block;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+}
+
+.miniCalendarDaysLayer{
+    background-color: #1B1B1B;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.miniCalendarWeekSection{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    place-items: center;
+    padding: 10px;
+}
+
+.miniCalendarEmptyDay{
+    width: 100%;
+    text-align: center;
+    opacity: 0;
+    user-select: none;
+    pointer-events: none;
+}
+
+.miniCalendarDayButton{
+    all: unset;
+    box-sizing: border-box;
+
+    width: 32px;
+    height: 32px;
+
+    display: grid;
+    place-items: center;
+    color: white;
+    font-family: Roboto-regular;
+    line-height: 1;
+    cursor: pointer;
+    transition: 0.3s ease;
+    border-radius: 50%;
+}
+
+.miniCalendarTextDaySelected{
+    color: #1B1B1B;
+}
+
+.miniCalendarDayNumber {
+    display: block;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.miniCalendarDayButton:hover{
+    background-color: #272727;
+}
+
+.miniCalendarDaySelected{
+    background-color: #9EFF40;
+}
+
+.miniCalendarDaySelected:hover{
+    background-color: #9EFF40;
+}
+
+.day {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+}
+
+.dayHeader {
+    height: 70px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 24px 24px 0 0;
+    background: rgb(36, 36, 36);
+}
+
+.dayLeft {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.badge {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    user-select: none;
+}
+
+.badge .dow {
+    color: rgb(157, 253, 64);
+    font-family: Roboto-regular;
+    font-size: 16px;
+
+}
+
+.badge .pill {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: rgb(157, 253, 64);
+    font-family: Roboto-light;
+}
+
+.dayTitle {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: .2px;
+    font-family: 'Klavika-bold';
+    color: rgb(157, 253, 64);
+}
+
+.dayRight {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navBtn {
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: rgba(0,0,0,0);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.navBtn:hover {
+    transform: scale(1.1);
+}
+
+
+.dayBody {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+    background: #0f0f0f;
+}
+
+.timeline {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    min-height: 1200px;
+    position: relative;
+}
+
+.timeCol {
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 44px;
+}
+
+.time {
+    height: 52px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding-right: 14px;
+    font-family: Roboto-regular;
+    color: rgba(255,255,255);
+    font-size: 12px;
+}
+
+.gridCol {
+    position: relative;
+}
+
+.row {
+    height: 52px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.now {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(12px + 10 * 52px + 26px);
+    height: 2px;
+    background: rgb(157, 253, 64);
+}
+
+.now::before {
+    content: "";
+    position: absolute;
+    left: -4px;
+    top: -4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgb(157, 253, 64);
+}
+
+.dayBody::-webkit-scrollbar {
+    width: 10px;
+}
+
+.dayBody::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.10);
+    border-radius: 999px;
+    border: 2px solid rgba(0,0,0,.25);
+}
+
+.dayBody::-webkit-scrollbar-track {
+    background: rgba(255,255,255,.02);
+}
+
+.modalOverlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: grid;
+    place-items: center;
+    z-index: 9999;
+}
+
+.modal{
+    width: 280px;
+    background: #1B1B1B;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.modalTitle{
+    font-family: 'Roboto-bold';
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 12px;
+}
+
+.modalList{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modalItem{
+    all: unset;
+    cursor: pointer;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #242424;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: 0.2s ease;
+}
+
+.modalItem:hover{
+    background: #2A2A2A;
+}
+
+.modalItemActive{
+    border-color: rgba(158, 255, 64, 0.6);
+}
+
+.modalItemText{
+    font-family: 'Roboto-regular';
+    color: rgba(255,255,255,0.9);
+}
+
+.modalItemTextActive{
+    color: #9EFF40;
+    font-family: 'Roboto-bold';
+}
+
+.dropdown{
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 160px;
+
+    background: #1B1B1B;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 14px;
+    padding: 6px;
+
+    z-index: 1000;
+}
+
+.dropdownItem{
+    display: block;
+    width: 100%;
+
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    text-align: left;
+
+    font-family: Roboto-regular;
+    color: rgba(255,255,255,0.9);
+
+    transition: background 0.15s ease;
+}
+
+.dropdownItem:hover{
+    background: #242424;
+}
+
+.dropdownItemActive{
+    color: #9EFF40;
+    font-family: Roboto-bold;
+}
+
+
+@media (max-width: 1100px) {
+    .mainContainer {
+        flex-direction: column;
+    }
+
+    .menuLayer {
+        width: 100%;
+        min-width: 0;
+        flex: 0 0 auto;
+    }
+
+    .day {
+        width: 100%;
+    }
+}
+

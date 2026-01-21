@@ -4,6 +4,7 @@ import { serverLoadPosts } from "@features/feed/serverLoadPosts.js";
 import { togglePostLike } from "@features/feed/togglePostLike.js";
 import { usePostComments } from "@features/feed/usePostComments.js";
 import {usePostViews} from "@features/feed/usePostViews.js";
+import mainStyles from "@app/styles/main.module.css";
 
 export function Feed() {
     const [posts, setPosts] = useState([]);
@@ -46,7 +47,7 @@ export function Feed() {
     }, [hasMore, isLoading]);
 
     return (
-        <>
+        <div className={mainStyles.mainContent}>
             {posts.map((post) => (
                 <Post
                     key={post.id}
@@ -61,6 +62,6 @@ export function Feed() {
                 />
             ))}
             <div ref={loaderRef} style={{ height: 1 }} />
-        </>
+        </div>
     );
 }

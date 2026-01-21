@@ -1,0 +1,86 @@
+.imageBtn{
+    width: 14px;
+}
+
+.mr30px{
+    margin-right: 30px;
+}
+
+.btnBlock{
+    display: flex;
+    justify-content: space-between;
+}
+
+.navBtn{
+    background: none;
+    border: none;
+}
+
+.navBtn img{
+    transition: 0.3s ease;
+}
+
+.navBtn img:hover{
+    transform: scale(1.1);
+}
+
+.textHeader{
+    color: #9EFF40;
+    font-family: Klavika-bold;
+    font-size: 32px;
+}
+
+.yearHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calendarContainer{
+    padding:40px;
+    background: #111111;
+    border-radius: 24px;
+}
+
+.calendarSection{
+    width: 100%;
+}
+
+.yearScroll{
+    margin-top: 18px;
+    max-height: 75vh;
+    overflow: auto;
+
+    padding-right: 10px;
+}
+
+.yearGrid{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.yearScroll::-webkit-scrollbar{
+    width: 10px;
+}
+.yearScroll::-webkit-scrollbar-thumb{
+    background: rgba(255,255,255,.10);
+    border-radius: 999px;
+    border: 2px solid rgba(0,0,0,.25);
+}
+.yearScroll::-webkit-scrollbar-track{
+    background: rgba(255,255,255,.02);
+}
+
+/* адаптив */
+@media (max-width: 1500px){
+    .yearGrid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 1300px){
+    .yearGrid{
+        grid-template-columns: 1fr;
+    }
+}
+
