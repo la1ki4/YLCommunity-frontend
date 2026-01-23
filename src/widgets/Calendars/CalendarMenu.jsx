@@ -12,7 +12,6 @@ export function CalendarMenu({ view = "Year", onChangeView }) {
     const [open, setOpen] = useState(false);
     const wrapperRef = useRef(null);
 
-    // закрытие по клику вне
     useEffect(() => {
         const onClick = (e) => {
             if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -21,13 +20,6 @@ export function CalendarMenu({ view = "Year", onChangeView }) {
         };
         document.addEventListener("mousedown", onClick);
         return () => document.removeEventListener("mousedown", onClick);
-    }, []);
-
-    // закрытие по Esc
-    useEffect(() => {
-        const onKey = (e) => e.key === "Escape" && setOpen(false);
-        document.addEventListener("keydown", onKey);
-        return () => document.removeEventListener("keydown", onKey);
     }, []);
 
     const select = (v) => {
@@ -46,8 +38,6 @@ export function CalendarMenu({ view = "Year", onChangeView }) {
                     Create
                 </Button>
             </div>
-
-            {/* ▼ WRAPPER важен для позиционирования */}
             <div
                 className={eventsPageStyle.buttonBlock}
                 ref={wrapperRef}

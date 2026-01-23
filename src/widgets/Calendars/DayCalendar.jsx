@@ -37,9 +37,7 @@ export function DayCalendar({ date, onChangeDate }) {
             }),
         [viewDate, onChangeDate]
     );
-
     const now = useNow(NOW_TICK_MS);
-
     const minutesFromStartOfDay =
         now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
 
@@ -74,7 +72,6 @@ export function DayCalendar({ date, onChangeDate }) {
                     >
                         <Media image={leftIcon} />
                     </Button>
-
                     <Button
                         className={eventsPageStyle.navBtn}
                         onClick={() => navCalendar(1, "next")}

@@ -2,7 +2,7 @@ import { toggleLike } from "@features/post-actions/post-like-toggle.js";
 
 export async function togglePostLike({ postId, setPosts }) {
     try {
-        const result = await toggleLike(postId); // { liked, likeCount }
+        const result = await toggleLike(postId);
 
         setPosts((prev) =>
             prev.map((p) => (p.id === postId ? { ...p, likes: result } : p))
