@@ -97,3 +97,7 @@
 .weekRow > :nth-child(7n) {
     border-right: none;
 }
+
+.otherMonthDayNumber{
+    opacity: 0.35;
+}

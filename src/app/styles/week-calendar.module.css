@@ -208,9 +208,8 @@
     border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-.weekEventExample{
+.weekNowLine{
     position: absolute;
-    --gridPad: 0px;
     --dayIndex: 1;
 
     --gridWidth: calc(100% - (var(--gridPad) * 2));
@@ -225,9 +224,7 @@
     background: #9EFF40;
 }
 
-
-
-.weekEventExample::before{
+.weekNowLine::before{
     content: "";
     position: absolute;
     left: -5px;
@@ -237,6 +234,10 @@
     height: 8px;
     background: #9EFF40;
     border-radius: 50%;
+}
+
+.weekGridInner{
+    position: relative;
 }
 
 @media (max-width: 1100px) {

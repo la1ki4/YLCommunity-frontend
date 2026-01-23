@@ -1,56 +1,17 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Text } from "@shared/Text/Text.jsx";
 import { Button } from "@shared/Button/Button.jsx";
 import eventsPageStyle from "@app/styles/events.module.css";
 
-const DAYS_OF_WEEK = ["M", "T", "W", "T", "F", "S", "S"];
+import { MONTH_NAMES } from "@features/calendar/constants/calendar.constants";
+import { MINI_DAYS_OF_WEEK, MINICALENDAR_TICK_MS } from "@features/calendar/constants/miniCalendar.constants";
+import { buildWeeks } from "@features/calendar/utils/miniCalendar.utils";
+import { isSameYMD } from "@features/calendar/utils/calendarDate.utils";
+import { useNow } from "@features/calendar/hooks/useNow";
 
-function buildWeeks(year, monthIndex) {
-    const first = new Date(year, monthIndex, 1);
-    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-
-    const prevMonthDays = new Date(year, monthIndex, 0).getDate();
-
-    const startOffset = (first.getDay() + 6) % 7;
-
-    const cells = [];
-
-    for (let i = startOffset - 1; i >= 0; i--) {
-        const d = prevMonthDays - i;
-        cells.push({ label: String(d), isOtherMonth: true });
-    }
-
-    for (let d = 1; d <= daysInMonth; d++) {
-        cells.push({ label: String(d), isOtherMonth: false });
-    }
-
-    let nextDay = 1;
-    while (cells.length < 42) {
-        cells.push({ label: String(nextDay), isOtherMonth: true });
-        nextDay++;
-    }
-
-    const weeks = [];
-    for (let i = 0; i < 42; i += 7) {
-        weeks.push(cells.slice(i, i + 7));
-    }
-    return weeks;
-}
-
-const MONTH_NAMES = [
-    "January", "February", "March",
-    "April", "May", "June",
-    "July", "August", "September",
-    "October", "November", "December"
-];
-
-export function YearMiniCalendar({ year, monthIndex }) {
-    const [selectedDay, setSelectedDay] = useState(null);
-
-    const weeks = useMemo(
-        () => buildWeeks(year, monthIndex),
-        [year, monthIndex]
-    );
+export function YearMiniCalendar({ year, monthIndex, selected, onSelect }) {
+    const weeks = useMemo(() => buildWeeks(year, monthIndex), [year, monthIndex]);
+    const today = useNow(MINICALENDAR_TICK_MS);
 
     return (
         <div className={eventsPageStyle.miniCalendarContainer}>
@@ -61,7 +22,7 @@ export function YearMiniCalendar({ year, monthIndex }) {
 
             <div className={eventsPageStyle.miniCalendarMain}>
                 <div className={eventsPageStyle.miniCalendarDaysOfWeekSection}>
-                    {DAYS_OF_WEEK.map((d, i) => (
+                    {MINI_DAYS_OF_WEEK.map((d, i) => (
                         <Text
                             key={`${d}-${i}`}
                             className={eventsPageStyle.miniCalendarDayOfWeek}
@@ -72,33 +33,50 @@ export function YearMiniCalendar({ year, monthIndex }) {
 
                 <div className={eventsPageStyle.miniCalendarDaysLayer}>
                     {weeks.map((week, weekIdx) => (
-                        <div
-                            key={weekIdx}
-                            className={eventsPageStyle.miniCalendarWeekSection}
-                        >
+                        <div key={weekIdx} className={eventsPageStyle.miniCalendarWeekSection}>
                             {week.map((cell, idx) => {
                                 const isOtherMonth = cell.isOtherMonth;
-                                const day = cell.label;
-                                const isSelected = selectedDay === day && !isOtherMonth;
+                                const day = Number(cell.label);
+
+                                const isSelected =
+                                    !isOtherMonth &&
+                                    !!selected &&
+                                    selected.year === year &&
+                                    selected.monthIndex === monthIndex &&
+                                    selected.day === day;
+
+                                const isToday =
+                                    !isOtherMonth &&
+                                    isSameYMD(new Date(year, monthIndex, day), today);
+
+                                // кружок: выбранное (если есть), иначе "сегодня"
+                                const shouldHighlight = isSelected || (!selected && isToday);
 
                                 return (
                                     <Button
-                                        key={`${day}-${weekIdx}-${idx}`}
-                                        onClick={() => !isOtherMonth && setSelectedDay((prev) => (prev === day ? null : day))}
+                                        key={`${year}-${monthIndex}-${weekIdx}-${idx}`}
+                                        onClick={() => {
+                                            if (isOtherMonth) return;
+                                            onSelect?.({ year, monthIndex, day });
+                                        }}
                                         className={[
                                             eventsPageStyle.miniCalendarDayButton,
                                             isOtherMonth && eventsPageStyle.miniCalendarOtherMonth,
-                                            isSelected && eventsPageStyle.miniCalendarDaySelected,
-                                        ].filter(Boolean).join(" ")}
+                                            shouldHighlight && eventsPageStyle.miniCalendarDaySelected,
+                                        ]
+                                            .filter(Boolean)
+                                            .join(" ")}
                                     >
                                         <Text
                                             as="div"
                                             className={[
                                                 eventsPageStyle.miniCalendarDayNumber,
                                                 isOtherMonth && eventsPageStyle.miniCalendarOtherMonthText,
-                                                isSelected && eventsPageStyle.miniCalendarTextDaySelected,
-                                            ].filter(Boolean).join(" ")}
-                                            text={day}
+                                                shouldHighlight && eventsPageStyle.miniCalendarTextDaySelected,
+                                            ]
+                                                .filter(Boolean)
+                                                .join(" ")}
+                                            text={cell.label}
                                         />
                                     </Button>
                                 );

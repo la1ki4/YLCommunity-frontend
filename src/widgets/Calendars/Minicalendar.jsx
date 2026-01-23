@@ -1,31 +1,72 @@
 import eventsPageStyle from "@app/styles/events.module.css";
 import { Text } from "@shared/Text/Text.jsx";
 import { Button } from "@shared/Button/Button.jsx";
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Media } from "@shared/Image/Media.jsx";
+import leftIcon from "@app/assets/Vector-left.svg?raw";
+import rightIcon from "@app/assets/Vector-right.svg?raw";
 
-export function MiniCalendar() {
-    const [selectedDay, setSelectedDay] = useState(null);
+import { MONTH_NAMES } from "@features/calendar/constants/calendar.constants";
+import { MINI_DAYS_OF_WEEK, MINICALENDAR_TICK_MS } from "@features/calendar/constants/miniCalendar.constants";
+import { isSameYMD } from "@features/calendar/utils/calendarDate.utils";
+import { buildWeeks, shiftMonth } from "@features/calendar/utils/miniCalendar.utils";
+import { useNow } from "@features/calendar/hooks/useNow";
+
+export function MiniCalendar({ year, selected, onSelect, forceMonthIndex = null }) {
+    const [view, setView] = useState({ year, monthIndex: 0 });
+
+    const today = useNow(MINICALENDAR_TICK_MS);
+
+    useEffect(() => {
+        setView((prev) => ({ ...prev, year }));
+    }, [year]);
+
+    useEffect(() => {
+        if (typeof forceMonthIndex === "number") {
+            setView((prev) => ({ ...prev, monthIndex: forceMonthIndex }));
+        }
+    }, [forceMonthIndex]);
 
     const weeks = useMemo(
-        () => [
-            ["-", "-", "-", "1", "2", "3", "4"],
-            ["5", "6", "7", "8", "9", "10", "11"],
-            ["12", "13", "14", "15", "16", "17", "18"],
-            ["19", "20", "21", "22", "23", "24", "25"],
-            ["26", "27", "28", "29", "30", "31", "-"],
-        ],
-        []
+        () => buildWeeks(view.year, view.monthIndex),
+        [view.year, view.monthIndex]
     );
 
-    const daysOfWeek = useMemo(() => ["M", "T", "W", "T", "F", "S", "S"], []);
+    const headerText = `${MONTH_NAMES[view.monthIndex]}, ${view.year}`;
+
+    const goPrev = () => {
+        setView((prev) => shiftMonth(prev.year, prev.monthIndex, -1));
+    };
+
+    const goNext = () => {
+        setView((prev) => shiftMonth(prev.year, prev.monthIndex, +1));
+    };
 
     return (
         <div className={eventsPageStyle.miniCalendarContainer}>
-            <Text className={eventsPageStyle.miniCalendarTextHeader} text={"January, 2026"} />
+            <div className={eventsPageStyle.miniCalendarHeader}>
+                <Text className={eventsPageStyle.miniCalendarTextHeader} text={headerText} />
+
+                <div className={eventsPageStyle.btnBlock}>
+                    <Button
+                        className={`${eventsPageStyle.miniCalendarNavBtn} ${eventsPageStyle.mr20px}`}
+                        onClick={goPrev}
+                    >
+                        <Media className={eventsPageStyle.imageBtn} image={leftIcon} inlineSvg />
+                    </Button>
+
+                    <Button
+                        className={eventsPageStyle.miniCalendarNavBtn}
+                        onClick={goNext}
+                    >
+                        <Media className={eventsPageStyle.imageBtn} image={rightIcon} inlineSvg />
+                    </Button>
+                </div>
+            </div>
 
             <div className={eventsPageStyle.miniCalendarMain}>
                 <div className={eventsPageStyle.miniCalendarDaysOfWeekSection}>
-                    {daysOfWeek.map((d, i) => (
+                    {MINI_DAYS_OF_WEEK.map((d, i) => (
                         <Text key={`${d}-${i}`} className={eventsPageStyle.miniCalendarDayOfWeek} text={d} />
                     ))}
                 </div>
@@ -33,30 +74,47 @@ export function MiniCalendar() {
                 <div className={eventsPageStyle.miniCalendarDaysLayer}>
                     {weeks.map((week, weekIdx) => (
                         <div key={weekIdx} className={eventsPageStyle.miniCalendarWeekSection}>
-                            {week.map((day, idx) => {
-                                const isEmpty = day === "-";
-                                const isSelected = selectedDay === day;
+                            {week.map((cell, idx) => {
+                                const isOtherMonth = cell.isOtherMonth;
+                                const dayNum = Number(cell.label);
+
+                                const hasSelectionInThisMonth =
+                                    !!selected &&
+                                    selected.year === view.year &&
+                                    selected.monthIndex === view.monthIndex;
+
+                                const isSelected =
+                                    !isOtherMonth &&
+                                    hasSelectionInThisMonth &&
+                                    selected.day === dayNum;
+
+                                const isToday =
+                                    !isOtherMonth &&
+                                    isSameYMD(new Date(view.year, view.monthIndex, dayNum), today);
+
+                                const shouldHighlight = isSelected || (!selected && isToday);
 
                                 return (
                                     <Button
-                                        key={`${day}-${weekIdx}-${idx}`}
-                                        disabled={isEmpty}
-                                        onClick={() => !isEmpty && setSelectedDay((prev) => (prev === day ? null : day))}
+                                        key={`${view.year}-${view.monthIndex}-${weekIdx}-${idx}`}
+                                        onClick={() => {
+                                            if (isOtherMonth) return;
+                                            onSelect?.({ year: view.year, monthIndex: view.monthIndex, day: dayNum });
+                                        }}
                                         className={[
-                                            !isEmpty && eventsPageStyle.miniCalendarDayButton,
-                                            isEmpty && eventsPageStyle.miniCalendarEmptyDay,
-                                            isSelected && eventsPageStyle.miniCalendarDaySelected,
-                                        ]
-                                            .filter(Boolean)
-                                            .join(" ")}
+                                            eventsPageStyle.miniCalendarDayButton,
+                                            isOtherMonth && eventsPageStyle.miniCalendarOtherMonth,
+                                            shouldHighlight && eventsPageStyle.miniCalendarDaySelected,
+                                        ].filter(Boolean).join(" ")}
                                     >
                                         <Text
                                             as="div"
                                             className={[
                                                 eventsPageStyle.miniCalendarDayNumber,
-                                                isSelected && eventsPageStyle.miniCalendarTextDaySelected,
+                                                isOtherMonth && eventsPageStyle.miniCalendarOtherMonthText,
+                                                shouldHighlight && eventsPageStyle.miniCalendarTextDaySelected,
                                             ].filter(Boolean).join(" ")}
-                                            text={isEmpty ? "" : day}
+                                            text={cell.label}
                                         />
                                     </Button>
                                 );
