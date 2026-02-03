@@ -8,9 +8,9 @@ import rightIcon from "@app/assets/Vector-right.svg?raw";
 
 import { MONTH_NAMES } from "@features/calendar/constants/calendar.constants";
 import { MINI_DAYS_OF_WEEK, MINICALENDAR_TICK_MS } from "@features/calendar/constants/miniCalendar.constants";
-import { isSameYMD } from "@features/calendar/utils/calendarDate.utils";
-import { buildWeeks, shiftMonth } from "@features/calendar/utils/miniCalendar.utils";
+import { buildMonthGrid, shiftMonth } from "@features/calendar/utils/monthCalendar.utils.js";
 import { useNow } from "@features/calendar/hooks/useNow";
+import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 
 export function MiniCalendar({ year, selected, onSelect, forceMonthIndex = null }) {
     const [view, setView] = useState({ year, monthIndex: 0 });
@@ -28,7 +28,7 @@ export function MiniCalendar({ year, selected, onSelect, forceMonthIndex = null 
     }, [forceMonthIndex]);
 
     const weeks = useMemo(
-        () => buildWeeks(view.year, view.monthIndex),
+        () => buildMonthGrid(view.year, view.monthIndex),
         [view.year, view.monthIndex]
     );
 
@@ -90,7 +90,7 @@ export function MiniCalendar({ year, selected, onSelect, forceMonthIndex = null 
 
                                 const isToday =
                                     !isOtherMonth &&
-                                    isSameYMD(new Date(view.year, view.monthIndex, dayNum), today);
+                                    isSameDay(new Date(view.year, view.monthIndex, dayNum), today);
 
                                 const shouldHighlight = isSelected || (!selected && isToday);
 

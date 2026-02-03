@@ -1,12 +1,7 @@
 import { useMemo } from "react";
-import { addDays, isSameYMD, isSelectedInThisWeek } from "@features/calendar/utils/calendarDate.utils";
+import { addDays, isSelectedInThisWeek } from "@features/calendar/utils/calendarDate.utils";
+import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 
-/**
- * @param {Object} params
- * @param {Date} params.weekStart - дата понедельника текущей недели
- * @param {Object|null} params.selected - выбранная дата
- * @param {string[]} params.dowLabels - подписи дней недели (Mon..Sun)
- */
 export function useWeekDays({ weekStart, selected, dowLabels }) {
     return useMemo(() => {
         const today = new Date();
@@ -21,7 +16,7 @@ export function useWeekDays({ weekStart, selected, dowLabels }) {
                 selected.monthIndex === dateObj.getMonth() &&
                 selected.day === dateObj.getDate();
 
-            const isToday = !selected && isSameYMD(dateObj, today);
+            const isToday = !selected && isSameDay(dateObj, today);
             const shouldHighlight = hasSelectedThisWeek ? isSelected : isToday;
 
             return {

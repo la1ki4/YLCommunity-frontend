@@ -20,7 +20,6 @@ export function useLogin(onLoginSuccess) {
         e.preventDefault();
         try {
             const errors = await preValidateLogin(formData);
-            console.log(errors);
 
             const nextErrors = { email: [], password: [] };
 

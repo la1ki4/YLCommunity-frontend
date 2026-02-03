@@ -1,14 +1,10 @@
 import { DAYS_IN_WEEK, GRID_CELL_COUNT } from "@features/calendar/constants/calendar.constants";
 
-/**
- * Строит сетку 6x7 для месяца (Mon-first), отдаёт массив недель (по 7 ячеек).
- */
 export function buildMonthGrid(year, monthIndex) {
     const first = new Date(year, monthIndex, 1);
     const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
     const prevMonthDays = new Date(year, monthIndex, 0).getDate();
 
-    // Mon-first offset: Mon=0 ... Sun=6
     const startOffset = (first.getDay() + 6) % 7;
 
     const cells = [];
@@ -23,6 +19,7 @@ export function buildMonthGrid(year, monthIndex) {
     }
 
     let nextDay = 1;
+
     while (cells.length < GRID_CELL_COUNT) {
         cells.push({ label: String(nextDay), isOtherMonth: true });
         nextDay++;

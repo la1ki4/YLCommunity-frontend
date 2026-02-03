@@ -5,10 +5,8 @@ export function useNow(intervalMs = 30_000) {
 
     useEffect(() => {
         const tick = () => setNow(new Date());
-
-        tick(); // сразу обновляем
+        tick();
         const id = setInterval(tick, intervalMs);
-
         return () => clearInterval(id);
     }, [intervalMs]);
 

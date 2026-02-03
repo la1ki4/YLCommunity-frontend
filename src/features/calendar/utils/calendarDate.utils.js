@@ -15,14 +15,6 @@ export function addDays(date, days) {
     return d;
 }
 
-export function isSameYMD(a, b) {
-    return (
-        a.getFullYear() === b.getFullYear() &&
-        a.getMonth() === b.getMonth() &&
-        a.getDate() === b.getDate()
-    );
-}
-
 export function isSelectedInThisWeek(selected, weekStart) {
     if (!selected) return false;
 
@@ -30,7 +22,6 @@ export function isSelectedInThisWeek(selected, weekStart) {
 
     const start = new Date(weekStart);
     start.setHours(0, 0, 0, 0);
-
     const end = addDays(start, 6);
     end.setHours(23, 59, 59, 999);
 

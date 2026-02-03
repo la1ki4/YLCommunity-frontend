@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef} from "react";
+import {useCallback, useEffect, useMemo, useRef} from "react";
 import {Text} from "@shared/Text/Text.jsx";
 import {Button} from "@shared/Button/Button.jsx";
 import YearCalendarStyle from "@app/styles/year-calendar.module.css";
@@ -7,23 +7,24 @@ import leftIcon from "@app/assets/Vector-left.svg";
 import rightIcon from "@app/assets/Vector-right.svg";
 import { YearMiniCalendar } from "./YearMiniCalendar.jsx";
 
-export function YearCalendar({ year, setYear, selected, onSelect, apiRef }) {
+export function YearCalendar({ year, onYearChangeView, selected, onSelect, apiRef }) {
     const scrollRef = useRef(null);
 
     const monthRefs = useMemo(
         () => Array.from({ length: 12 }, () => ({ current: null })),
         []
     );
-    const scrollToMonth = (monthIndex) => {
+
+    const scrollToMonth = useCallback((monthIndex) => {
         const el = monthRefs[monthIndex]?.current;
         if (!el) return;
         el.scrollIntoView({ behavior: "smooth", block: "start" });
-    };
+    }, [monthRefs]);
 
     useEffect(() => {
         if (!apiRef) return;
         apiRef.current = { scrollToMonth };
-    }, [apiRef, monthRefs]);
+    }, [apiRef, monthRefs, scrollToMonth]);
 
     return (
         <section className={YearCalendarStyle.calendarSection}>
@@ -36,7 +37,7 @@ export function YearCalendar({ year, setYear, selected, onSelect, apiRef }) {
                     <div>
                         <Button
                             className={YearCalendarStyle.navBtn}
-                            onClick={() => setYear((y) => y - 1)}
+                            onClick={() => onYearChangeView((y) => y - 1)}
                         >
                             <Media
                                 className={`${YearCalendarStyle.imageBtn} ${YearCalendarStyle.mr30px}`}
@@ -46,7 +47,7 @@ export function YearCalendar({ year, setYear, selected, onSelect, apiRef }) {
 
                         <Button
                             className={YearCalendarStyle.navBtn}
-                            onClick={() => setYear((y) => y + 1)}
+                            onClick={() => onYearChangeView((y) => y + 1)}
                         >
                             <Media className={YearCalendarStyle.imageBtn} image={rightIcon} />
                         </Button>

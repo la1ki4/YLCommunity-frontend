@@ -22,14 +22,12 @@ export default function EventsPage() {
         weekAnchorDate,
         dayDate,
         monthView,
-        miniView,
 
-        onMiniSelect,
-        onDayChange,
+        onSelect,
+        onDayChangeView,
         onMonthChangeView,
-        onYearSelect,
-        onWeekAnchorChange,
-        setYear,
+        onWeekChangeView,
+        onYearChangeView,
 
         yearCalApiRef,
     } = useEventsPageCalendarController();
@@ -44,20 +42,20 @@ export default function EventsPage() {
                             <CalendarMenu view={view} onChangeView={setView} />
 
                             <MiniCalendar
-                                year={miniView.year}
+                                year={monthView.year}
                                 selected={selected}
-                                onSelect={onMiniSelect}
-                                forceMonthIndex={miniView.monthIndex}
+                                onSelect={onSelect}
+                                forceMonthIndex={monthView.monthIndex}
                             />
                         </div>
 
-                        {view === "Day" && <DayCalendar date={dayDate} onChangeDate={onDayChange} />}
+                        {view === "Day" && <DayCalendar date={dayDate} onChangeDate={onDayChangeView} />}
 
                         {view === "Week" && (
                             <WeekCalendarLayout
                                 anchorDate={weekAnchorDate}
                                 selected={selected}
-                                onAnchorDateChange={onWeekAnchorChange}
+                                onAnchorDateChange={onWeekChangeView}
                             />
                         )}
 
@@ -67,10 +65,10 @@ export default function EventsPage() {
 
                         {view === "Year" && (
                             <YearCalendar
-                                year={miniView.year}
-                                setYear={setYear}
+                                year={monthView.year}
+                                onYearChangeView={onYearChangeView}
                                 selected={selected}
-                                onSelect={onYearSelect}
+                                onSelect={onSelect}
                                 apiRef={yearCalApiRef}
                             />
                         )}

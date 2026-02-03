@@ -11,14 +11,11 @@ export function useElementHeight(ref) {
             const next = el.getBoundingClientRect().height;
             setHeight(next);
         };
-
         update();
 
         const ro = new ResizeObserver(update);
         ro.observe(el);
-
         window.addEventListener("resize", update);
-
         return () => {
             ro.disconnect();
             window.removeEventListener("resize", update);

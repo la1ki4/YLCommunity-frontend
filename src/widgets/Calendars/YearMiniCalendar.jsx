@@ -5,12 +5,12 @@ import eventsPageStyle from "@app/styles/events.module.css";
 
 import { MONTH_NAMES } from "@features/calendar/constants/calendar.constants";
 import { MINI_DAYS_OF_WEEK, MINICALENDAR_TICK_MS } from "@features/calendar/constants/miniCalendar.constants";
-import { buildWeeks } from "@features/calendar/utils/miniCalendar.utils";
-import { isSameYMD } from "@features/calendar/utils/calendarDate.utils";
 import { useNow } from "@features/calendar/hooks/useNow";
+import {buildMonthGrid} from "@features/calendar/utils/monthCalendar.utils.js";
+import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 
 export function YearMiniCalendar({ year, monthIndex, selected, onSelect }) {
-    const weeks = useMemo(() => buildWeeks(year, monthIndex), [year, monthIndex]);
+    const weeks = useMemo(() => buildMonthGrid(year, monthIndex), [year, monthIndex]);
     const today = useNow(MINICALENDAR_TICK_MS);
 
     return (
@@ -47,7 +47,7 @@ export function YearMiniCalendar({ year, monthIndex, selected, onSelect }) {
 
                                 const isToday =
                                     !isOtherMonth &&
-                                    isSameYMD(new Date(year, monthIndex, day), today);
+                                    isSameDay(new Date(year, monthIndex, day), today);
 
                                 // кружок: выбранное (если есть), иначе "сегодня"
                                 const shouldHighlight = isSelected || (!selected && isToday);

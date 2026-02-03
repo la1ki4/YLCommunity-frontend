@@ -57,12 +57,10 @@ export function WeekCalendarLayout({ anchorDate, selected, onAnchorDateChange })
         dowLabels: DOW,
     });
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const today = new Date();
     const todayIndex = getMondayBasedDayIndex(today);
 
     const weekContainsToday = useMemo(() => isDateInWeek(today, weekStart), [today, weekStart]);
-
 
     const hLinesRef = useRef(null);
     const gridHeight = useElementHeight(hLinesRef);

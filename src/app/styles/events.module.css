@@ -472,7 +472,16 @@
     transform: scale(1.1);
 }
 
-
+.event {
+    position: absolute;
+    background: rgb(157, 253, 64);
+    color: #1B1B1B;
+    border-radius: 6px;
+    border: 2px #1B1B1B solid;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: Roboto-bold;
+}
 
 
 @media (max-width: 1100px) {
