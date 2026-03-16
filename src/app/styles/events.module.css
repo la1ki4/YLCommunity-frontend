@@ -94,6 +94,79 @@
     opacity: 0.55;
 }
 
+.timeZoneWrapper {
+    position: relative;
+    width: 100%;
+    max-width: 100px;
+}
+
+.locationWrapper {
+    position: relative;
+    width: 250px;
+    max-width: 100%;
+}
+
+.locationDropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    max-height: 160px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 6px;
+    z-index: 100;
+}
+
+.locationOption {
+    padding: 8px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: 'Roboto-regular';
+    text-align: center;
+}
+
+.locationOption:hover {
+    background: #222;
+}
+
+.timeZoneDropdown {
+    width: 100%;
+    max-width: 100%;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 6px;
+    max-height: 160px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 100;
+}
+
+.timeZoneOption {
+    padding: 8px 10px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 17px;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: 'Roboto-regular';
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.timeZoneOption:hover {
+    background: #222;
+}
+
+
 .miniCalendarDaysOfWeekSection{
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -278,7 +351,7 @@
 
 .timeCol {
     border-right: 1px solid rgba(255, 255, 255, 0.2);
-    padding-top: 44px;
+    padding-top: 43px;
 }
 
 .time {
@@ -294,6 +367,20 @@
 
 .gridCol {
     position: relative;
+}
+
+
+.dayEvent {
+    position: absolute;
+    background: rgb(157, 253, 64);
+    color: #1B1B1B;
+    font-family: Roboto-bold;
+    border-radius: 6px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    font-size: 13px;
+    overflow: hidden;
+    border-left: 3px solid rgb(75, 136, 12);
 }
 
 .row {
@@ -339,17 +426,22 @@
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.55);
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
     z-index: 9999;
+    box-sizing: border-box;
 }
 
 .modal{
-    width: 280px;
+    width: min(1000px, calc(100vw - 48px));
+    max-height: calc(100vh - 48px);
+    overflow: hidden;
+
     background: #1B1B1B;
     border: 1px solid rgba(255,255,255,0.10);
     border-radius: 16px;
-    padding: 16px;
     box-sizing: border-box;
 }
 
@@ -398,14 +490,13 @@
     top: calc(100% + 8px);
     left: 0;
     min-width: 160px;
-
     background: #1B1B1B;
     border: 1px solid rgba(255,255,255,0.10);
     border-radius: 14px;
     padding: 6px;
-
     z-index: 1000;
 }
+
 
 .dropdownItem{
     display: block;
@@ -428,7 +519,7 @@
     background: #242424;
 }
 
-.dropdownItemActive{
+.downItemActive{
     color: #9EFF40;
     font-family: Roboto-bold;
 }
@@ -472,15 +563,115 @@
     transform: scale(1.1);
 }
 
-.event {
+.titleCreate{
+    width: 100%;
+    background: none;
+    border: none;
+    font-size: 28px;
+    font-family: Roboto-regular;
+    color: rgba(255,255,255,0.5);
+}
+
+.titleCreate:focus{
+    outline: none;
+}
+
+.titleCreate::placeholder{
+    color: rgba(255,255,255,0.5);
+}
+
+.titleCreateBlock{
+    border-bottom: 1px rgba(255, 255, 255, 0.15) solid;
+    padding-bottom: 10px;
+}
+
+.createPopup{
+    padding: 50px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.createBlock{
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.timeZoneBlock{
     position: absolute;
-    background: rgb(157, 253, 64);
-    color: #1B1B1B;
-    border-radius: 6px;
-    border: 2px #1B1B1B solid;
-    font-size: 12px;
-    cursor: pointer;
-    font-family: Roboto-bold;
+    right: 0;
+    top: 0;
+}
+
+.fieldBasic{
+    border: none;
+    background: #242424;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.fieldBasic:focus{
+    outline: none;
+}
+
+.createDate{
+    width: 100%;
+}
+
+.createTextArea{
+    width: 100%;
+    border: 2px solid #242424;
+    padding: 15px;
+    resize: none;
+    margin-top: 20px;
+    border-radius: 16px;
+    background: #1B1B1B;
+    height: 300px;
+    color: rgba(255,255,255,0.5);
+}
+
+.createTextArea:focus{
+    outline: none;
+}
+
+.createTextArea::placeholder{
+    color: rgba(255,255,255,0.5);
+}
+
+.createSection{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 32px;
+    position: relative;
+}
+
+.createHours{
+    width: 80px;
+}
+
+.d_text{
+    color: rgba(255,255,255,0.5);
+    font-family: Roboto-regular;
+    font-size: 16px;
+}
+
+.s_text{
+    font-family: Roboto-regular;
+    font-size: 14px;
+}
+
+.timeZone{
+    width: 100px;
+    max-width: 100%;
+}
+
+.createOwnerBlock{
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -500,3 +691,53 @@
     }
 }
 
+@media (max-width: 900px) {
+    .timeZoneBlock{
+        position: static;
+        right: auto;
+        top: auto;
+        width: 100%;
+    }
+
+    .createPopup{
+        padding: 20px;
+    }
+
+    .createSection{
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .titleCreate{
+        font-size: 22px;
+    }
+
+    .createTextArea{
+        height: 220px;
+    }
+}
+
+@media (max-width: 700px) {
+    .createSection{
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .timeZoneBlock{
+        position: static;
+        width: 100%;
+    }
+
+    .createHours{
+        width: 100%;
+        max-width: 140px;
+    }
+
+    .locationWrapper{
+        width: 100%;
+    }
+
+    .timeZoneWrapper{
+        max-width: 140px;
+    }
+}

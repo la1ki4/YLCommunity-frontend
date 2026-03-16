@@ -6,8 +6,8 @@ import eventsPageStyle from "@app/styles/events.module.css";
 
 import { CalendarMenu } from "@widgets/Calendars/CalendarMenu.jsx";
 import { MiniCalendar } from "@widgets/Calendars/Minicalendar.jsx";
-import { DayCalendar } from "@widgets/Calendars/DayCalendar.jsx";
-import { WeekCalendarLayout } from "@widgets/Calendars/WeekCalendar.jsx";
+import { DayCalendar } from "@widgets/Calendars/DayCalendar/DayCalendar.jsx";
+import { WeekCalendarLayout } from "@widgets/Calendars/WeekCalendar/WeekCalendar.jsx";
 import { MonthCalendar } from "@widgets/Calendars/MonthCalendar.jsx";
 import { YearCalendar } from "@widgets/Calendars/YearCalendar.jsx";
 
@@ -18,12 +18,14 @@ export default function EventsPage() {
         view,
         setView,
         selected,
+        calendarMenuSelected,
 
         weekAnchorDate,
         dayDate,
         monthView,
 
         onSelect,
+        onMenuCalendarSelect,
         onDayChangeView,
         onMonthChangeView,
         onWeekChangeView,
@@ -39,7 +41,13 @@ export default function EventsPage() {
                 <div className={eventsPageStyle.mainLayer}>
                     <div className={eventsPageStyle.mainContainer}>
                         <div className={eventsPageStyle.menuLayer}>
-                            <CalendarMenu view={view} onChangeView={setView} />
+                            <CalendarMenu view={view}
+                                          onChangeView={setView}
+                                          year={monthView.year}
+                                          calendarMenuSelected={calendarMenuSelected}
+                                          onCalendarMenuSelect={onMenuCalendarSelect}
+                                          forceMonthIndex={monthView.monthIndex}
+                            />
 
                             <MiniCalendar
                                 year={monthView.year}
@@ -53,7 +61,7 @@ export default function EventsPage() {
 
                         {view === "Week" && (
                             <WeekCalendarLayout
-                                anchorDate={weekAnchorDate}
+                                date={weekAnchorDate}
                                 selected={selected}
                                 onAnchorDateChange={onWeekChangeView}
                             />

@@ -9,6 +9,7 @@ function toSelectedDate(value) {
 export function useEventsPageCalendarController() {
     const [view, setView] = useState(DEFAULT_VIEW);
     const [selected, setSelected] = useState(null);
+    const [calendarMenuSelected, setCalendarMenuSelected] = useState(null);
 
     const [weekAnchorDate, setWeekAnchorDate] = useState(() => DEFAULT_START_DATE);
     const [dayDate, setDayDate] = useState(() => DEFAULT_START_DATE);
@@ -35,10 +36,15 @@ export function useEventsPageCalendarController() {
         });
     }, []);
 
+
     const onSelect = useCallback((value) => {
         setSelected((prev) => toggleSelected(prev, value));
         syncToDate(toSelectedDate(value));
     }, [syncToDate]);
+
+    const onMenuCalendarSelect = useCallback((value) => {
+        setCalendarMenuSelected(prev => toggleSelected(prev, value));
+    }, []);
 
     const onDayChangeView = useCallback((newDate) => {
         syncToDate(newDate);
@@ -77,6 +83,7 @@ export function useEventsPageCalendarController() {
             setView,
 
             selected,
+            calendarMenuSelected,
             setSelected,
 
             weekAnchorDate,
@@ -84,6 +91,7 @@ export function useEventsPageCalendarController() {
             monthView,
 
             onSelect,
+            onMenuCalendarSelect,
             onDayChangeView,
             onMonthChangeView,
             onWeekChangeView,
@@ -91,6 +99,6 @@ export function useEventsPageCalendarController() {
 
             yearCalApiRef,
         }),
-        [view, selected, weekAnchorDate, dayDate, monthView, onSelect, onDayChangeView, onMonthChangeView, onWeekChangeView, onYearChangeView]
+        [view, selected, calendarMenuSelected, weekAnchorDate, dayDate, monthView, onSelect, onMenuCalendarSelect, onDayChangeView, onMonthChangeView, onWeekChangeView, onYearChangeView]
     );
 }

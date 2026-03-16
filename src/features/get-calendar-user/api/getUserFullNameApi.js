@@ -1,6 +1,5 @@
-export async function getCalendarEvents(date) {
-    const yyyyMmDd = date.toISOString().slice(0, 10);
-    const response = await fetch(`http://localhost:8082/calendar/day-event?date=${yyyyMmDd}`, {
+export async function getUserFullNameApi(){
+    const response = await fetch(`http://localhost:8082/calendar/get-user`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

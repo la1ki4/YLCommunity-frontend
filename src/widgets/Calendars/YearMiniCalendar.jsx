@@ -49,7 +49,6 @@ export function YearMiniCalendar({ year, monthIndex, selected, onSelect }) {
                                     !isOtherMonth &&
                                     isSameDay(new Date(year, monthIndex, day), today);
 
-                                // кружок: выбранное (если есть), иначе "сегодня"
                                 const shouldHighlight = isSelected || (!selected && isToday);
 
                                 return (

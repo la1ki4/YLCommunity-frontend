@@ -1,25 +1,21 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 export function useElementHeight(ref) {
     const [height, setHeight] = useState(0);
 
-    useEffect(() => {
-        const el = ref.current;
-        if (!el) return;
+    useLayoutEffect(() => {
+        if (!ref.current) return;
 
         const update = () => {
-            const next = el.getBoundingClientRect().height;
-            setHeight(next);
+            setHeight(ref.current.offsetHeight);
         };
+
         update();
 
-        const ro = new ResizeObserver(update);
-        ro.observe(el);
-        window.addEventListener("resize", update);
-        return () => {
-            ro.disconnect();
-            window.removeEventListener("resize", update);
-        };
+        const observer = new ResizeObserver(update);
+        observer.observe(ref.current);
+
+        return () => observer.disconnect();
     }, [ref]);
 
     return height;

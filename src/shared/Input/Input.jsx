@@ -1,7 +1,6 @@
 import {forwardRef} from "react";
 
-export const InputField = forwardRef
-(({
+export const InputField = forwardRef(({
       name,
       type,
       placeholder,

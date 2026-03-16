@@ -1,7 +1,7 @@
 import { HOURS_IN_DAY, MINUTES_IN_DAY } from "@features/calendar/constants/weekCalendar.constants";
 
 export function buildHours() {
-    return Array.from({ length: HOURS_IN_DAY }, (_, i) => i);
+    return Array.from({ length: HOURS_IN_DAY - 1 }, (_, i) => i + 1);
 }
 
 export function minutesFromStartOfDay(date) {

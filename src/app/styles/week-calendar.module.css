@@ -1,5 +1,5 @@
 .weekCalendar{
-    --timeColW: 70px;
+    --timeColW: 50px;
     --headerPadY: 8px;
     --headerPadX: 10px;
     --hourH: 34px;
@@ -137,6 +137,7 @@
 .weekTimes{
     border-right: 1px solid rgba(255,255,255,0.08);
     background: #1B1B1B;
+    padding-top: 16px;
 }
 
 .weekTimeRow{
@@ -243,24 +244,14 @@
 
 .weekEvent {
     position: absolute;
-    --overlap: 0.15;
-
-    left: calc(
-            var(--dayIndex) * var(--day-width)
-            + var(--columnIndex)
-            * (var(--day-width) / var(--columnCount))
-            * (1 - var(--overlap))
-    );
-
-    width: calc(
-            (var(--day-width) / var(--columnCount))
-            * (1 + var(--overlap))
-    );
-    z-index: calc(10 + (10 - var(--columnIndex)));
-    background: #9EFF40;
+    background: rgb(157, 253, 64);
+    color: #1B1B1B;
+    font-family: Roboto-bold;
     border-radius: 6px;
     box-sizing: border-box;
-    border: 2px #1B1B1B solid;
+    font-size: 13px;
+    overflow: hidden;
+    border-left: 3px solid rgb(75, 136, 12);
 }
 
 .weekEvent:hover {
