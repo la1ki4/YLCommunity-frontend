@@ -14,6 +14,7 @@ export function useAsyncResource(loader, deps = [], initialData = null) {
             setData(result);
             return result;
         } catch (requestError) {
+            setData(initialData);
             setError(requestError);
             throw requestError;
         } finally {
