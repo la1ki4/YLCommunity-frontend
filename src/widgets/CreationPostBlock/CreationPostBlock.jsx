@@ -12,7 +12,7 @@ import pictureStyle from "@app/styles/picture.module.css"
 import NewPostIcon from "@app/assets/New_post.svg"
 import postStyles from "@app/styles/post.module.css";
 import fileUploadStyle from "@app/styles/file-upload-block.module.css"
-import {useCreatePostFeature} from "@features/add-post-file/createPostFeature.jsx";
+import { useCreatePost } from '@features/add-post-file/model/useCreatePost.js';
 import mainStyles from "@app/styles/main.module.css";
 
 export function CreationPostBlock() {
@@ -27,7 +27,7 @@ export function CreationPostBlock() {
         setDescription,
         handleSubmit,
         loading,
-    } = useCreatePostFeature();
+    } = useCreatePost();
 
     return (
         <div className={mainStyles.mainContent}>

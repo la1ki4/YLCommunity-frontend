@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { uploadPost } from "@features/add-post-file/uploadPostFeature.jsx";
-import { useAddPostFileFeature } from "@features/add-post-file/addPostFile.jsx";
+import { useState } from 'react';
+import { uploadPost } from '@features/add-post-file/api/uploadPost.js';
+import { usePostFile } from '@features/add-post-file/model/usePostFile.js';
 
-export function useCreatePostFeature() {
+export function useCreatePost() {
     const {
         fileInputRef,
         fileUrl,
@@ -12,9 +12,9 @@ export function useCreatePostFeature() {
         handleBlockClick,
         handleFileChange,
         handleRemoveFile,
-    } = useAddPostFileFeature();
+    } = usePostFile();
 
-    const [description, setDescription] = useState("");
+    const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -22,16 +22,15 @@ export function useCreatePostFeature() {
         try {
             setError(null);
             setLoading(true);
-            const result = await uploadPost({ description, file });
 
-            console.log("✅ Post uploaded successfully:", result);
+            await uploadPost({ description, file });
 
-            setDescription("");
+            setDescription('');
             setFile(null);
             handleRemoveFile();
         } catch (err) {
-            console.error("❌ Upload failed:", err);
             setError(err.message);
+            throw err;
         } finally {
             setLoading(false);
         }
@@ -49,7 +48,6 @@ export function useCreatePostFeature() {
         handleBlockClick,
         handleFileChange,
         handleRemoveFile,
-
         handleSubmit,
     };
 }
