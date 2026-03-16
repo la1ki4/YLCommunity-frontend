@@ -1,5 +1,24 @@
 import { fetchLikesForPosts } from "@features/feed/serverPostLikesCount.js";
 import { fetchCommentCountFromPosts } from "@features/feed/serverPostCommentsCount.js";
+import { mergePostMeta } from "@features/feed/model/mergePostMeta.js";
+
+async function fetchFeedPage(page, pageSize) {
+    const res = await fetch(
+        `http://localhost:8081/post/feed?page=${page}&size=${pageSize}`,
+        { credentials: "include" }
+    );
+
+    return res.json();
+}
+
+async function fetchPostMeta(postIds) {
+    const [likesByPostId, commentsByPostId] = await Promise.all([
+        fetchLikesForPosts(postIds),
+        fetchCommentCountFromPosts(postIds),
+    ]);
+
+    return { likesByPostId, commentsByPostId };
+}
 
 export async function serverLoadPosts({
                                     page,
@@ -13,29 +32,20 @@ export async function serverLoadPosts({
     setIsLoading(true);
 
     try {
-        const res = await fetch(
-            `http://localhost:8081/post/feed?page=${page}&size=${pageSize}`,
-            { credentials: "include" }
-        );
-        const data = await res.json();
+        const data = await fetchFeedPage(page, pageSize);
+        const content = data?.content ?? [];
 
-        if (data.content.length < pageSize) {
+        if (content.length < pageSize) {
             setHasMore(false);
         }
 
-        const newPosts = data.content;
-        setPosts((prev) => [...prev, ...newPosts]);
+        setPosts((prev) => [...prev, ...content]);
 
-        const postIds = newPosts.map((p) => p.id);
-        const likesByPostId = await fetchLikesForPosts(postIds);
-        const commentsByPostId = await fetchCommentCountFromPosts(postIds);
+        const postIds = content.map((p) => p.id);
+        const { likesByPostId, commentsByPostId } = await fetchPostMeta(postIds);
 
         setPosts((prev) =>
-            prev.map((p) => ({
-                ...p,
-                ...likesByPostId[p.id] ? { ...p, likes: likesByPostId[p.id]} : p,
-                ...(commentsByPostId[p.id] ? { commentCount: commentsByPostId[p.id].commentCount } : {}),
-            }))
+            prev.map((post) => mergePostMeta(post, likesByPostId, commentsByPostId))
         );
     } finally {
         setIsLoading(false);
