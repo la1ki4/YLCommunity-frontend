@@ -1,13 +1,6 @@
-export async function preValidateLogin(formData) {
-    const response = await fetch("http://localhost:8080/auth/exception", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-        credentials: "include",
-    });
-    if (!response.ok) {
-        throw new Error("Pre-validation failed");
-    }
+import { postJson } from "@shared/api/httpClient.js";
+import { AUTH_API } from "@shared/config/apiEndpoints.js";
 
-    return response.json();
+export async function preValidateLogin(formData) {
+    return postJson(`${AUTH_API}/auth/exception`, formData);
 }

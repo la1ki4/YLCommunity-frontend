@@ -1,24 +1,7 @@
 import { fetchLikesForPosts } from "@features/feed/serverPostLikesCount.js";
 import { fetchCommentCountFromPosts } from "@features/feed/serverPostCommentsCount.js";
-import { mergePostMeta } from "@features/feed/model/mergePostMeta.js";
-
-async function fetchFeedPage(page, pageSize) {
-    const res = await fetch(
-        `http://localhost:8081/post/feed?page=${page}&size=${pageSize}`,
-        { credentials: "include" }
-    );
-
-    return res.json();
-}
-
-async function fetchPostMeta(postIds) {
-    const [likesByPostId, commentsByPostId] = await Promise.all([
-        fetchLikesForPosts(postIds),
-        fetchCommentCountFromPosts(postIds),
-    ]);
-
-    return { likesByPostId, commentsByPostId };
-}
+import { getJson } from "@shared/api/httpClient.js";
+import { POST_API } from "@shared/config/apiEndpoints.js";
 
 export async function serverLoadPosts({
                                     page,
@@ -32,8 +15,7 @@ export async function serverLoadPosts({
     setIsLoading(true);
 
     try {
-        const data = await fetchFeedPage(page, pageSize);
-        const content = data?.content ?? [];
+        const data = await getJson(`${POST_API}/post/feed?page=${page}&size=${pageSize}`);
 
         if (content.length < pageSize) {
             setHasMore(false);
