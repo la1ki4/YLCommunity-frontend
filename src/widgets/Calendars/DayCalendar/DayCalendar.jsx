@@ -6,7 +6,7 @@ import {PX_PER_MINUTE} from "@features/calendar/constants/dayCalendar.constants.
 import {getMinutesFromStartOfDay, prepareDayEvents} from "@features/calendar/utils/dayCalendar.utils.js";
 import {useElementHeight} from "@features/calendar/hooks/useElementHeight.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
-import {useEventsByDate} from "@features/get-calendar-events/get/getDayEvent.js"
+import {useEventsByDate} from "@features/get-calendar-events/hooks/useEventsByDate.js"
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {DayCalendarHeader} from "@widgets/Calendars/DayCalendar/components/DayCalendarHeader.jsx";

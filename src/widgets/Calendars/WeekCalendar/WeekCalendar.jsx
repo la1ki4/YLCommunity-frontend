@@ -13,7 +13,7 @@ import {buildHours, calcNowTopPx} from "@features/calendar/utils/weekCalendar.ut
 import {useElementHeight} from "@features/calendar/hooks/useElementHeight.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
 import WeekCalendarHeader from "@widgets/Calendars/WeekCalendar/components/WeekCalendarHeader.jsx";
-import {useEventsBetweenDate} from "@features/get-calendar-events/get/getEventsBetweenDates.js";
+import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js";
 import {getMinutesFromStartOfDay} from "@features/calendar/utils/dayCalendar.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {PX_PER_MINUTE} from "@features/calendar/constants/weekCalendar.constants.js";
@@ -37,7 +37,7 @@ export function WeekCalendarLayout(props) {
         [currentDate]
     );
 
-    const events = useEventsBetweenDate({
+    const events = useEventsBetweenDates({
         startDate: monday,
         endDate: sunday
     });
