@@ -1,11 +1,6 @@
-export async function loginRequest(formData) {
-  const response = await fetch('http://localhost:8080/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData),
-    credentials: "include"
-  });
+import { postJson } from "@shared/api/httpClient.js";
+import { AUTH_API } from "@shared/config/apiEndpoints.js";
 
-  if (!response.ok) throw new Error("Login failed");
-  return response.json();
+export async function loginRequest(formData) {
+  return postJson(`${AUTH_API}/auth/login`, formData);
 }

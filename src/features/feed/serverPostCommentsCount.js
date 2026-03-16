@@ -1,14 +1,8 @@
+import { getJson } from "@shared/api/httpClient.js";
+import { POST_API } from "@shared/config/apiEndpoints.js";
+
 export async function fetchCommentCount(postId) {
-    const res = await fetch(`http://localhost:8081/post/comment-count?postId=${postId}`, {
-        method: "GET",
-        credentials: "include",
-    });
-
-    if (!res.ok) {
-        throw new Error(`Failed to fetch like count for postId=${postId}`);
-    }
-
-    return res.json();
+    return getJson(`${POST_API}/post/comment-count?postId=${postId}`);
 }
 
 export async function fetchCommentCountFromPosts(postIds) {

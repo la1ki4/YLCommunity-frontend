@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
+import { getJson } from "@shared/api/httpClient.js";
+import { AUTH_API } from "@shared/config/apiEndpoints.js";
 
 export default function useAuth(triggerCheck = true) {
   const [authChecked, setAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const checkAuth = useCallback(() => {
-    return fetch("http://localhost:8080/auth/check", { credentials: "include" })
-      .then(res => res.json())
+    return getJson(`${AUTH_API}/auth/check`)
       .then(data => {
         setIsAuthenticated(data.authenticated);
         setAuthChecked(true);

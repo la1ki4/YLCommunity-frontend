@@ -1,14 +1,6 @@
+import { getJson } from "@shared/api/httpClient.js";
+import { POST_API } from "@shared/config/apiEndpoints.js";
+
 export async function getPostComments(postId) {
-    const res = await fetch(`http://localhost:8081/post/comments?postId=${postId}`, {
-        method: "GET",
-        credentials: "include",
-    });
-
-    if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        throw new Error(text || "Failed to load comments");
-    }
-
-    // ожидаем массив CommentViewData[]
-    return res.json();
+    return getJson(`${POST_API}/post/comments?postId=${postId}`);
 }

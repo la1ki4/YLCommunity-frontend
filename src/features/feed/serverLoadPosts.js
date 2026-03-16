@@ -1,5 +1,7 @@
 import { fetchLikesForPosts } from "@features/feed/serverPostLikesCount.js";
 import { fetchCommentCountFromPosts } from "@features/feed/serverPostCommentsCount.js";
+import { getJson } from "@shared/api/httpClient.js";
+import { POST_API } from "@shared/config/apiEndpoints.js";
 
 export async function serverLoadPosts({
                                     page,
@@ -13,11 +15,7 @@ export async function serverLoadPosts({
     setIsLoading(true);
 
     try {
-        const res = await fetch(
-            `http://localhost:8081/post/feed?page=${page}&size=${pageSize}`,
-            { credentials: "include" }
-        );
-        const data = await res.json();
+        const data = await getJson(`${POST_API}/post/feed?page=${page}&size=${pageSize}`);
 
         if (data.content.length < pageSize) {
             setHasMore(false);
