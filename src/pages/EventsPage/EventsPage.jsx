@@ -18,14 +18,12 @@ export default function EventsPage() {
         view,
         setView,
         selected,
-        calendarMenuSelected,
 
         weekAnchorDate,
         dayDate,
         monthView,
 
         onSelect,
-        onMenuCalendarSelect,
         onDayChangeView,
         onMonthChangeView,
         onWeekChangeView,
@@ -41,12 +39,9 @@ export default function EventsPage() {
                 <div className={eventsPageStyle.mainLayer}>
                     <div className={eventsPageStyle.mainContainer}>
                         <div className={eventsPageStyle.menuLayer}>
-                            <CalendarMenu view={view}
-                                          onChangeView={setView}
-                                          year={monthView.year}
-                                          calendarMenuSelected={calendarMenuSelected}
-                                          onCalendarMenuSelect={onMenuCalendarSelect}
-                                          forceMonthIndex={monthView.monthIndex}
+                            <CalendarMenu
+                                view={view}
+                                onChangeView={setView}
                             />
 
                             <MiniCalendar
