@@ -1,6 +1,9 @@
+import { request } from "@shared/api/httpClient.js";
+import { POST_API } from "@shared/config/apiEndpoints.js";
+
 export async function uploadPost({description , file}) {
     if(!description && !file){
-        throw new Error('All data is missing');
+        throw new Error("All data is missing");
     }
     if(!file) {
         throw new Error("No file provided");
@@ -13,23 +16,16 @@ export async function uploadPost({description , file}) {
     formData.append("media", file);
     formData.append("description", description);
 
-    const response = await fetch('http://localhost:8081/post/add', {
-        method: 'POST',
+    const response = await request(`${POST_API}/post/add`, {
+        method: "POST",
         body: formData,
-        credentials: 'include',
     });
 
-    if(!response.ok) {
-        const errorText = await response.text();
-        console.error("Server error", errorText);
-        throw new Error(errorText || "Upload failed");
-    }
-
-    const contentType = response.headers.get("Content-Type" || "");
+    const contentType = response.headers.get("Content-Type") || "";
 
     if(contentType.includes("application/json")){
-        return await response.json();
+        return response.json();
     }
 
-    return await response.text();
+    return response.text();
 }

@@ -10,7 +10,7 @@ import { EventPopup } from "@widgets/Calendars/EventPopup/EventPopup.jsx";
 const CALENDAR_OPTIONS = ["Day", "Week", "Month", "Year"];
 const EVENT_OPTIONS = ["Event"];
 
-export function CalendarMenu({ view, onChangeView, year, calendarMenuSelected, onCalendarMenuSelect, forceMonthIndex }) {
+export function CalendarMenu({ view, onChangeView }) {
     const [openCalendar, setOpenCalendar] = useState(false);
     const [openCreateMenu, setOpenCreateMenu] = useState(false);
     const [isEventPopupOpen, setIsEventPopupOpen] = useState(false);
@@ -123,10 +123,6 @@ export function CalendarMenu({ view, onChangeView, year, calendarMenuSelected, o
             <EventPopup
                 isOpen={isEventPopupOpen}
                 onClose={() => setIsEventPopupOpen(false)}
-                year={year}
-                calendarMenuSelected={calendarMenuSelected}
-                onCalendarMenuSelect={onCalendarMenuSelect}
-                forceMonthIndex={forceMonthIndex}
             />
         </div>
     );
