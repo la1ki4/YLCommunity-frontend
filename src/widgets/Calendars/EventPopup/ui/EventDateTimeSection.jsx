@@ -3,6 +3,7 @@ import {InputField} from "@shared/Input/Input.jsx";
 import {Media} from "@shared/Image/Media.jsx";
 import {EventPopupCalendar} from "@widgets/Calendars/EventPopup/EventPopupCalendar.jsx";
 import timeIcon from "@app/assets/time.svg";
+import {EventTimezoneField} from "@widgets/Calendars/EventPopup/ui/EventTimezoneField.jsx";
 
 export function EventDateTimeSection({values, setters, refs, handlers}) {
     const {
@@ -13,10 +14,21 @@ export function EventDateTimeSection({values, setters, refs, handlers}) {
         openCalendar,
         parsedStartCalendar,
         parsedEndCalendar,
+        timeZone,
+        isOpenTimeZone,
+        gmtOptions,
     } = values;
 
-    const {setStartDate, setEndDate, setStartTime, setEndTime, setOpenCalendar} = setters;
-    const {calendarRef, popupCalendarRef} = refs;
+    const {
+        setStartDate,
+        setEndDate,
+        setStartTime,
+        setEndTime,
+        setOpenCalendar,
+        setTimeZone,
+        setIsOpenTimeZone
+    } = setters;
+    const {calendarRef, popupCalendarRef, timeZoneRef, activeTimeZoneRef} = refs;
     const {syncAndApplyEventRange, handleStartDateSelect, handleEndDateSelect} = handlers;
 
     const syncCurrentRange = () => {
@@ -91,6 +103,12 @@ export function EventDateTimeSection({values, setters, refs, handlers}) {
                     onBlur={syncCurrentRange}
                 />
             </div>
+
+            <EventTimezoneField
+                values={values}
+                setters={setters}
+                refs={refs}
+            />
         </div>
     );
 }

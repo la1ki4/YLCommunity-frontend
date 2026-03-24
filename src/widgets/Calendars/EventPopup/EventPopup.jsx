@@ -9,7 +9,6 @@ import userIcon from "@app/assets/user.svg";
 
 import {useEventPopupForm} from "@widgets/Calendars/EventPopup/model/useEventPopupForm.js";
 import {EventDateTimeSection} from "@widgets/Calendars/EventPopup/ui/EventDateTimeSection.jsx";
-import {EventTimezoneField} from "@widgets/Calendars/EventPopup/ui/EventTimezoneField.jsx";
 import {EventLocationField} from "@widgets/Calendars/EventPopup/ui/EventLocationField.jsx";
 import {EventDescriptionField} from "@widgets/Calendars/EventPopup/ui/EventDescriptionField.jsx";
 
@@ -35,14 +34,6 @@ export function EventPopup({isOpen, onClose}) {
                     refs={form.refs}
                     handlers={form.handlers}
                 />
-
-                <div className={eventsPageStyle.createSection}>
-                    <EventTimezoneField
-                        values={form.values}
-                        setters={form.setters}
-                        refs={form.refs}
-                    />
-                </div>
 
                 <div className={eventsPageStyle.createSection}>
                     <Media image={userIcon}/>
