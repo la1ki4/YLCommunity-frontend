@@ -102,8 +102,9 @@
 
 .locationWrapper {
     position: relative;
-    width: 250px;
+    width: min(250px, 100%);
     max-width: 100%;
+    min-width: 0;
 }
 
 .locationDropdown {
@@ -586,6 +587,10 @@
 }
 
 .createPopup{
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
     padding: 50px;
     max-height: calc(100vh - 48px);
     overflow-y: auto;
@@ -672,6 +677,48 @@
 .createOwnerBlock{
     display: flex;
     flex-direction: column;
+}
+
+@media (max-width: 1920px) {
+    .createPopup{
+        padding: 44px;
+    }
+
+    .createTextArea{
+        height: 280px;
+    }
+}
+
+@media (max-width: 1600px) {
+    .createPopup{
+        padding: 36px;
+    }
+
+    .titleCreate{
+        font-size: 26px;
+    }
+
+    .createTextArea{
+        height: 250px;
+    }
+}
+
+@media (max-width: 1280px) {
+    .createPopup{
+        padding: 28px;
+    }
+
+    .titleCreate{
+        font-size: 24px;
+    }
+
+    .createSection{
+        margin-top: 24px;
+    }
+
+    .createTextArea{
+        height: 220px;
+    }
 }
 
 
