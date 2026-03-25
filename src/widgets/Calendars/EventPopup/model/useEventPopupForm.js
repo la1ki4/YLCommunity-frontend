@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {handleCreateEvent} from "@features/create-calendar-events/services/createEventHandler";
-import {COUNTRIES, GMT_OPTIONS} from "@features/calendar/constants/calendar.constants.js";
+import {CITIES_BY_COUNTRY, COUNTRIES, GMT_OPTIONS} from "@features/calendar/constants/calendar.constants.js";
 import {
     formatDateToPopupString,
     getNearestDateTime,
@@ -43,9 +43,13 @@ export function useEventPopupForm({isOpen, onClose}) {
     const activeTimeZoneRef = useRef(null);
 
     const [country, setCountry] = useState(COUNTRIES[0] ?? "");
+    const [city, setCity] = useState(CITIES_BY_COUNTRY[COUNTRIES[0]]?.[0] ?? "");
     const [isOpenCountry, setIsOpenCountry] = useState(false);
+    const [isOpenCity, setIsOpenCity] = useState(false);
     const countryRef = useRef(null);
+    const cityRef = useRef(null);
     const activeCountryRef = useRef(null);
+    const activeCityRef = useRef(null);
 
     const parsedStartCalendar = useMemo(() => resolveCalendarInput(startDate), [startDate]);
     const parsedEndCalendar = useMemo(() => resolveCalendarInput(endDate), [endDate]);
@@ -85,10 +89,12 @@ export function useEventPopupForm({isOpen, onClose}) {
         setEndTime(nextEndDateTime.time);
         setTimeZone(getDefaultGMT());
         setCountry(COUNTRIES[0] ?? "");
+        setCity(CITIES_BY_COUNTRY[COUNTRIES[0]]?.[0] ?? "");
 
         setOpenCalendar(null);
         setIsOpenTimeZone(false);
         setIsOpenCountry(false);
+        setIsOpenCity(false);
     }, []);
 
     const normalizeCalendarField = useCallback((value) => {
@@ -124,14 +130,18 @@ export function useEventPopupForm({isOpen, onClose}) {
         setIsOpenCountry(false);
     }, []);
 
+    const closeCity = useCallback(() => {
+        setIsOpenCity(false);
+    }, []);
+
     const outsideRefs = useMemo(
-        () => [[calendarRef, popupCalendarRef], [timeZoneRef], [countryRef]],
+        () => [[calendarRef, popupCalendarRef], [timeZoneRef], [countryRef], [cityRef]],
         []
     );
 
     const outsideCallbacks = useMemo(
-        () => [closeCalendar, closeTimeZone, closeCountry],
-        [closeCalendar, closeTimeZone, closeCountry]
+        () => [closeCalendar, closeTimeZone, closeCountry, closeCity],
+        [closeCalendar, closeTimeZone, closeCountry, closeCity]
     );
 
     useOutsideClose({
@@ -154,6 +164,22 @@ export function useEventPopupForm({isOpen, onClose}) {
             });
         }
     }, [isOpenCountry]);
+
+    useEffect(() => {
+        if (isOpenCity && activeCityRef.current) {
+            activeCityRef.current.scrollIntoView({
+                block: "center",
+            });
+        }
+    }, [isOpenCity]);
+
+    useEffect(() => {
+        const firstCityForCountry = CITIES_BY_COUNTRY[country]?.[0] ?? "";
+
+        if (!CITIES_BY_COUNTRY[country]?.includes(city)) {
+            setCity(firstCityForCountry);
+        }
+    }, [city, country]);
 
     useEffect(() => {
         if (!isOpen) {
@@ -246,10 +272,13 @@ export function useEventPopupForm({isOpen, onClose}) {
             endTime,
             timeZone,
             country,
+            city,
             openCalendar,
             isOpenTimeZone,
             isOpenCountry,
+            isOpenCity,
             countries: COUNTRIES,
+            citiesByCountry: CITIES_BY_COUNTRY,
             parsedStartCalendar,
             parsedEndCalendar,
             gmtOptions: GMT_OPTIONS,
@@ -265,9 +294,11 @@ export function useEventPopupForm({isOpen, onClose}) {
             setEndTime,
             setTimeZone,
             setCountry,
+            setCity,
             setOpenCalendar,
             setIsOpenTimeZone,
             setIsOpenCountry,
+            setIsOpenCity,
         },
         refs: {
             calendarRef,
@@ -275,7 +306,9 @@ export function useEventPopupForm({isOpen, onClose}) {
             timeZoneRef,
             activeTimeZoneRef,
             countryRef,
+            cityRef,
             activeCountryRef,
+            activeCityRef,
         },
         handlers: {
             handleSubmit,

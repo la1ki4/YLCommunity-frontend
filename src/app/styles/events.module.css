@@ -104,6 +104,13 @@
     position: relative;
 }
 
+.locationFieldsColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
 .fieldError{
     height: 220px;
     width: 100%;
