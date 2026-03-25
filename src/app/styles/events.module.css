@@ -645,6 +645,10 @@
     color: rgba(255,255,255,0.5);
 }
 
+.fieldError{
+    border: 2px solid #FF4D4F !important;
+}
+
 .createSection{
     display: flex;
     flex-wrap: wrap;

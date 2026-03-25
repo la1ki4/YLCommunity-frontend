@@ -24,7 +24,11 @@ export function EventPopup({isOpen, onClose}) {
                         placeholder="Add title"
                         className={eventsPageStyle.titleCreate}
                         value={form.values.title}
-                        onChange={(e) => form.setters.setTitle(e.target.value)}
+                        onChange={(e) => form.setters.handleTitleChange(e.target.value)}
+                        style={form.values.validationErrors.title ? {
+                            border: "2px solid #FF4D4F",
+                            borderRadius: "8px",
+                        } : undefined}
                     />
                 </div>
 
@@ -59,7 +63,8 @@ export function EventPopup({isOpen, onClose}) {
 
                 <EventDescriptionField
                     description={form.values.description}
-                    setDescription={form.setters.setDescription}
+                    setDescription={form.setters.handleDescriptionChange}
+                    hasError={form.values.validationErrors.description}
                 />
 
                 <button type="submit">Save</button>
