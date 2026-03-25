@@ -24,13 +24,10 @@ export function EventPopup({isOpen, onClose}) {
                 <div className={eventsPageStyle.titleCreateBlock}>
                     <InputField
                         placeholder="Add title"
-                        className={eventsPageStyle.titleCreate}
+                        className={`${eventsPageStyle.titleCreate} ${form.values.validationErrors.title ? eventsPageStyle.fieldError : ""}`}
                         value={form.values.title}
                         onChange={(e) => form.setters.handleTitleChange(e.target.value)}
-                        style={form.values.validationErrors.title ? {
-                            border: "2px solid #FF4D4F",
-                            borderRadius: "8px",
-                        } : undefined}
+                        style={form.values.validationErrors.title ? {borderRadius: "8px"} : undefined}
                     />
                 </div>
 
