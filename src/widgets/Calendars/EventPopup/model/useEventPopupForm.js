@@ -30,6 +30,10 @@ export function useEventPopupForm({onClose}) {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [validationErrors, setValidationErrors] = useState({
+        title: false,
+        description: false,
+    });
     const [openCalendar, setOpenCalendar] = useState(null);
 
     const calendarRef = useRef(null);
@@ -151,8 +155,40 @@ export function useEventPopupForm({onClose}) {
         });
     }, [endTime, startDate, startTime, syncAndApplyEventRange]);
 
+    const handleTitleChange = useCallback((value) => {
+        setTitle(value);
+
+        if (validationErrors.title && value.trim()) {
+            setValidationErrors((prev) => ({
+                ...prev,
+                title: false,
+            }));
+        }
+    }, [validationErrors.title]);
+
+    const handleDescriptionChange = useCallback((value) => {
+        setDescription(value);
+
+        if (validationErrors.description && value.trim()) {
+            setValidationErrors((prev) => ({
+                ...prev,
+                description: false,
+            }));
+        }
+    }, [validationErrors.description]);
+
     const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
+        const nextValidationErrors = {
+            title: !title.trim(),
+            description: !description.trim(),
+        };
+
+        setValidationErrors(nextValidationErrors);
+
+        if (nextValidationErrors.title || nextValidationErrors.description) {
+            return;
+        }
 
         try {
             await handleCreateEvent({
@@ -175,6 +211,7 @@ export function useEventPopupForm({onClose}) {
         values: {
             title,
             description,
+            validationErrors,
             startDate,
             endDate,
             startTime,
@@ -192,6 +229,8 @@ export function useEventPopupForm({onClose}) {
         setters: {
             setTitle,
             setDescription,
+            handleTitleChange,
+            handleDescriptionChange,
             setStartDate,
             setEndDate,
             setStartTime,
