@@ -16,21 +16,20 @@ import {Button} from "@shared/Button/Button.jsx";
 
 export function EventPopup({isOpen, onClose}) {
     const {userFullName} = useUserFullName();
-    const form = useEventPopupForm({onClose});
+    const form = useEventPopupForm({isOpen, onClose});
 
     return (
         <CalendarPopup isOpen={isOpen} onClose={onClose}>
             <form className={eventsPageStyle.createPopup} onSubmit={form.handlers.handleSubmit}>
-                <div className={eventsPageStyle.titleCreateBlock}>
+                <div className={eventsPageStyle.titleCreateBlock}
+                     style={form.values.validationErrors.title ? {
+                         borderBottom: "1px solid #FF4D4F",
+                     } : undefined}>
                     <InputField
                         placeholder="Add title"
                         className={eventsPageStyle.titleCreate}
                         value={form.values.title}
                         onChange={(e) => form.setters.handleTitleChange(e.target.value)}
-                        style={form.values.validationErrors.title ? {
-                            border: "2px solid #FF4D4F",
-                            borderRadius: "8px",
-                        } : undefined}
                     />
                 </div>
 

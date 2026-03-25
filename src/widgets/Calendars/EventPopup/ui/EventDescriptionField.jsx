@@ -16,7 +16,7 @@ export function EventDescriptionField({description, setDescription, hasError = f
             </div>
 
             <textarea
-                className={`${eventsPageStyle.createTextArea} ${eventsPageStyle.s_text} ${hasError ? eventsPageStyle.fieldError : ""}`}
+                className={`${hasError ? eventsPageStyle.fieldError : eventsPageStyle.createTextArea} ${eventsPageStyle.s_text}`}
                 placeholder="Enter description . . ."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}

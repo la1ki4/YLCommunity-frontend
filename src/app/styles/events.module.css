@@ -107,6 +107,19 @@
     min-width: 0;
 }
 
+.fieldError{
+    height: 220px;
+    width: 100%;
+    border: 1px solid rgb(255, 77, 79);
+    padding: 15px;
+    resize: none;
+    margin-top: 20px;
+    border-radius: 16px;
+    background: #1B1B1B;
+    color: rgba(255,255,255);
+    outline: none;
+}
+
 .locationDropdown {
     position: absolute;
     top: calc(100% + 4px);
@@ -633,7 +646,7 @@
     margin-top: 20px;
     border-radius: 16px;
     background: #1B1B1B;
-    height: 300px;
+    height: 220px;
     color: rgba(255,255,255,0.5);
 }
 
@@ -685,7 +698,7 @@
     }
 
     .createTextArea{
-        height: 280px;
+        height: 220px;
     }
 }
 
