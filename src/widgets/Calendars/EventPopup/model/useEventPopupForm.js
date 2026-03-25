@@ -17,7 +17,9 @@ function getDefaultGMT() {
     return `GMT${sign}${hours}`;
 }
 
-export function useEventPopupForm({onClose}) {
+const COUNTRIES = ["Republic of Moldova"];
+
+export function useEventPopupForm({isOpen, onClose}) {
     const initialStartDateTime = getNearestDateTime();
     const initialEndDateTime = getNearestDateTime(1);
 
@@ -42,8 +44,7 @@ export function useEventPopupForm({onClose}) {
 
     const activeTimeZoneRef = useRef(null);
 
-    const countries = ["Moldova"];
-    const [country, setCountry] = useState(countries[0] ?? "");
+    const [country, setCountry] = useState(COUNTRIES[0] ?? "");
     const [isOpenCountry, setIsOpenCountry] = useState(false);
     const countryRef = useRef(null);
     const activeCountryRef = useRef(null);
@@ -68,6 +69,29 @@ export function useEventPopupForm({onClose}) {
 
         applySyncedEventRange(result);
     }, [applySyncedEventRange]);
+
+    const resetForm = useCallback(() => {
+        const nextStartDateTime = getNearestDateTime();
+        const nextEndDateTime = getNearestDateTime(1);
+
+        setTitle("");
+        setDescription("");
+        setValidationErrors({
+            title: false,
+            description: false,
+        });
+
+        setStartDate(nextStartDateTime.date);
+        setEndDate(nextEndDateTime.date);
+        setStartTime(nextStartDateTime.time);
+        setEndTime(nextEndDateTime.time);
+        setTimeZone(getDefaultGMT());
+        setCountry(COUNTRIES[0] ?? "");
+
+        setOpenCalendar(null);
+        setIsOpenTimeZone(false);
+        setIsOpenCountry(false);
+    }, []);
 
     const normalizeCalendarField = useCallback((value) => {
         const parsed = resolveCalendarInput(value);
@@ -132,6 +156,12 @@ export function useEventPopupForm({onClose}) {
             });
         }
     }, [isOpenCountry]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            resetForm();
+        }
+    }, [isOpen, resetForm]);
 
     const handleStartDateSelect = useCallback((dateObj) => {
         const nextStartDate = formatDateToPopupString(dateObj);
@@ -221,7 +251,7 @@ export function useEventPopupForm({onClose}) {
             openCalendar,
             isOpenTimeZone,
             isOpenCountry,
-            countries,
+            countries: COUNTRIES,
             parsedStartCalendar,
             parsedEndCalendar,
             gmtOptions: GMT_OPTIONS,
