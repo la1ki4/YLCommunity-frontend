@@ -11,6 +11,8 @@ import {useEventPopupForm} from "@widgets/Calendars/EventPopup/model/useEventPop
 import {EventDateTimeSection} from "@widgets/Calendars/EventPopup/ui/EventDateTimeSection.jsx";
 import {EventLocationField} from "@widgets/Calendars/EventPopup/ui/EventLocationField.jsx";
 import {EventDescriptionField} from "@widgets/Calendars/EventPopup/ui/EventDescriptionField.jsx";
+import buttonStyle from "@app/styles/button.module.css";
+import {Button} from "@shared/Button/Button.jsx";
 
 export function EventPopup({isOpen, onClose}) {
     const {userFullName} = useUserFullName();
@@ -62,7 +64,9 @@ export function EventPopup({isOpen, onClose}) {
                     setDescription={form.setters.setDescription}
                 />
 
-                <button type="submit">Save</button>
+                <Button type="submit" className={buttonStyle.popupButton} style={{marginTop: "25px"}}>
+                    Save
+                </Button>
             </form>
         </CalendarPopup>
     );
