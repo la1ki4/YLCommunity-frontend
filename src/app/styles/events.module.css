@@ -102,7 +102,7 @@
 
 .locationWrapper {
     position: relative;
-    width: min(250px, 100%);
+    width: min(120px, 100%);
     max-width: 100%;
     min-width: 0;
 }
@@ -645,14 +645,10 @@
     color: rgba(255,255,255,0.5);
 }
 
-.fieldError{
-    border: 2px solid #FF4D4F !important;
-}
-
 .createSection{
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
     margin-top: 32px;
     position: relative;
@@ -739,56 +735,5 @@
 
     .day {
         width: 100%;
-    }
-}
-
-@media (max-width: 900px) {
-    .timeZoneBlock{
-        position: static;
-        right: auto;
-        top: auto;
-        width: 100%;
-    }
-
-    .createPopup{
-        padding: 20px;
-    }
-
-    .createSection{
-        gap: 12px;
-        margin-top: 24px;
-    }
-
-    .titleCreate{
-        font-size: 22px;
-    }
-
-    .createTextArea{
-        height: 220px;
-    }
-}
-
-@media (max-width: 700px) {
-    .createSection{
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .timeZoneBlock{
-        position: static;
-        width: 100%;
-    }
-
-    .createHours{
-        width: 100%;
-        max-width: 140px;
-    }
-
-    .locationWrapper{
-        width: 100%;
-    }
-
-    .timeZoneWrapper{
-        max-width: 140px;
     }
 }

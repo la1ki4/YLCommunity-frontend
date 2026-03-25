@@ -20,31 +20,23 @@
 .calendarPopupOverlay {
     background-color: #111111;
     border-radius: 12px;
-    padding: 24px;
-    width: min(980px, calc(100vw - 32px));
-    max-width: 100%;
+    overflow-y: auto;
+    width: min(720px, calc(100vw - 32px));
     max-height: 90vh;
     box-sizing: border-box;
-    overflow: hidden;
     min-width: 0;
-}
-
-@media (max-width: 1920px) {
-    .calendarPopupOverlay {
-        width: min(920px, calc(100vw - 32px));
-    }
 }
 
 @media (max-width: 1600px) {
     .calendarPopupOverlay {
-        width: min(860px, calc(100vw - 28px));
+        width: min(700px, calc(100vw - 28px));
     }
 }
 
 @media (max-width: 1280px) {
     .calendarPopupOverlay {
         padding: 20px;
-        width: min(780px, calc(100vw - 24px));
+        width: min(680px, calc(100vw - 24px));
         max-height: calc(100vh - 24px);
     }
 }

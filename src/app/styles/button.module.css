@@ -32,3 +32,20 @@
 .buttonBlock:hover{
   background-color: #272727;
 }
+
+.popupButton {
+    background-color: #1B1B1B;
+    border: none;
+    border-radius: 15px;
+    padding: 20px 0;
+    font-family: 'Klavika-bold';
+    color: rgb(135, 250, 25);
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.popupButton:hover {
+    transition: 0.3s ease;
+    transform: scale(1.01);
+    background-color: #1e1e1e;
+}
