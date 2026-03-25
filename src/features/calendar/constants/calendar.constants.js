@@ -20,3 +20,12 @@ export const GMT_OPTIONS = Array.from({ length: 23 }, (_, i) => {
 });
 
 export const COUNTRIES = ["Moldova","France", "Germany", "Poland", "Russia", "Brazil"];
+
+export const CITIES_BY_COUNTRY = {
+    Moldova: ["Chisinau", "Balti"],
+    France: ["Paris", "Lyon"],
+    Germany: ["Berlin", "Munich"],
+    Poland: ["Warsaw", "Krakow"],
+    Russia: ["Moscow", "Saint Petersburg"],
+    Brazil: ["Sao Paulo", "Rio de Janeiro"]
+};
