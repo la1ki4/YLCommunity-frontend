@@ -17,7 +17,7 @@ function getDefaultGMT() {
     return `GMT${sign}${hours}`;
 }
 
-const COUNTRIES = ["Moldova"];
+const COUNTRIES = ["Republic of Moldova"];
 
 export function useEventPopupForm({isOpen, onClose}) {
     const initialStartDateTime = getNearestDateTime();
