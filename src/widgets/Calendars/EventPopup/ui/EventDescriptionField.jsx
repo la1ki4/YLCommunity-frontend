@@ -3,7 +3,7 @@ import {Media} from "@shared/Image/Media.jsx";
 import {Text} from "@shared/Text/Text.jsx";
 import descriptionIcon from "@app/assets/text-description.svg";
 
-export function EventDescriptionField({description, setDescription}) {
+export function EventDescriptionField({description, setDescription, hasError = false}) {
     return (
         <>
             <div className={eventsPageStyle.createSection}>
@@ -16,7 +16,7 @@ export function EventDescriptionField({description, setDescription}) {
             </div>
 
             <textarea
-                className={`${eventsPageStyle.createTextArea} ${eventsPageStyle.s_text}`}
+                className={`${eventsPageStyle.createTextArea} ${eventsPageStyle.s_text} ${hasError ? eventsPageStyle.fieldError : ""}`}
                 placeholder="Enter description . . ."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
