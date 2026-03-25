@@ -16,7 +16,7 @@ import {Button} from "@shared/Button/Button.jsx";
 
 export function EventPopup({isOpen, onClose}) {
     const {userFullName} = useUserFullName();
-    const form = useEventPopupForm({onClose});
+    const form = useEventPopupForm({isOpen, onClose});
 
     return (
         <CalendarPopup isOpen={isOpen} onClose={onClose}>
