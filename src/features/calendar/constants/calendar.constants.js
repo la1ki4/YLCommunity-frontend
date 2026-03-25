@@ -18,3 +18,5 @@ export const GMT_OPTIONS = Array.from({ length: 23 }, (_, i) => {
     const sign = hour >= 0 ? "+" : "-";
     return `GMT${sign}${String(Math.abs(hour)).padStart(2, "0")}`;
 });
+
+export const COUNTRIES = ["Moldova","France", "Germany", "Poland", "Russia", "Brazil"];

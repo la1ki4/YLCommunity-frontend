@@ -21,7 +21,7 @@ export function EventLocationField({values, setters, refs}) {
                         e.preventDefault();
                         setIsOpenCountry(true);
                     }}
-                    style={{cursor: "pointer", width: "100%", padding: "8px"}}
+                    style={{cursor: "pointer", padding: "8px 0px"}}
                 />
 
                 {isOpenCountry && (

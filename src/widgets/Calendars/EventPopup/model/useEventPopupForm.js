@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {handleCreateEvent} from "@features/create-calendar-events/services/createEventHandler";
-import {GMT_OPTIONS} from "@features/calendar/constants/calendar.constants.js";
+import {COUNTRIES, GMT_OPTIONS} from "@features/calendar/constants/calendar.constants.js";
 import {
     formatDateToPopupString,
     getNearestDateTime,
@@ -16,8 +16,6 @@ function getDefaultGMT() {
 
     return `GMT${sign}${hours}`;
 }
-
-const COUNTRIES = ["Republic of Moldova"];
 
 export function useEventPopupForm({isOpen, onClose}) {
     const initialStartDateTime = getNearestDateTime();
