@@ -3,10 +3,21 @@ import {InputField} from "@shared/Input/Input.jsx";
 import {Media} from "@shared/Image/Media.jsx";
 import mapIcon from "@app/assets/map-pin.svg";
 
+const MAX_LOCATION_LENGTH = 17;
+
+function truncateLocation(value) {
+    if (value.length <= MAX_LOCATION_LENGTH) {
+        return value;
+    }
+
+    return `${value.slice(0, MAX_LOCATION_LENGTH)}...`;
+}
+
 export function EventLocationField({values, setters, refs}) {
     const {country, locationOptions, isOpenCountry} = values;
     const {setCountry, setIsOpenCountry} = setters;
     const {countryRef, activeCountryRef} = refs;
+    const displayCountry = truncateLocation(country);
 
     return (
         <div className={eventsPageStyle.createSection}>
@@ -14,8 +25,9 @@ export function EventLocationField({values, setters, refs}) {
             <div className={eventsPageStyle.locationWrapper} style={{marginLeft: "25px"}} ref={countryRef}>
                 <InputField
                     className={`${eventsPageStyle.fieldBasic} ${eventsPageStyle.d_text}`}
-                    value={country}
+                    value={displayCountry}
                     readOnly
+                    title={country}
                     onFocus={() => setIsOpenCountry(true)}
                     onMouseDown={(e) => {
                         e.preventDefault();
@@ -31,12 +43,13 @@ export function EventLocationField({values, setters, refs}) {
                                 key={item}
                                 ref={item === country ? activeCountryRef : null}
                                 className={eventsPageStyle.locationOption}
+                                title={item}
                                 onMouseDown={() => {
                                     setCountry(item);
                                     setIsOpenCountry(false);
                                 }}
                             >
-                                {item}
+                                {truncateLocation(item)}
                             </div>
                         ))}
                     </div>
