@@ -11,7 +11,6 @@ export function EventDescriptionField({description, setDescription, hasError = f
                 <Text
                     className={eventsPageStyle.d_text}
                     text="Description"
-                    style={{marginLeft: "25px"}}
                 />
             </div>
 
