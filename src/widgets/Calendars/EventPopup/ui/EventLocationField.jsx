@@ -11,7 +11,7 @@ export function EventLocationField({values, setters, refs}) {
     const currentCities = citiesByCountry[country] ?? [];
 
     return (
-        <div className={eventsPageStyle.createSection}>
+        <div className={eventsPageStyle.createSection} style={{flexWrap: "nowrap"}}>
             <Media image={mapIcon}/>
             <div className={eventsPageStyle.locationFieldsColumn} style={{marginLeft: "25px"}}>
                 <div className={eventsPageStyle.locationWrapper} ref={countryRef}>
