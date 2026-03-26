@@ -4,7 +4,7 @@ import {Media} from "@shared/Image/Media.jsx";
 import mapIcon from "@app/assets/map-pin.svg";
 
 export function EventLocationField({values, setters, refs}) {
-    const {country, countries, isOpenCountry} = values;
+    const {country, locationOptions, isOpenCountry} = values;
     const {setCountry, setIsOpenCountry} = setters;
     const {countryRef, activeCountryRef} = refs;
 
@@ -15,7 +15,7 @@ export function EventLocationField({values, setters, refs}) {
                 <InputField
                     className={`${eventsPageStyle.fieldBasic} ${eventsPageStyle.d_text}`}
                     value={country}
-                    onChange={(e) => setCountry(e.target.value)}
+                    readOnly
                     onFocus={() => setIsOpenCountry(true)}
                     onMouseDown={(e) => {
                         e.preventDefault();
@@ -26,7 +26,7 @@ export function EventLocationField({values, setters, refs}) {
 
                 {isOpenCountry && (
                     <div className={eventsPageStyle.locationDropdown}>
-                        {countries.map((item) => (
+                        {locationOptions.map((item) => (
                             <div
                                 key={item}
                                 ref={item === country ? activeCountryRef : null}

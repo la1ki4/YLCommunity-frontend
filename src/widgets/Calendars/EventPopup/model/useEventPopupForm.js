@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {handleCreateEvent} from "@features/create-calendar-events/services/createEventHandler";
-import {COUNTRIES, GMT_OPTIONS} from "@features/calendar/constants/calendar.constants.js";
+import {CITIES_BY_COUNTRY, GMT_OPTIONS} from "@features/calendar/constants/calendar.constants.js";
 import {
     formatDateToPopupString,
     getNearestDateTime,
@@ -42,7 +42,18 @@ export function useEventPopupForm({isOpen, onClose}) {
 
     const activeTimeZoneRef = useRef(null);
 
-    const [country, setCountry] = useState(COUNTRIES[0] ?? "");
+    const locationOptions = useMemo(() => {
+        return Object.keys(CITIES_BY_COUNTRY)
+            .sort((a, b) => a.localeCompare(b))
+            .flatMap((countryName) => {
+                const sortedCities = [...(CITIES_BY_COUNTRY[countryName] ?? [])]
+                    .sort((a, b) => a.localeCompare(b));
+
+                return sortedCities.map((cityName) => `${countryName}, ${cityName}`);
+            });
+    }, []);
+
+    const [country, setCountry] = useState(locationOptions[0] ?? "");
     const [isOpenCountry, setIsOpenCountry] = useState(false);
     const countryRef = useRef(null);
     const activeCountryRef = useRef(null);
@@ -84,12 +95,12 @@ export function useEventPopupForm({isOpen, onClose}) {
         setStartTime(nextStartDateTime.time);
         setEndTime(nextEndDateTime.time);
         setTimeZone(getDefaultGMT());
-        setCountry(COUNTRIES[0] ?? "");
+        setCountry(locationOptions[0] ?? "");
 
         setOpenCalendar(null);
         setIsOpenTimeZone(false);
         setIsOpenCountry(false);
-    }, []);
+    }, [locationOptions]);
 
     const normalizeCalendarField = useCallback((value) => {
         const parsed = resolveCalendarInput(value);
@@ -249,7 +260,7 @@ export function useEventPopupForm({isOpen, onClose}) {
             openCalendar,
             isOpenTimeZone,
             isOpenCountry,
-            countries: COUNTRIES,
+            locationOptions,
             parsedStartCalendar,
             parsedEndCalendar,
             gmtOptions: GMT_OPTIONS,
