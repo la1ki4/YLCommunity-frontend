@@ -238,13 +238,14 @@ export function useEventPopupForm({isOpen, onClose}) {
                 startTime,
                 endTime,
                 timeZone,
+                countryAndCityFormat: country,
             });
 
             onClose();
         } catch (error) {
             console.error("Error creating event:", error);
         }
-    }, [description, endDate, endTime, onClose, startDate, startTime, timeZone, title]);
+    }, [country, description, endDate, endTime, onClose, startDate, startTime, timeZone, title]);
 
     return {
         values: {
