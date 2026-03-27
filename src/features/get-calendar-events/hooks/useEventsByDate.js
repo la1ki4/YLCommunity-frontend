@@ -1,10 +1,10 @@
-import { useMemo } from "react";
+import {useMemo} from "react";
 import { getDayCalendarEvents } from "@features/get-calendar-events/api/getDayEventsApi.js";
-import { useAsyncResource } from "@shared/hooks/useAsyncResource.js";
+import {useCalendarEventsResource} from "@features/get-calendar-events/hooks/useCalendarEventsResource.js";
 
 export function useEventsByDate({ date }) {
     const loader = useMemo(() => () => getDayCalendarEvents(date), [date]);
-    const { data } = useAsyncResource(loader, [loader], []);
+    const data = useCalendarEventsResource(loader, [loader]);
 
     return data ?? [];
 }

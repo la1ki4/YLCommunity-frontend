@@ -241,6 +241,7 @@ export function useEventPopupForm({isOpen, onClose}) {
                 countryAndCityFormat: country,
             });
 
+            window.dispatchEvent(new CustomEvent("calendar-event-created"));
             onClose();
         } catch (error) {
             console.error("Error creating event:", error);
