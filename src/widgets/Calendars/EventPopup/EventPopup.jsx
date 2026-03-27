@@ -42,7 +42,7 @@ export function EventPopup({isOpen, onClose}) {
 
                 <div className={eventsPageStyle.createSection}>
                     <Media image={userIcon}/>
-                    <div className={eventsPageStyle.createOwnerBlock} style={{marginLeft: "25px"}}>
+                    <div className={`${eventsPageStyle.createOwnerBlock}`}>
                         <Text
                             className={eventsPageStyle.s_text}
                             text="Owner"

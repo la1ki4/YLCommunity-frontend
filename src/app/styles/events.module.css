@@ -619,6 +619,19 @@
     top: 0;
 }
 
+.marginLeft{
+    margin-left: 25px;
+}
+
+@media (max-width: 640px) {
+    .timeZoneBlock{
+        position: relative;
+        width: 100%;
+    }
+    .timeZone{
+    }
+}
+
 .fieldBasic{
     border: none;
     background: #242424;
@@ -656,7 +669,6 @@
 
 .createSection{
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     gap: 16px;
     margin-top: 32px;
@@ -678,14 +690,25 @@
     font-size: 14px;
 }
 
-.timeZone{
+.timeZone {
     width: 100px;
     max-width: 100%;
+}
+
+@media (max-width: 640px) {
+    .timeZone {
+        width: 100%;
+    }
 }
 
 .createOwnerBlock{
     display: flex;
     flex-direction: column;
+}
+
+.dateTimeSection{
+    display: flex;
+    flex-direction: row;
 }
 
 @media (max-width: 1920px) {
@@ -719,10 +742,6 @@
 
     .titleCreate{
         font-size: 24px;
-    }
-
-    .createSection{
-        margin-top: 24px;
     }
 
     .createTextArea{

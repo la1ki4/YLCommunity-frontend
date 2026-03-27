@@ -22,7 +22,7 @@ export function EventLocationField({values, setters, refs}) {
     return (
         <div className={eventsPageStyle.createSection}>
             <Media image={mapIcon}/>
-            <div className={eventsPageStyle.locationWrapper} style={{marginLeft: "25px"}} ref={countryRef}>
+            <div className={eventsPageStyle.locationWrapper} ref={countryRef}>
                 <InputField
                     className={`${eventsPageStyle.fieldBasic} ${eventsPageStyle.d_text}`}
                     value={displayCountry}
