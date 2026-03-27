@@ -36,7 +36,7 @@ export function EventDateTimeSection({values, setters, refs, handlers}) {
     };
 
     return (
-        <div className={eventsPageStyle.createSection}>
+        <div className={`${eventsPageStyle.createSection} ${eventsPageStyle.createSectionDateTime}`} >
             <div className={eventsPageStyle.dateTimeMainBlock}>
                 <Media image={timeIcon}/>
 

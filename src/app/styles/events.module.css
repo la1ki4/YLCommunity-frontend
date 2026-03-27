@@ -104,6 +104,16 @@
     position: relative;
 }
 
+@media (max-width: 640px) {
+    .locationWrapper {
+        width: 100%;
+    }
+
+    .locationField{
+        width: 100%;
+    }
+}
+
 .fieldError{
     height: 220px;
     width: 100%;
@@ -146,11 +156,11 @@
 }
 
 .timeZoneDropdown {
-    width: 100%;
-    max-width: 100%;
     position: absolute;
     top: calc(100% + 4px);
     left: 0;
+    width: 100%;
+    max-width: 100%;
     background: #111;
     border: 1px solid #333;
     border-radius: 6px;
@@ -158,6 +168,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 100;
+    box-sizing: border-box;
 }
 
 .timeZoneOption {
@@ -631,7 +642,7 @@
     .timeZone{
     }
 
-    .createSection{
+    .createSectionDateTime{
         flex-direction: column;
         align-items: stretch;
     }
@@ -710,9 +721,22 @@
 .timeZone {
     width: 100px;
     max-width: 100%;
+    box-sizing: border-box;
 }
 
 @media (max-width: 640px) {
+    .timeZoneBlock {
+        position: relative;
+        width: 100%;
+        padding-left: 44px;
+        box-sizing: border-box;
+    }
+
+    .timeZoneWrapper {
+        width: 100%;
+        max-width: 100%;
+    }
+
     .timeZone {
         width: 100%;
     }
@@ -721,6 +745,12 @@
 .createOwnerBlock{
     display: flex;
     flex-direction: column;
+}
+
+@media (max-width: 640px) {
+    .createOwnerBlock{
+        width: 100%;
+    }
 }
 
 .dateTimeSection{
