@@ -24,7 +24,7 @@ export function EventLocationField({values, setters, refs}) {
             <Media image={mapIcon}/>
             <div className={eventsPageStyle.locationWrapper} ref={countryRef}>
                 <InputField
-                    className={`${eventsPageStyle.fieldBasic} ${eventsPageStyle.d_text}`}
+                    className={`${eventsPageStyle.fieldBasic} ${eventsPageStyle.d_text} ${eventsPageStyle.locationField}`}
                     value={displayCountry}
                     readOnly
                     title={country}
