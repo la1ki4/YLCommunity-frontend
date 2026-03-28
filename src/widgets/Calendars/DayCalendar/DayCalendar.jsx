@@ -6,7 +6,7 @@ import {PX_PER_MINUTE} from "@features/calendar/constants/dayCalendar.constants.
 import {getMinutesFromStartOfDay, prepareDayEvents} from "@features/calendar/utils/dayCalendar.utils.js";
 import {useElementHeight} from "@features/calendar/hooks/useElementHeight.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
-import {useEventsByDate} from "@features/get-calendar-events/hooks/useEventsByDate.js"
+import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js"
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {DayCalendarHeader} from "@widgets/Calendars/DayCalendar/components/DayCalendarHeader.jsx";
@@ -29,7 +29,7 @@ export function DayCalendar({date, onChangeDate}) {
     const minutesFromStartOfDay = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
     const nowTop = gridHeight > 0 ? (minutesFromStartOfDay / (24 * 60)) * gridHeight : 0;
     const showNowLine = isSameDay(viewDate, now);
-    const events = useEventsByDate({date});
+    const events = useEventsBetweenDates({startDate: viewDate, endDate: viewDate});
     const sortedEvents = useMemo(
         () => prepareDayEvents(events),
         [events]
