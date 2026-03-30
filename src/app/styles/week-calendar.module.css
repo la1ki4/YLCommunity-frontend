@@ -223,7 +223,7 @@
     top: calc(var(--hourH) * 11);
 
     height: 2px;
-    background: #9EFF40;
+    background: #2a5900;
 }
 
 .weekNowLine::before{
@@ -234,7 +234,7 @@
 
     width: 8px;
     height: 8px;
-    background: #9EFF40;
+    background: #2a5900;
     border-radius: 50%;
 }
 

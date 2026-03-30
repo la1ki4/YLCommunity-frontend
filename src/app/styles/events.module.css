@@ -415,7 +415,7 @@
     right: 0;
     top: calc(12px + 10 * 52px + 26px);
     height: 2px;
-    background: rgb(157, 253, 64);
+    background: rgb(42, 89, 0);
 }
 
 .now::before {
@@ -426,7 +426,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: rgb(157, 253, 64);
+    background: rgb(42, 89, 0);
 }
 
 .dayBody::-webkit-scrollbar {
