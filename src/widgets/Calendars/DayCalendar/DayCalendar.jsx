@@ -7,6 +7,7 @@ import {getMinutesFromStartOfDay, prepareDayEvents} from "@features/calendar/uti
 import {useElementHeight} from "@features/calendar/hooks/useElementHeight.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
 import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js"
+import {useDivideCalendarEvents} from "@features/get-calendar-events/hooks/useDivideCalendarEvents.js"
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {DayCalendarHeader} from "@widgets/Calendars/DayCalendar/components/DayCalendarHeader.jsx";
@@ -30,9 +31,11 @@ export function DayCalendar({date, onChangeDate}) {
     const nowTop = gridHeight > 0 ? (minutesFromStartOfDay / (24 * 60)) * gridHeight : 0;
     const showNowLine = isSameDay(viewDate, now);
     const events = useEventsBetweenDates({startDate: viewDate, endDate: viewDate});
+    const {timelineEvents, longEvents} = useDivideCalendarEvents({events, viewDate});
+
     const sortedEvents = useMemo(
-        () => prepareDayEvents(events),
-        [events]
+        () => prepareDayEvents(timelineEvents),
+        [timelineEvents]
     );
 
     return (
@@ -40,6 +43,16 @@ export function DayCalendar({date, onChangeDate}) {
             <DayCalendarHeader viewDate={viewDate} onChangeDate={onChangeDate}></DayCalendarHeader>
 
             <div className={eventsPageStyle.dayBody}>
+                {longEvents.length > 0 && (
+                    <div className={eventsPageStyle.dayLongEvents}>
+                        {longEvents.map((event, index) => (
+                            <div key={`${event.startDate}-${event.endDate}-${index}`} className={eventsPageStyle.dayLongEvent}>
+                                {event.title}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 <div className={eventsPageStyle.timeline}>
                     <div className={eventsPageStyle.timeCol} aria-hidden="true">
                         {hours.map((time) => (
