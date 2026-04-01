@@ -19,6 +19,8 @@ import {getMinutesFromStartOfDay} from "@features/calendar/utils/dayCalendar.uti
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {PX_PER_MINUTE} from "@features/calendar/constants/weekCalendar.constants.js";
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
 export function WeekCalendarLayout(props) {
 
     const {date, selected, onAnchorDateChange} = props;
@@ -97,47 +99,109 @@ export function WeekCalendarLayout(props) {
 
     const result = groupEventsByDateMap(timelineEvents);
 
-    const weekDays = useMemo(
-        () => Array.from({length: DAY_COUNT_IN_WEEK}, (_, i) => new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i)),
-        [monday]
-    );
+    const longEventSegments = useMemo(() => {
+        const mondayStart = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate());
+        const sundayStart = new Date(mondayStart.getTime() + (DAY_COUNT_IN_WEEK - 1) * DAY_MS);
+        const weekEndExclusive = new Date(mondayStart.getTime() + DAY_COUNT_IN_WEEK * DAY_MS);
 
-    const longEventsByDay = useMemo(() => {
-        const map = new Map();
+        const segments = longEvents
+            .map((event) => {
+                if (event.end <= mondayStart || event.start >= weekEndExclusive) {
+                    return null;
+                }
 
-        weekDays.forEach((dayDate) => {
-            const dayStart = new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate());
-            const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
-            const dayKey = formatDateKey(dayDate);
+                const firstDayStart = new Date(Math.max(
+                    new Date(event.start.getFullYear(), event.start.getMonth(), event.start.getDate()).getTime(),
+                    mondayStart.getTime()
+                ));
 
-            map.set(dayKey, longEvents.filter((event) => event.start < dayEnd && event.end > dayStart));
+                const lastIncludedMoment = new Date(event.end.getTime() - 1);
+
+                if (lastIncludedMoment < mondayStart) {
+                    return null;
+                }
+
+                const lastDayStart = new Date(Math.min(
+                    new Date(lastIncludedMoment.getFullYear(), lastIncludedMoment.getMonth(), lastIncludedMoment.getDate()).getTime(),
+                    sundayStart.getTime()
+                ));
+
+                const startDayIndex = Math.floor((firstDayStart.getTime() - mondayStart.getTime()) / DAY_MS);
+                const endDayIndex = Math.floor((lastDayStart.getTime() - mondayStart.getTime()) / DAY_MS);
+
+                if (endDayIndex < startDayIndex) {
+                    return null;
+                }
+
+                return {
+                    ...event,
+                    startDayIndex,
+                    endDayIndex,
+                };
+            })
+            .filter(Boolean)
+            .sort((a, b) => a.startDayIndex - b.startDayIndex || a.endDayIndex - b.endDayIndex);
+
+        const rowsLastEnd = [];
+
+        return segments.map((segment) => {
+            let rowIndex = rowsLastEnd.findIndex((endDayIndex) => segment.startDayIndex > endDayIndex);
+
+            if (rowIndex === -1) {
+                rowIndex = rowsLastEnd.length;
+                rowsLastEnd.push(segment.endDayIndex);
+            } else {
+                rowsLastEnd[rowIndex] = segment.endDayIndex;
+            }
+
+            return {
+                ...segment,
+                rowIndex,
+            };
         });
+    }, [longEvents, monday]);
 
-        return map;
-    }, [longEvents, weekDays]);
+    const longEventsHeight = useMemo(() => {
+        if (longEventSegments.length === 0) {
+            return 0;
+        }
+
+        const rowHeight = 28;
+        const rowGap = 6;
+        const verticalPadding = 8;
+        const maxRow = Math.max(...longEventSegments.map((segment) => segment.rowIndex));
+
+        return (maxRow + 1) * rowHeight + maxRow * rowGap + verticalPadding * 2;
+    }, [longEventSegments]);
 
     return (
         <section className={eventsPageStyle.weekCalendar}>
             <WeekCalendarHeader anchor={currentDate} selected={selected} onAnchorDateChange={onAnchorDateChange}
                                 weekStart={weekStart}/>
             <div className={eventsPageStyle.weekBody}>
-                {longEvents.length > 0 && (
+                {longEventSegments.length > 0 && (
                     <div className={eventsPageStyle.weekLongEvents}>
                         <div className={eventsPageStyle.weekLongEventsSpacer}/>
-                        {weekDays.map((dayDate) => {
-                            const dayKey = formatDateKey(dayDate);
-                            const eventsForDay = longEventsByDay.get(dayKey) ?? [];
+                        <div className={eventsPageStyle.weekLongEventsTrack} style={{height: `${longEventsHeight}px`}}>
+                            {longEventSegments.map((segment, index) => {
+                                const left = (segment.startDayIndex / DAY_COUNT_IN_WEEK) * 100;
+                                const width = ((segment.endDayIndex - segment.startDayIndex + 1) / DAY_COUNT_IN_WEEK) * 100;
 
-                            return (
-                                <div key={dayKey} className={eventsPageStyle.weekLongEventsDay}>
-                                    {eventsForDay.map((event, index) => (
-                                        <div key={`${dayKey}-${event.title}-${index}`} className={eventsPageStyle.weekLongEvent}>
-                                            {event.title}
-                                        </div>
-                                    ))}
-                                </div>
-                            );
-                        })}
+                                return (
+                                    <div
+                                        key={`${segment.startDate}-${segment.endDate}-${index}`}
+                                        className={eventsPageStyle.weekLongEvent}
+                                        style={{
+                                            left: `${left}%`,
+                                            width: `${width}%`,
+                                            top: `${8 + (segment.rowIndex * 34)}px`,
+                                        }}
+                                    >
+                                        {segment.title}
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 )}
                 <div className={eventsPageStyle.weekScroll}>
