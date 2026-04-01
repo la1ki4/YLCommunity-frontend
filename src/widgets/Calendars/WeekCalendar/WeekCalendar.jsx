@@ -14,6 +14,7 @@ import {useElementHeight} from "@features/calendar/hooks/useElementHeight.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
 import WeekCalendarHeader from "@widgets/Calendars/WeekCalendar/components/WeekCalendarHeader.jsx";
 import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js";
+import {useDivideCalendarEvents} from "@features/get-calendar-events/hooks/useDivideCalendarEvents.js";
 import {getMinutesFromStartOfDay} from "@features/calendar/utils/dayCalendar.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {PX_PER_MINUTE} from "@features/calendar/constants/weekCalendar.constants.js";
@@ -38,6 +39,11 @@ export function WeekCalendarLayout(props) {
     );
 
     const events = useEventsBetweenDates({
+        startDate: monday,
+        endDate: sunday
+    });
+    const {timelineEvents, longEvents} = useDivideCalendarEvents({
+        events,
         startDate: monday,
         endDate: sunday
     });
@@ -89,13 +95,51 @@ export function WeekCalendarLayout(props) {
         return map;
     }
 
-    const result = groupEventsByDateMap(events);
+    const result = groupEventsByDateMap(timelineEvents);
+
+    const weekDays = useMemo(
+        () => Array.from({length: DAY_COUNT_IN_WEEK}, (_, i) => new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i)),
+        [monday]
+    );
+
+    const longEventsByDay = useMemo(() => {
+        const map = new Map();
+
+        weekDays.forEach((dayDate) => {
+            const dayStart = new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate());
+            const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
+            const dayKey = formatDateKey(dayDate);
+
+            map.set(dayKey, longEvents.filter((event) => event.start < dayEnd && event.end > dayStart));
+        });
+
+        return map;
+    }, [longEvents, weekDays]);
 
     return (
         <section className={eventsPageStyle.weekCalendar}>
             <WeekCalendarHeader anchor={currentDate} selected={selected} onAnchorDateChange={onAnchorDateChange}
                                 weekStart={weekStart}/>
             <div className={eventsPageStyle.weekBody}>
+                {longEvents.length > 0 && (
+                    <div className={eventsPageStyle.weekLongEvents}>
+                        <div className={eventsPageStyle.weekLongEventsSpacer}/>
+                        {weekDays.map((dayDate) => {
+                            const dayKey = formatDateKey(dayDate);
+                            const eventsForDay = longEventsByDay.get(dayKey) ?? [];
+
+                            return (
+                                <div key={dayKey} className={eventsPageStyle.weekLongEventsDay}>
+                                    {eventsForDay.map((event, index) => (
+                                        <div key={`${dayKey}-${event.title}-${index}`} className={eventsPageStyle.weekLongEvent}>
+                                            {event.title}
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
                 <div className={eventsPageStyle.weekScroll}>
                     <div className={eventsPageStyle.weekTimes}>
                         {hours.map((h) => (
@@ -131,13 +175,13 @@ export function WeekCalendarLayout(props) {
                                     const top = startMinutes * PX_PER_MINUTE;
                                     const height = durationMinutes * PX_PER_MINUTE;
 
-                                    const dayIndex = start.getDay();
+                                    const dayIndex = getMondayBasedDayIndex(start);
 
                                     const overlap = 0 + index;
 
                                     const dayWidth = 100 / 7;
                                     const width = dayWidth / events.length;
-                                    const left = (dayWidth * (dayIndex - 1)) + (width * index) - overlap;
+                                    const left = (dayWidth * dayIndex) + (width * index) - overlap;
 
                                     return (
                                         <CalendarEvent
