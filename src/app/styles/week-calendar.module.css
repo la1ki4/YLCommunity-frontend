@@ -125,6 +125,38 @@
     min-height: 0;
 }
 
+.weekLongEvents{
+    display: grid;
+    grid-template-columns: var(--timeColW) 1fr;
+    background: #111111;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.weekLongEventsSpacer{
+    border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+.weekLongEventsTrack{
+    position: relative;
+    padding: 0;
+}
+
+.weekLongEvent{
+    position: absolute;
+    background: rgb(157, 253, 64);
+    color: #1B1B1B;
+    border-left: 3px solid rgb(75, 136, 12);
+    border-radius: 6px;
+    padding: 6px 8px;
+    height: 28px;
+    box-sizing: border-box;
+    font-family: Roboto-bold;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .weekScroll{
     height: 100%;
     min-height: 0;

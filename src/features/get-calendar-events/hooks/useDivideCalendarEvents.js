@@ -10,13 +10,41 @@ function getDayStart(date) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
-export function useDivideCalendarEvents({events, viewDate}) {
+function getRangeBoundaries({viewDate, startDate, endDate}) {
+    if (viewDate) {
+        const dayStart = getDayStart(viewDate);
+
+        return {
+            rangeStart: dayStart,
+            rangeEnd: new Date(dayStart.getTime() + DAY_MS),
+        };
+    }
+
+    if (startDate && endDate) {
+        const rangeStart = getDayStart(toDate(startDate));
+        const rangeEndDay = getDayStart(toDate(endDate));
+
+        return {
+            rangeStart,
+            rangeEnd: new Date(rangeEndDay.getTime() + DAY_MS),
+        };
+    }
+
+    return null;
+}
+
+export function useDivideCalendarEvents({events, viewDate, startDate, endDate}) {
     return useMemo(() => {
         const timelineEvents = [];
         const longEvents = [];
 
-        const dayStart = getDayStart(viewDate);
-        const dayEnd = new Date(dayStart.getTime() + DAY_MS);
+        const boundaries = getRangeBoundaries({viewDate, startDate, endDate});
+
+        if (!boundaries) {
+            return {timelineEvents, longEvents};
+        }
+
+        const {rangeStart, rangeEnd} = boundaries;
 
         events.forEach((event) => {
             const start = toDate(event.startDate);
@@ -27,9 +55,9 @@ export function useDivideCalendarEvents({events, viewDate}) {
             }
 
             const durationMs = end.getTime() - start.getTime();
-            const intersectsCurrentDay = start < dayEnd && end > dayStart;
+            const intersectsRange = start < rangeEnd && end > rangeStart;
 
-            if (!intersectsCurrentDay) {
+            if (!intersectsRange) {
                 return;
             }
 
@@ -43,20 +71,26 @@ export function useDivideCalendarEvents({events, viewDate}) {
                 return;
             }
 
-            const segmentStart = start > dayStart ? start : dayStart;
-            const segmentEnd = end < dayEnd ? end : dayEnd;
+            let segmentCursor = new Date(start);
 
-            if (segmentEnd <= segmentStart) {
-                return;
+            while (segmentCursor < end) {
+                const segmentDayStart = getDayStart(segmentCursor);
+                const segmentDayEnd = new Date(segmentDayStart.getTime() + DAY_MS);
+                const segmentStart = segmentCursor > segmentDayStart ? segmentCursor : segmentDayStart;
+                const segmentEnd = end < segmentDayEnd ? end : segmentDayEnd;
+
+                if (segmentEnd > segmentStart && segmentStart < rangeEnd && segmentEnd > rangeStart) {
+                    timelineEvents.push({
+                        ...event,
+                        startDate: segmentStart.toISOString(),
+                        endDate: segmentEnd.toISOString(),
+                    });
+                }
+
+                segmentCursor = segmentDayEnd;
             }
-
-            timelineEvents.push({
-                ...event,
-                startDate: segmentStart.toISOString(),
-                endDate: segmentEnd.toISOString(),
-            });
         });
 
         return {timelineEvents, longEvents};
-    }, [events, viewDate]);
+    }, [events, viewDate, startDate, endDate]);
 }
