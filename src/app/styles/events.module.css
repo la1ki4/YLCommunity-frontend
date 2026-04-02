@@ -362,6 +362,7 @@
     overflow: auto;
     padding: 0;
     background: #0f0f0f;
+    position: relative;
 }
 
 
@@ -375,6 +376,7 @@
 }
 
 .dayLongEvent {
+    display: block;
     width: 100%;
     background: rgb(157, 253, 64);
     color: #1B1B1B;

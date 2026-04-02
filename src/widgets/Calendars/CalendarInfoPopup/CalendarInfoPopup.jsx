@@ -16,16 +16,22 @@ function formatEventDateRange(start, end) {
         return "";
     }
 
-    const formatter = new Intl.DateTimeFormat("en-US", {
+    const dateFormatter = new Intl.DateTimeFormat("en-US", {
         month: "long",
         day: "numeric",
         year: "numeric",
+    });
+
+    const timeFormatter = new Intl.DateTimeFormat("en-US", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
     });
 
-    return `${formatter.format(start)} - ${formatter.format(end)}`;
+    const startFormatted = `${dateFormatter.format(start)} at ${timeFormatter.format(start)}`;
+    const endFormatted = `${dateFormatter.format(end)} at ${timeFormatter.format(end)}`;
+
+    return `${startFormatted} - ${endFormatted}`;
 }
 
 export function CalendarInfoPopup({event, position, onClose}) {

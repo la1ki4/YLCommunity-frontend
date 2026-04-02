@@ -84,6 +84,8 @@ export function useDivideCalendarEvents({events, viewDate, startDate, endDate}) 
                         ...event,
                         startDate: segmentStart.toISOString(),
                         endDate: segmentEnd.toISOString(),
+                        originalStartDate: start.toISOString(),
+                        originalEndDate: end.toISOString(),
                     });
                 }
 
