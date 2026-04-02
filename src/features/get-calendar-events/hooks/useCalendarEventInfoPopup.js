@@ -30,8 +30,8 @@ export function useCalendarEventInfoPopup() {
     });
 
     const openPopup = useCallback(({event, top, height, gridHeight, anchorTop, placement: explicitPlacement}) => {
-        const start = toDate(event.startDate);
-        const end = toDate(event.endDate);
+        const start = toDate(event.originalStartDate ?? event.startDate);
+        const end = toDate(event.originalEndDate ?? event.endDate);
 
         const placement = explicitPlacement ?? resolvePlacement(start, end);
 
