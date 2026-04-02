@@ -3,16 +3,17 @@ export function CalendarEvent({
                                   title,
                                   description,
                                   style = {},
+                                  onClick,
                               }) {
     return (
-        <div
+        <button
+            type="button"
             className={className}
             style={style}
             title={description}
+            onClick={onClick}
         >
             {title}
-        </div>
+        </button>
     );
 }
-
-

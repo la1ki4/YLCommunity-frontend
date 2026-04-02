@@ -174,3 +174,71 @@
     color: white;
     font-family: "Roboto-regular";
 }
+.calendarInfoPopup {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    max-width: 600px;
+    padding: 20px;
+    background-color: #111111;
+    border: 1px solid #1b1b1b;
+    border-radius: 18px;
+    z-index: 4;
+}
+
+.calendarInfoPopupBelow {
+    transform: translateY(0);
+}
+
+.calendarInfoPopupAbove {
+    transform: translateY(-100%);
+}
+
+.calendarInfoPopupMiddle {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.calendarInfoHeader {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.calendarInfoContent {
+    display: flex;
+    flex-direction: column;
+}
+
+.calendarInfoTitle {
+    font-family: "Roboto-bold";
+    color: white;
+    font-size: 28px;
+    line-height: 1;
+}
+
+.calendarInfoDate {
+    font-family: "Roboto-regular";
+    color: white;
+    margin-top: 8px;
+}
+
+.calendarInfoBodyText {
+    font-family: "Roboto-regular";
+    color: white;
+    line-height: 1;
+}
+
+.calendarInfoInviteText {
+    color: #9EFF40;
+    font-family: "Roboto-regular";
+    margin: 0;
+}
+
+.iconTextSection {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 15px;
+}

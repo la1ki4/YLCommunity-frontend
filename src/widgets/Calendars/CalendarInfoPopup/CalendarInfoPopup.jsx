@@ -11,101 +11,67 @@ import userIcon from "@app/assets/user.svg"
 import {Media} from "@shared/Image/Media.jsx";
 import {Text} from "@shared/Text/Text.jsx";
 
-export function CalendarInfoPopup() {
+function formatEventDateRange(start, end) {
+    if (!(start instanceof Date) || !(end instanceof Date)) {
+        return "";
+    }
+
+    const formatter = new Intl.DateTimeFormat("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    });
+
+    return `${formatter.format(start)} - ${formatter.format(end)}`;
+}
+
+export function CalendarInfoPopup({event, position, onClose}) {
+    if (!event) {
+        return null;
+    }
+
+    const popupClassName = [
+        calendarInfoPopupStyle.calendarInfoPopup,
+        position?.placement === "above" ? calendarInfoPopupStyle.calendarInfoPopupAbove : "",
+        position?.placement === "middle" ? calendarInfoPopupStyle.calendarInfoPopupMiddle : "",
+        position?.placement === "below" ? calendarInfoPopupStyle.calendarInfoPopupBelow : "",
+    ].filter(Boolean).join(" ");
+
     return (
-        <div className={calendarInfoPopupStyle.calendarInfoPopup} style={{padding: "20px", width: "600px"}}>
-            <div>
-                <div className={calendarInfoPopupStyle.calendarInfoHeader}>
-                    <Button className={calendarInfoButtonStyle.newPopupButton} leftIcon={<Media image={editIcon}/>}
-                            style={{marginRight: "10px"}}></Button>
-                    <Button className={calendarInfoButtonStyle.newPopupButton} leftIcon={<Media image={deleteIcon}/>}
-                            style={{marginRight: "25px"}}></Button>
-                    <Button className={calendarInfoButtonStyle.newPopupButton} style={{
-                        color: "rgba(255,255,255,0.5)",
-                        fontSize: "20px",
-                    }}>✕</Button>
+        <div
+            className={popupClassName}
+            style={{top: `${position?.top ?? 0}px`}}
+            onClick={(event) => event.stopPropagation()}
+        >
+            <div className={calendarInfoPopupStyle.calendarInfoHeader}>
+                <Button className={calendarInfoButtonStyle.newPopupButton} leftIcon={<Media image={editIcon}/>}/>
+                <Button className={calendarInfoButtonStyle.newPopupButton} leftIcon={<Media image={deleteIcon}/>}/>
+                <Button className={calendarInfoButtonStyle.calendarInfoCloseButton} onClick={onClose}>✕</Button>
+            </div>
+            <div className={calendarInfoPopupStyle.iconTextSection}>
+                <Media image={signIcon} style={{marginRight: "20px"}}/>
+                <div className={calendarInfoPopupStyle.calendarInfoContent}>
+                    <Text className={calendarInfoPopupStyle.calendarInfoTitle} text={event.title ?? "Event"}/>
+                    <Text className={calendarInfoPopupStyle.calendarInfoDate} text={formatEventDateRange(event.start, event.end)}/>
+                    <Button leftIcon={<Media image={linkIcon}/>} className={calendarInfoButtonStyle.buttonWithBorder}>
+                        <Text className={calendarInfoPopupStyle.calendarInfoInviteText} text={"Invite via link"}/>
+                    </Button>
                 </div>
-                <div className={calendarInfoPopupStyle.iconTextSection}>
-                    <Media src={signIcon} style={{marginRight: "20px"}}/>
-                    <div style={{display: "flex", flexDirection: "column"}}>
-                        <Text
-                            style={{
-                                fontFamily: "Roboto-bold",
-                                color: "white",
-                                fontSize: "28px",
-                                lineHeight: "1",
-                                marginTop: "-5px"
-                            }}
-                            text={"Title"}
-                        />
-                        <Text style=
-                                  {{
-                                      fontFamily: "Roboto-regular",
-                                      color: "white"
-                                  }}
-                              text={"April 2, 2026, 15:00 - April 2, 2026, 17:00"}/>
-                        <Button
-                            leftIcon={<Media image={linkIcon}/>}
-                            className={calendarInfoButtonStyle.buttonWithBorder}
-                            style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                width: "fit-content",
-                                whiteSpace: "nowrap",
-                                border: "1px solid #9EFF40",
-                                borderRadius: "18px",
-                                padding: "10px 16px",
-                                margin: "30px 0",
-                                gap: "8px"
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    color: "#9EFF40",
-                                    fontFamily: "Roboto-regular",
-                                    margin: 0
-                                }}
-                                text={"Invite via link"}
-                            />
-                        </Button>
-                    </div>
-                </div>
-                <div className={calendarInfoPopupStyle.iconTextSection}>
-                    <Media src={descriptionIcon} style={{marginRight: "20px", height: "18px"}}/>
-                    <div style={{display: "flex", flexDirection: "column"}}>
-                        <Text style=
-                                  {{
-                                      fontFamily: "Roboto-regular",
-                                      color: "white",
-                                      lineHeight: "1",
-                                  }}
-                              text={" Lorem Ispum riba "}/>
-                    </div>
-                </div>
-                <div className={calendarInfoPopupStyle.iconTextSection} style={{ marginTop: "15px"}}>
-                    <Media src={locationIcon} style={{marginRight: "20px", height: "18px"}}/>
-                    <div style={{display: "flex", flexDirection: "column"}}>
-                        <Text style=
-                                  {{
-                                      fontFamily: "Roboto-regular",
-                                      color: "white",
-                                      lineHeight: "1",
-                                  }}
-                              text={"Moldova, Chisinau"}/>
-                    </div>
-                </div>
-                <div className={calendarInfoPopupStyle.iconTextSection} style={{ marginTop: "15px"}}>
-                    <Media src={userIcon} style={{marginRight: "20px", height: "18px"}}/>
-                    <div style={{display: "flex", flexDirection: "column"}}>
-                        <Text style=
-                                  {{
-                                      fontFamily: "Roboto-regular",
-                                      color: "white",
-                                      lineHeight: "1",
-                                  }}
-                              text={"Alexandros Papas"}/>
-                    </div>
-                </div>
+            </div>
+            <div className={calendarInfoPopupStyle.iconTextSection}>
+                <Media image={descriptionIcon} style={{marginRight: "20px", height: "18px"}}/>
+                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={event.description || "No description"}/>
+            </div>
+            <div className={calendarInfoPopupStyle.iconTextSection}>
+                <Media image={locationIcon} style={{marginRight: "20px", height: "18px"}}/>
+                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={event.location || "No location"}/>
+            </div>
+            <div className={calendarInfoPopupStyle.iconTextSection}>
+                <Media image={userIcon} style={{marginRight: "20px", height: "18px"}}/>
+                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={event.ownerName || event.author || "Unknown organizer"}/>
             </div>
         </div>
     )
