@@ -67,11 +67,11 @@ export function CalendarInfoPopup({event, position, onClose}) {
             </div>
             <div className={calendarInfoPopupStyle.iconTextSection}>
                 <Media image={locationIcon} style={{marginRight: "20px", height: "18px"}}/>
-                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={event.location || "No location"}/>
+                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={event.country + ", " + event.city || "No location"}/>
             </div>
             <div className={calendarInfoPopupStyle.iconTextSection}>
                 <Media image={userIcon} style={{marginRight: "20px", height: "18px"}}/>
-                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={event.ownerName || event.author || "Unknown organizer"}/>
+                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={event.owner.firstName + " " + event.owner.lastName || "Unknown organizer"}/>
             </div>
         </div>
     )
