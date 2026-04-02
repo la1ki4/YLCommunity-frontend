@@ -11,6 +11,7 @@ import {useDivideCalendarEvents} from "@features/get-calendar-events/hooks/useDi
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {DayCalendarHeader} from "@widgets/Calendars/DayCalendar/components/DayCalendarHeader.jsx";
+import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 
 export function DayCalendar({date, onChangeDate}) {
 
@@ -41,6 +42,8 @@ export function DayCalendar({date, onChangeDate}) {
     return (
         <section className={eventsPageStyle.day} aria-label="Day calendar">
             <DayCalendarHeader viewDate={viewDate} onChangeDate={onChangeDate}></DayCalendarHeader>
+
+            <CalendarInfoPopup/>
 
             <div className={eventsPageStyle.dayBody}>
                 {longEvents.length > 0 && (

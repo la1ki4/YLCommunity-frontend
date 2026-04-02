@@ -168,7 +168,7 @@
 
 .weekTimes{
     border-right: 1px solid rgba(255,255,255,0.08);
-    background: #1B1B1B;
+    background: #0e0e0e;
     padding-top: 16px;
 }
 
@@ -187,7 +187,7 @@
 }
 
 .weekGrid{
-    background: #1B1B1B;
+    background: #0e0e0e;
 }
 
 .weekGridInner{

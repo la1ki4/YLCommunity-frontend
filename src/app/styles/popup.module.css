@@ -27,6 +27,25 @@
     min-width: 0;
 }
 
+.calendarInfoPopup{
+    position: absolute;
+    background-color: #111111;
+    border: 1px solid #1b1b1b;
+    border-radius: 18px;
+    z-index: 1;
+}
+
+.calendarInfoHeader{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.iconTextSection{
+    display: flex;
+    align-items: flex-start;
+}
+
 @media (max-width: 1600px) {
     .calendarPopupOverlay {
         width: min(700px, calc(100vw - 28px));

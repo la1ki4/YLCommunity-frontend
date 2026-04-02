@@ -44,6 +44,17 @@
     cursor: pointer;
 }
 
+.newPopupButton {
+    border: none;
+    background:none;
+    cursor: pointer;
+}
+
+.buttonWithBorder {
+    background: none;
+    cursor: pointer;
+}
+
 .popupButton:hover {
     transition: 0.3s ease;
     transform: scale(1.01);
