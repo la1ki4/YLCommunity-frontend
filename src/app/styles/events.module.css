@@ -835,3 +835,9 @@
         width: 100%;
     }
 }
+
+.dayEvent {
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}

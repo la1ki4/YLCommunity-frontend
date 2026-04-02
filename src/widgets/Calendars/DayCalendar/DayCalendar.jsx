@@ -8,6 +8,7 @@ import {useElementHeight} from "@features/calendar/hooks/useElementHeight.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
 import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js"
 import {useDivideCalendarEvents} from "@features/get-calendar-events/hooks/useDivideCalendarEvents.js"
+import {useCalendarEventInfoPopup} from "@features/get-calendar-events/hooks/useCalendarEventInfoPopup.js";
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {DayCalendarHeader} from "@widgets/Calendars/DayCalendar/components/DayCalendarHeader.jsx";
@@ -33,6 +34,7 @@ export function DayCalendar({date, onChangeDate}) {
     const showNowLine = isSameDay(viewDate, now);
     const events = useEventsBetweenDates({startDate: viewDate, endDate: viewDate});
     const {timelineEvents, longEvents} = useDivideCalendarEvents({events, viewDate});
+    const {isPopupOpen, selectedEvent, popupPosition, openPopup, closePopup} = useCalendarEventInfoPopup();
 
     const sortedEvents = useMemo(
         () => prepareDayEvents(timelineEvents),
@@ -40,10 +42,8 @@ export function DayCalendar({date, onChangeDate}) {
     );
 
     return (
-        <section className={eventsPageStyle.day} aria-label="Day calendar">
+        <section className={eventsPageStyle.day} aria-label="Day calendar" onClick={closePopup}>
             <DayCalendarHeader viewDate={viewDate} onChangeDate={onChangeDate}></DayCalendarHeader>
-
-            <CalendarInfoPopup/>
 
             <div className={eventsPageStyle.dayBody}>
                 {longEvents.length > 0 && (
@@ -97,10 +97,26 @@ export function DayCalendar({date, onChangeDate}) {
                                         right: `${reservedRight}%`,
                                     }}
                                     title={event.title}
+                                    onClick={(clickEvent) => {
+                                        clickEvent.stopPropagation();
+                                        openPopup({
+                                            event,
+                                            top,
+                                            height,
+                                            gridHeight,
+                                        });
+                                    }}
                                 />
                             );
                         })}
 
+                        {isPopupOpen && (
+                            <CalendarInfoPopup
+                                event={selectedEvent}
+                                position={popupPosition}
+                                onClose={closePopup}
+                            />
+                        )}
 
                         {showNowLine && (
                             <div
