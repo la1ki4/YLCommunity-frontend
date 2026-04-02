@@ -26,22 +26,25 @@ export function useCalendarEventInfoPopup() {
         isOpen: false,
         event: null,
         anchorTop: 0,
+        placement: "below",
     });
 
-    const openPopup = useCallback(({event, top, height, gridHeight}) => {
+    const openPopup = useCallback(({event, top, height, gridHeight, anchorTop, placement: explicitPlacement}) => {
         const start = toDate(event.startDate);
         const end = toDate(event.endDate);
 
-        const placement = resolvePlacement(start, end);
+        const placement = explicitPlacement ?? resolvePlacement(start, end);
 
-        let anchorTop = top;
+        let resolvedAnchorTop = anchorTop ?? top;
 
-        if (placement === "below") {
-            anchorTop = top + height + 8;
-        } else if (placement === "middle") {
-            anchorTop = Math.max(0, gridHeight / 2);
-        } else {
-            anchorTop = Math.max(0, top - 8);
+        if (anchorTop === undefined) {
+            if (placement === "below") {
+                resolvedAnchorTop = top + height + 8;
+            } else if (placement === "middle") {
+                resolvedAnchorTop = Math.max(0, gridHeight / 2);
+            } else {
+                resolvedAnchorTop = Math.max(0, top - 8);
+            }
         }
 
         setState({
@@ -51,7 +54,8 @@ export function useCalendarEventInfoPopup() {
                 start,
                 end,
             },
-            anchorTop,
+            anchorTop: Math.max(0, resolvedAnchorTop ?? 0),
+            placement,
         });
     }, []);
 
@@ -75,10 +79,10 @@ export function useCalendarEventInfoPopup() {
         }
 
         return {
-            placement: resolvePlacement(state.event.start, state.event.end),
+            placement: state.placement,
             top: state.anchorTop,
         };
-    }, [state.anchorTop, state.event]);
+    }, [state.anchorTop, state.event, state.placement]);
 
     return {
         isPopupOpen: state.isOpen,

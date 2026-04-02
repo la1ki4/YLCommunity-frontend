@@ -80,3 +80,9 @@
     margin: 30px 0;
     gap: 8px;
 }
+
+.dayLongEventButton {
+    border: none;
+    cursor: pointer;
+    text-align: left;
+}
