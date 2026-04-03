@@ -176,27 +176,26 @@
 }
 .calendarInfoPopup {
     position: absolute;
-    left: 16px;
-    right: 16px;
-    max-width: 600px;
+    left: 50%;
+    width: min(600px, calc(100% - 32px));
     padding: 20px;
     background-color: #111111;
     border: 1px solid #1b1b1b;
     border-radius: 18px;
     z-index: 4;
+    box-sizing: border-box;
 }
 
 .calendarInfoPopupBelow {
-    transform: translateY(0);
+    transform: translate(-50%, 0);
 }
 
 .calendarInfoPopupAbove {
-    transform: translateY(-100%);
+    transform: translate(-50%, -100%);
 }
 
 .calendarInfoPopupMiddle {
-    top: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
 }
 
 .calendarInfoHeader {

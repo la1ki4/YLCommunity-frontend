@@ -46,6 +46,9 @@ export function CalendarInfoPopup({event, position, onClose}) {
         position?.placement === "below" ? calendarInfoPopupStyle.calendarInfoPopupBelow : "",
     ].filter(Boolean).join(" ");
 
+    const location = [event?.country, event?.city].filter(Boolean).join(", ");
+    const ownerName = [event?.owner?.firstName, event?.owner?.lastName].filter(Boolean).join(" ");
+
     return (
         <div
             className={popupClassName}
@@ -73,11 +76,11 @@ export function CalendarInfoPopup({event, position, onClose}) {
             </div>
             <div className={calendarInfoPopupStyle.iconTextSection}>
                 <Media image={locationIcon} style={{marginRight: "20px", height: "18px"}}/>
-                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={event.country + ", " + event.city || "No location"}/>
+                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={location || "No location"}/>
             </div>
             <div className={calendarInfoPopupStyle.iconTextSection}>
                 <Media image={userIcon} style={{marginRight: "20px", height: "18px"}}/>
-                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={event.owner.firstName + " " + event.owner.lastName || "Unknown organizer"}/>
+                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={ownerName || "Unknown organizer"}/>
             </div>
         </div>
     )

@@ -10,7 +10,7 @@ function resolvePlacement(start, end) {
     const startMinutes = start.getHours() * 60 + start.getMinutes();
     const endMinutes = end.getHours() * 60 + end.getMinutes();
 
-    if (startMinutes < MIDDAY_MINUTES && endMinutes > MIDDAY_MINUTES) {
+    if (startMinutes < MIDDAY_MINUTES && endMinutes >= MIDDAY_MINUTES) {
         return "middle";
     }
 

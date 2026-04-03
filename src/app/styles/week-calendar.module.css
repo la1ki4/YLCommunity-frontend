@@ -204,6 +204,7 @@
     width: 100%;
     padding: 0 var(--gridPad);
     box-sizing: border-box;
+    overflow: visible;
 }
 
 .weekVLines{
@@ -295,6 +296,8 @@
     border-bottom: none;
     border-top: none;
     transition: box-shadow 1s ease, transform 0.2s ease;
+    cursor: pointer;
+    z-index: 2;
 }
 
 .weekEvent:hover {
