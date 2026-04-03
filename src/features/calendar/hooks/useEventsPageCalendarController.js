@@ -38,6 +38,7 @@ export function useEventsPageCalendarController() {
 
 
     const onSelect = useCallback((value) => {
+        console.log(value);
         setSelected((prev) => toggleSelected(prev, value));
         syncToDate(toSelectedDate(value));
     }, [syncToDate]);

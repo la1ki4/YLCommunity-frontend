@@ -52,13 +52,14 @@ export default function EventsPage() {
                             />
                         </div>
 
-                        {view === "Day" && <DayCalendar date={dayDate} onChangeDate={onDayChangeView} />}
+                        {view === "Day" && <DayCalendar date={dayDate} onChangeDate={onDayChangeView} onSelect={onSelect} />}
 
                         {view === "Week" && (
                             <WeekCalendarLayout
                                 date={weekAnchorDate}
                                 selected={selected}
                                 onAnchorDateChange={onWeekChangeView}
+                                onSelect={onSelect}
                             />
                         )}
 

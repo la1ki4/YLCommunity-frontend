@@ -15,7 +15,7 @@ import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarE
 import {DayCalendarHeader} from "@widgets/Calendars/DayCalendar/components/DayCalendarHeader.jsx";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 
-export function DayCalendar({date, onChangeDate}) {
+export function DayCalendar({date, onChangeDate, onSelect}) {
 
     const viewDate = useMemo(() => {
         return date ?? new Date();
@@ -45,7 +45,7 @@ export function DayCalendar({date, onChangeDate}) {
 
     return (
         <section className={eventsPageStyle.day} aria-label="Day calendar" onClick={closePopup}>
-            <DayCalendarHeader viewDate={viewDate} onChangeDate={onChangeDate}></DayCalendarHeader>
+            <DayCalendarHeader viewDate={viewDate} onChangeDate={onChangeDate} onSelect={onSelect}></DayCalendarHeader>
 
             <div className={eventsPageStyle.dayBody} ref={dayBodyRef}>
                 {longEvents.length > 0 && (

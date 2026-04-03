@@ -15,7 +15,8 @@ export default function WeekCalendarHeader(props) {
         anchor,
         weekStart,
         selected,
-        onAnchorDateChange
+        onAnchorDateChange,
+        onSelect,
     } = props;
 
     const headerMonth = MONTH_NAMES[anchor.getMonth()];
@@ -35,13 +36,18 @@ export default function WeekCalendarHeader(props) {
                         typeof updater === "function" ? updater(anchor) : updater;
 
                     onAnchorDateChange?.(next);
+                    onSelect?.({
+                        day: next.getDate(),
+                        monthIndex: next.getMonth(),
+                        year: next.getFullYear(),
+                    });
                 },
                 setWeekStart: ()=>{
 
                 },
                 onAnchorDateChange,
             }),
-        [anchor, onAnchorDateChange]
+        [anchor, onAnchorDateChange, onSelect]
     );
 
     return (

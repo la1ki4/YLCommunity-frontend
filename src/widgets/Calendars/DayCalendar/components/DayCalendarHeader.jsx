@@ -9,10 +9,10 @@ import {useMemo} from "react";
 import {createNavCalendar} from "@features/calendar/utils/navCalendar.js";
 
 export function DayCalendarHeader(props) {
-    const { viewDate, onChangeDate } = props;
+    const { viewDate, onChangeDate, onSelect } = props;
     const dowIndex = (viewDate.getDay() + 6) % 7;
     const dowText = DOW[dowIndex];
-    const dayNum = viewDate.getDate();
+    const day = viewDate.getDate();
 
     const navCalendar = useMemo(
         () =>
@@ -22,12 +22,16 @@ export function DayCalendarHeader(props) {
                         typeof updater === "function" ? updater(viewDate) : updater;
 
                     onChangeDate?.(next);
+                    onSelect?.({
+                        day: next.getDate(),
+                        monthIndex: next.getMonth(),
+                        year: next.getFullYear(),
+                    });
                 },
-                setWeekStart: () => {
-                },
+                setWeekStart: () => {},
                 onAnchorDateChange: onChangeDate,
             }),
-        [viewDate, onChangeDate]
+        [viewDate, onChangeDate, onSelect]
     );
 
     return (
@@ -36,7 +40,7 @@ export function DayCalendarHeader(props) {
                 <div className={eventsPageStyle.badge}>
                     <div>
                         <div className={eventsPageStyle.dow}>{dowText}</div>
-                        <div className={eventsPageStyle.pill}>{dayNum}</div>
+                        <div className={eventsPageStyle.pill}>{day}</div>
                     </div>
                 </div>
             </div>
@@ -48,13 +52,19 @@ export function DayCalendarHeader(props) {
             <div className={eventsPageStyle.dayRight} aria-label="Navigation">
                 <Button
                     className={eventsPageStyle.navBtn}
-                    onClick={() => navCalendar(1, "prev")}
+                    onClick={() =>
+                    {
+                        navCalendar(1, "prev")
+                    }}
                 >
                     <Media image={leftIcon}/>
                 </Button>
                 <Button
                     className={eventsPageStyle.navBtn}
-                    onClick={() => navCalendar(1, "next")}
+                    onClick={() =>
+                    {
+                        navCalendar(1, "next")
+                    }}
                 >
                     <Media image={rightIcon}/>
                 </Button>

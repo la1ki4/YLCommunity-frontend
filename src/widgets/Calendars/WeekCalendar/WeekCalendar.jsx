@@ -27,7 +27,7 @@ import {
 
 export function WeekCalendarLayout(props) {
 
-    const {date, selected, onAnchorDateChange} = props;
+    const {date, selected, onAnchorDateChange, onSelect} = props;
 
     const [currentDate, setCurrentDate] = useState(() => date ?? new Date());
 
@@ -64,8 +64,6 @@ export function WeekCalendarLayout(props) {
 
 
     const hours = useMemo(() => buildHours(), []);
-
-
     const today = useMemo(() => new Date(), []);
     const todayIndex = getMondayBasedDayIndex(today);
 
@@ -123,7 +121,7 @@ export function WeekCalendarLayout(props) {
     return (
         <section className={eventsPageStyle.weekCalendar}>
             <WeekCalendarHeader anchor={currentDate} selected={selected} onAnchorDateChange={onAnchorDateChange}
-                                weekStart={weekStart}/>
+                                weekStart={weekStart} onSelect={onSelect} />
             <div className={eventsPageStyle.weekBody}>
                 {longEventSegments.length > 0 && (
                     <div className={eventsPageStyle.weekLongEvents}>
