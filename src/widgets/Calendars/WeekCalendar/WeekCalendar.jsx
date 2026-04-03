@@ -18,6 +18,8 @@ import {useDivideCalendarEvents} from "@features/get-calendar-events/hooks/useDi
 import {getMinutesFromStartOfDay} from "@features/calendar/utils/dayCalendar.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {PX_PER_MINUTE} from "@features/calendar/constants/weekCalendar.constants.js";
+import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
+import {useCalendarEventInfoPopup} from "@features/get-calendar-events/hooks/useCalendarEventInfoPopup.js";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -70,6 +72,13 @@ export function WeekCalendarLayout(props) {
     const hLinesRef = useRef(null);
     const gridHeight = useElementHeight(hLinesRef);
     const nowTop = useMemo(() => calcNowTopPx(now, gridHeight), [now, gridHeight]);
+    const {
+        isPopupOpen,
+        selectedEvent,
+        popupPosition,
+        openPopup,
+        closePopup,
+    } = useCalendarEventInfoPopup();
 
     function formatDateKey(dateString) {
         const date = new Date(dateString);
@@ -214,7 +223,7 @@ export function WeekCalendarLayout(props) {
                     </div>
 
                     <div className={eventsPageStyle.weekGrid}>
-                        <div className={eventsPageStyle.weekGridInner}>
+                        <div className={eventsPageStyle.weekGridInner} onClick={closePopup}>
                             <div className={eventsPageStyle.weekVLines}>
                                 {Array.from({length: DAY_COUNT_IN_WEEK}).map((_, i) => (
                                     <div key={i} className={eventsPageStyle.weekVLineCol}/>
@@ -258,9 +267,26 @@ export function WeekCalendarLayout(props) {
                                                 left: `${left}%`,
                                                 width: `${width}%`,
                                             }}
+                                            onClick={(clickEvent) => {
+                                                clickEvent.stopPropagation();
+                                                openPopup({
+                                                    event,
+                                                    top,
+                                                    height,
+                                                    gridHeight,
+                                                });
+                                            }}
                                         />
                                     );
                                 })
+                            )}
+
+                            {isPopupOpen && (
+                                <CalendarInfoPopup
+                                    event={selectedEvent}
+                                    position={popupPosition}
+                                    onClose={closePopup}
+                                />
                             )}
 
 

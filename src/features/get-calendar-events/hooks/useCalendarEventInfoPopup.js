@@ -1,6 +1,7 @@
 import {useCallback, useMemo, useState} from "react";
 
 const MIDDAY_MINUTES = 12 * 60;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function toDate(value) {
     return value instanceof Date ? value : new Date(value);
@@ -10,7 +11,7 @@ function resolvePlacement(start, end) {
     const startMinutes = start.getHours() * 60 + start.getMinutes();
     const endMinutes = end.getHours() * 60 + end.getMinutes();
 
-    if (startMinutes < MIDDAY_MINUTES && endMinutes > MIDDAY_MINUTES) {
+    if (startMinutes < MIDDAY_MINUTES && endMinutes >= MIDDAY_MINUTES) {
         return "middle";
     }
 
@@ -30,10 +31,14 @@ export function useCalendarEventInfoPopup() {
     });
 
     const openPopup = useCallback(({event, top, height, gridHeight, anchorTop, placement: explicitPlacement}) => {
-        const start = toDate(event.originalStartDate ?? event.startDate);
-        const end = toDate(event.originalEndDate ?? event.endDate);
+        const segmentStart = toDate(event.startDate);
+        const segmentEnd = toDate(event.endDate);
+        const originalStart = toDate(event.originalStartDate ?? event.startDate);
+        const originalEnd = toDate(event.originalEndDate ?? event.endDate);
+        const originalDurationMs = originalEnd.getTime() - originalStart.getTime();
 
-        const placement = explicitPlacement ?? resolvePlacement(start, end);
+        const placement = explicitPlacement ?? resolvePlacement(segmentStart, segmentEnd);
+        const shouldUseOriginalRange = originalDurationMs > 0 && originalDurationMs < DAY_MS;
 
         let resolvedAnchorTop = anchorTop ?? top;
 
@@ -51,8 +56,10 @@ export function useCalendarEventInfoPopup() {
             isOpen: true,
             event: {
                 ...event,
-                start,
-                end,
+                start: shouldUseOriginalRange ? originalStart : segmentStart,
+                end: shouldUseOriginalRange ? originalEnd : segmentEnd,
+                segmentStart,
+                segmentEnd,
             },
             anchorTop: Math.max(0, resolvedAnchorTop ?? 0),
             placement,
