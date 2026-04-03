@@ -79,6 +79,7 @@ export function WeekCalendarLayout(props) {
         openPopup,
         closePopup,
     } = useCalendarEventInfoPopup();
+    const [popupContainer, setPopupContainer] = useState("grid");
 
     function formatDateKey(dateString) {
         const date = new Date(dateString);
@@ -191,10 +192,16 @@ export function WeekCalendarLayout(props) {
                 {longEventSegments.length > 0 && (
                     <div className={eventsPageStyle.weekLongEvents}>
                         <div className={eventsPageStyle.weekLongEventsSpacer}/>
-                        <div className={eventsPageStyle.weekLongEventsTrack} style={{height: `${longEventsHeight}px`}}>
+                        <div
+                            className={eventsPageStyle.weekLongEventsTrack}
+                            style={{height: `${longEventsHeight}px`}}
+                            onClick={closePopup}
+                        >
                             {longEventSegments.map((segment, index) => {
                                 const left = (segment.startDayIndex / DAY_COUNT_IN_WEEK) * 100;
                                 const width = ((segment.endDayIndex - segment.startDayIndex + 1) / DAY_COUNT_IN_WEEK) * 100;
+                                const segmentTop = 8 + (segment.rowIndex * 34);
+                                const segmentHeight = 28;
 
                                 return (
                                     <div
@@ -203,13 +210,29 @@ export function WeekCalendarLayout(props) {
                                         style={{
                                             left: `${left}%`,
                                             width: `${width}%`,
-                                            top: `${8 + (segment.rowIndex * 34)}px`,
+                                            top: `${segmentTop}px`,
+                                        }}
+                                        onClick={(clickEvent) => {
+                                            clickEvent.stopPropagation();
+                                            setPopupContainer("long");
+                                            openPopup({
+                                                event: segment,
+                                                anchorTop: segmentTop + segmentHeight + 8,
+                                                placement: "below",
+                                            });
                                         }}
                                     >
                                         {segment.title}
                                     </div>
                                 );
                             })}
+                            {isPopupOpen && popupContainer === "long" && (
+                                <CalendarInfoPopup
+                                    event={selectedEvent}
+                                    position={popupPosition}
+                                    onClose={closePopup}
+                                />
+                            )}
                         </div>
                     </div>
                 )}
@@ -269,6 +292,7 @@ export function WeekCalendarLayout(props) {
                                             }}
                                             onClick={(clickEvent) => {
                                                 clickEvent.stopPropagation();
+                                                setPopupContainer("grid");
                                                 openPopup({
                                                     event,
                                                     top,
@@ -281,7 +305,7 @@ export function WeekCalendarLayout(props) {
                                 })
                             )}
 
-                            {isPopupOpen && (
+                            {isPopupOpen && popupContainer === "grid" && (
                                 <CalendarInfoPopup
                                     event={selectedEvent}
                                     position={popupPosition}
