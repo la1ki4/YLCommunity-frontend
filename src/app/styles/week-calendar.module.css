@@ -155,7 +155,14 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    transition: box-shadow 0.25s ease, transform 0.15s ease;
 }
+.weekLongEvent:hover{
+    z-index: 1;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    transform: translateY(-2px);
+}
+
 
 .weekScroll{
     height: 100%;

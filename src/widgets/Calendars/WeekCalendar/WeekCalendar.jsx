@@ -245,7 +245,7 @@ export function WeekCalendarLayout(props) {
 
                                     const dayWidth = 100 / 7;
                                     const width = dayWidth / events.length;
-                                    const left = (dayWidth * dayIndex) + (width * index) - overlap;
+                                    const left = (dayWidth * dayIndex) + (width * index) - (overlap * 0.3);
 
                                     return (
                                         <CalendarEvent

@@ -100,8 +100,8 @@ export function DayCalendar({date, onChangeDate}) {
                             const top = startMinutes * PX_PER_MINUTE;
                             const height = durationMinutes * PX_PER_MINUTE;
 
-                            const reservedRight = 15;
-                            const overlapGap = 2;
+                            const reservedRight = 3;
+                            const overlapGap = 1;
 
                             const availableWidth = 100 - reservedRight + overlapGap;
 
