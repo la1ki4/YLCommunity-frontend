@@ -215,7 +215,7 @@
     font-family: "Roboto-bold";
     color: white;
     font-size: 28px;
-    line-height: 1;
+    line-height: 0.75;
 }
 
 .calendarInfoDate {
