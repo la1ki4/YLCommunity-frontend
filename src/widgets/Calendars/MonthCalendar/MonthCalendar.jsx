@@ -5,9 +5,9 @@ import { Media } from "@shared/Image/Media.jsx";
 import leftIcon from "@app/assets/Vector-left.svg";
 import rightIcon from "@app/assets/Vector-right.svg";
 
-import { DOW, MONTH_NAMES } from "@features/calendar/constants/calendar.constants";
-import { shiftMonth } from "@features/calendar/utils/monthCalendar.utils";
-import { useMonthGrid } from "@features/calendar/hooks/useMonthGrid";
+import { DOW, MONTH_NAMES } from "@features/calendar/constants/calendar.constants.js";
+import { shiftMonth } from "@features/calendar/utils/monthCalendar.utils.js";
+import { useMonthGrid } from "@features/calendar/hooks/useMonthGrid.js";
 
 export function MonthCalendar({ view, onChangeView }) {
     const calendar = useMonthGrid(view.year, view.monthIndex);

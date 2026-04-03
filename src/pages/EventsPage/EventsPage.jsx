@@ -8,7 +8,7 @@ import { CalendarMenu } from "@widgets/Calendars/CalendarMenu.jsx";
 import { MiniCalendar } from "@widgets/Calendars/Minicalendar.jsx";
 import { DayCalendar } from "@widgets/Calendars/DayCalendar/DayCalendar.jsx";
 import { WeekCalendarLayout } from "@widgets/Calendars/WeekCalendar/WeekCalendar.jsx";
-import { MonthCalendar } from "@widgets/Calendars/MonthCalendar.jsx";
+import { MonthCalendar } from "@widgets/Calendars/MonthCalendar/MonthCalendar.jsx";
 import { YearCalendar } from "@widgets/Calendars/YearCalendar.jsx";
 
 import { useEventsPageCalendarController } from "@features/calendar/hooks/useEventsPageCalendarController";
