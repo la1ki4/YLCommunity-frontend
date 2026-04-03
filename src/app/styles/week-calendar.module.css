@@ -284,11 +284,16 @@
     font-size: 13px;
     overflow: hidden;
     border-left: 3px solid rgb(75, 136, 12);
+    border-right: none;
+    border-bottom: none;
+    border-top: none;
+    transition: box-shadow 1s ease, transform 0.2s ease;
 }
 
 .weekEvent:hover {
     z-index: 100;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px);
 }
 
 .weekEventText{
