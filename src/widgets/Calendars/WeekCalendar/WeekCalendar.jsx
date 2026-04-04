@@ -70,6 +70,7 @@ export function WeekCalendarLayout(props) {
     const weekContainsToday = useMemo(() => isDateInWeek(today, weekStart), [today, weekStart]);
 
     const hLinesRef = useRef(null);
+    const weekCalendarRef = useRef(null);
     const gridHeight = useElementHeight(hLinesRef);
     const nowTop = useMemo(() => calcNowTopPx(now, gridHeight), [now, gridHeight]);
     const {
@@ -79,7 +80,6 @@ export function WeekCalendarLayout(props) {
         openPopup,
         closePopup,
     } = useCalendarEventInfoPopup();
-    const [popupContainer, setPopupContainer] = useState("grid");
 
     const result = groupEventsByDateMap(timelineEvents);
 
@@ -119,10 +119,10 @@ export function WeekCalendarLayout(props) {
     }, [longEventSegments]);
 
     return (
-        <section className={eventsPageStyle.weekCalendar}>
-            <WeekCalendarHeader anchor={currentDate} selected={selected} onAnchorDateChange={onAnchorDateChange}
-                                weekStart={weekStart} onSelect={onSelect} monday={monday}/>
-            <div className={eventsPageStyle.weekBody}>
+        <section className={eventsPageStyle.weekCalendar} ref={weekCalendarRef}>
+            <div className={eventsPageStyle.weekTop}>
+                <WeekCalendarHeader anchor={currentDate} selected={selected} onAnchorDateChange={onAnchorDateChange}
+                                    weekStart={weekStart} onSelect={onSelect} monday={monday}/>
                 {longEventSegments.length > 0 && (
                     <div className={eventsPageStyle.weekLongEvents}>
                         <div className={eventsPageStyle.weekLongEventsSpacer}/>
@@ -135,7 +135,6 @@ export function WeekCalendarLayout(props) {
                                 const left = (segment.startDayIndex / DAY_COUNT_IN_WEEK) * 100;
                                 const width = ((segment.endDayIndex - segment.startDayIndex + 1) / DAY_COUNT_IN_WEEK) * 100;
                                 const segmentTop = 8 + (segment.rowIndex * 34);
-                                const segmentHeight = 28;
 
                                 return (
                                     <div
@@ -148,10 +147,15 @@ export function WeekCalendarLayout(props) {
                                         }}
                                         onClick={(clickEvent) => {
                                             clickEvent.stopPropagation();
-                                            setPopupContainer("long");
+                                            const weekRect = weekCalendarRef.current?.getBoundingClientRect();
+                                            const eventRect = clickEvent.currentTarget.getBoundingClientRect();
+                                            const anchorTop = weekRect
+                                                ? (eventRect.bottom - weekRect.top + 8)
+                                                : (segmentTop + 36);
+
                                             openPopup({
                                                 event: segment,
-                                                anchorTop: segmentTop + segmentHeight + 8,
+                                                anchorTop,
                                                 placement: "below",
                                             });
                                         }}
@@ -160,16 +164,11 @@ export function WeekCalendarLayout(props) {
                                     </div>
                                 );
                             })}
-                            {isPopupOpen && popupContainer === "long" && (
-                                <CalendarInfoPopup
-                                    event={selectedEvent}
-                                    position={popupPosition}
-                                    onClose={closePopup}
-                                />
-                            )}
                         </div>
                     </div>
                 )}
+            </div>
+            <div className={eventsPageStyle.weekBody}>
                 <div className={eventsPageStyle.weekScroll}>
                     <div className={eventsPageStyle.weekTimes}>
                         {hours.map((h) => (
@@ -226,28 +225,23 @@ export function WeekCalendarLayout(props) {
                                             }}
                                             onClick={(clickEvent) => {
                                                 clickEvent.stopPropagation();
-                                                setPopupContainer("grid");
+                                                const weekRect = weekCalendarRef.current?.getBoundingClientRect();
+                                                const eventRect = clickEvent.currentTarget.getBoundingClientRect();
+                                                const anchorTop = weekRect
+                                                    ? (eventRect.bottom - weekRect.top + 8)
+                                                    : (top + height + 8);
                                                 openPopup({
                                                     event,
                                                     top,
                                                     height,
                                                     gridHeight,
+                                                    anchorTop,
                                                 });
                                             }}
                                         />
                                     );
                                 })
                             )}
-
-                            {isPopupOpen && popupContainer === "grid" && (
-                                <CalendarInfoPopup
-                                    event={selectedEvent}
-                                    position={popupPosition}
-                                    onClose={closePopup}
-                                />
-                            )}
-
-
 
                             {weekContainsToday && (
                                 <div
@@ -259,6 +253,13 @@ export function WeekCalendarLayout(props) {
                     </div>
                 </div>
             </div>
+            {isPopupOpen && (
+                <CalendarInfoPopup
+                    event={selectedEvent}
+                    position={popupPosition}
+                    onClose={closePopup}
+                />
+            )}
         </section>
     );
 }

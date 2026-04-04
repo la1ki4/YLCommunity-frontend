@@ -9,12 +9,15 @@
     max-width: 100%;
     min-width: 0;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 
     box-sizing: border-box;
 
     background: #1B1B1B;
     border-radius: 20px;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .weekHeaderDays,
@@ -31,6 +34,16 @@
     background: #242424;
     padding: var(--headerPadY) var(--headerPadX);
     border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 4;
+}
+
+.weekTop{
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: #111111;
 }
 
 .weekHeaderLeft{
@@ -129,6 +142,8 @@
 
 .weekBody{
     flex: 1;
+    display: flex;
+    flex-direction: column;
     min-height: 0;
 }
 
@@ -172,11 +187,12 @@
 
 
 .weekScroll{
-    height: 100%;
+    flex: 1;
     min-height: 0;
     display: grid;
     grid-template-columns: var(--timeColW) 1fr;
-    overflow: visible;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 
