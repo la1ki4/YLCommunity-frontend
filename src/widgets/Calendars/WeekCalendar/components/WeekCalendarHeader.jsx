@@ -74,7 +74,7 @@ export default function WeekCalendarHeader(props) {
 
             <div className={eventsPageStyle.weekHeaderDays}>
                 {days.map((d) => {
-                    const isToday = isSameDay(new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate()), today);
+                    const isToday = isSameDay(d.dateObj, today);
                     return (
                         <div key={d.dateObj.toISOString()} className={eventsPageStyle.weekHeaderDay}>
                             <Text className={eventsPageStyle.weekDayName} text={d.label}/>
