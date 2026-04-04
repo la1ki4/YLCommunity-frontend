@@ -82,10 +82,10 @@ export default function WeekCalendarHeader(props) {
                                 className={[
                                     eventsPageStyle.weekDayNumber,
                                     d.selected ? eventsPageStyle.weekDayNumberSelected : "",
-                                    isToday && eventsPageStyle.weekDayNumberToday
+                                    isToday && eventsPageStyle.weekDayNumberToday,
                                 ].filter(Boolean).join(" ")}
                             >
-                                <Text className={eventsPageStyle.weekDayNumberText} text={String(d.date)}/>
+                                <Text className={isToday ? eventsPageStyle.weekDayNumberTextToday : eventsPageStyle.weekDayNumberText} text={String(d.date)}/>
                             </div>
                         </div>
                     );

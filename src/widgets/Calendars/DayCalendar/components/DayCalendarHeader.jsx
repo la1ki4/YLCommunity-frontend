@@ -7,12 +7,17 @@ import leftIcon from "@app/assets/Vector-left.svg";
 import rightIcon from "@app/assets/Vector-right.svg";
 import {useMemo} from "react";
 import {createNavCalendar} from "@features/calendar/utils/navCalendar.js";
+import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
+import {useNow} from "@features/calendar/hooks/useNow.js";
+import {MINICALENDAR_TICK_MS} from "@features/calendar/constants/miniCalendar.constants.js";
 
 export function DayCalendarHeader(props) {
     const { viewDate, onChangeDate, onSelect } = props;
     const dowIndex = (viewDate.getDay() + 6) % 7;
     const dowText = DOW[dowIndex];
     const day = viewDate.getDate();
+    const today = useNow(MINICALENDAR_TICK_MS);
+    const isToday = isSameDay(viewDate,today);
 
     const navCalendar = useMemo(
         () =>
@@ -40,7 +45,10 @@ export function DayCalendarHeader(props) {
                 <div className={eventsPageStyle.badge}>
                     <div>
                         <div className={eventsPageStyle.dow}>{dowText}</div>
-                        <div className={eventsPageStyle.pill}>{day}</div>
+                        <div className={[
+                            isToday && eventsPageStyle.todayPill,
+                            eventsPageStyle.pill
+                        ].filter(Boolean).join(" ")}>{day}</div>
                     </div>
                 </div>
             </div>

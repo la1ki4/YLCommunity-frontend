@@ -324,6 +324,11 @@
     font-family: Roboto-regular;
 }
 
+.todayPill{
+    background-color: #9dfd40;
+    color: #1B1B1B !important;
+}
+
 .dayTitle {
     font-size: 28px;
     font-weight: 800;

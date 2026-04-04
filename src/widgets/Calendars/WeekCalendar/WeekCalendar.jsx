@@ -24,7 +24,6 @@ import {
     buildLongEventSegments,
     groupEventsByDateMap
 } from "@features/calendars/weekCalendar.utils.js";
-import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 
 export function WeekCalendarLayout(props) {
 

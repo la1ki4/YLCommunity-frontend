@@ -113,6 +113,13 @@
     background-color: #9dfd40;
 }
 
+.weekDayNumberTextToday{
+    color: #1B1B1B !important;
+    font-family: 'Roboto-regular';
+    font-size: 11px;
+    line-height: 1;
+}
+
 .weekDayNumberText{
     color: white;
     font-family: 'Roboto-regular';
