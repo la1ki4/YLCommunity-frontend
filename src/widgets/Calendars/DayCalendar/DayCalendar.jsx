@@ -38,7 +38,6 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
     const events = useEventsBetweenDates({startDate: viewDate, endDate: viewDate});
     const {timelineEvents, longEvents} = useDivideCalendarEvents({events, viewDate});
     const {isPopupOpen, selectedEvent, popupPosition, openPopup, closePopup} = useCalendarEventInfoPopup();
-
     const sortedEvents = useMemo(
         () => prepareDayEvents(timelineEvents),
         [timelineEvents]
