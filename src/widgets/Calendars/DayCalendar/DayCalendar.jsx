@@ -26,6 +26,7 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
         []
     );
 
+    const dayRef = useRef(null);
     const gridRef = useRef(null);
     const dayBodyRef = useRef(null);
     const gridHeight = useElementHeight(gridRef);
@@ -44,10 +45,9 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
     );
 
     return (
-        <section className={eventsPageStyle.day} aria-label="Day calendar" onClick={closePopup}>
-            <DayCalendarHeader viewDate={viewDate} onChangeDate={onChangeDate} onSelect={onSelect}></DayCalendarHeader>
-
-            <div className={eventsPageStyle.dayBody} ref={dayBodyRef}>
+        <section className={eventsPageStyle.day} aria-label="Day calendar" onClick={closePopup} ref={dayRef}>
+            <div className={eventsPageStyle.dayTop}>
+                <DayCalendarHeader viewDate={viewDate} onChangeDate={onChangeDate} onSelect={onSelect}></DayCalendarHeader>
                 {longEvents.length > 0 && (
                     <div className={eventsPageStyle.dayLongEvents}>
                         {longEvents.map((event, index) => (
@@ -58,11 +58,10 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                                 onClick={(clickEvent) => {
                                     clickEvent.stopPropagation();
 
-                                    const dayBodyRect = dayBodyRef.current?.getBoundingClientRect();
+                                    const dayRect = dayRef.current?.getBoundingClientRect();
                                     const eventRect = clickEvent.currentTarget.getBoundingClientRect();
-                                    const scrollTop = dayBodyRef.current?.scrollTop ?? 0;
-                                    const anchorTop = dayBodyRect
-                                        ? (eventRect.bottom - dayBodyRect.top + scrollTop + 8)
+                                    const anchorTop = dayRect
+                                        ? (eventRect.bottom - dayRect.top + 8)
                                         : 0;
 
                                     openPopup({
@@ -77,7 +76,9 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                         ))}
                     </div>
                 )}
+            </div>
 
+            <div className={eventsPageStyle.dayBody} ref={dayBodyRef}>
                 <div className={eventsPageStyle.timeline}>
                     <div className={eventsPageStyle.timeCol} aria-hidden="true">
                         {hours.map((time) => (
@@ -122,11 +123,10 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                                     onClick={(clickEvent) => {
                                         clickEvent.stopPropagation();
 
-                                        const dayBodyRect = dayBodyRef.current?.getBoundingClientRect();
+                                        const dayRect = dayRef.current?.getBoundingClientRect();
                                         const eventRect = clickEvent.currentTarget.getBoundingClientRect();
-                                        const scrollTop = dayBodyRef.current?.scrollTop ?? 0;
-                                        const anchorTop = dayBodyRect
-                                            ? (eventRect.bottom - dayBodyRect.top + scrollTop + 8)
+                                        const anchorTop = dayRect
+                                            ? (eventRect.bottom - dayRect.top + 8)
                                             : (top + height + 8);
 
                                         openPopup({
@@ -151,14 +151,15 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                     </div>
                 </div>
 
-                {isPopupOpen && (
-                    <CalendarInfoPopup
-                        event={selectedEvent}
-                        position={popupPosition}
-                        onClose={closePopup}
-                    />
-                )}
             </div>
+
+            {isPopupOpen && (
+                <CalendarInfoPopup
+                    event={selectedEvent}
+                    position={popupPosition}
+                    onClose={closePopup}
+                />
+            )}
         </section>
     );
 }

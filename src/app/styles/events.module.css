@@ -279,9 +279,19 @@
 .day {
     position: relative;
     flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     min-width: 0;
-    overflow-y: auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.dayTop {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: #0f0f0f;
 }
 
 .dayHeader {
@@ -292,6 +302,9 @@
     justify-content: space-between;
     border-radius: 24px 24px 0 0;
     background: rgb(36, 36, 36);
+    position: sticky;
+    top: 0;
+    z-index: 4;
 }
 
 .dayLeft {
@@ -361,7 +374,9 @@
 
 .dayBody {
     flex: 1;
-    overflow: auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 0;
     background: #0f0f0f;
     position: relative;
@@ -867,4 +882,3 @@
         width: 100%;
     }
 }
-
