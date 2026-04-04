@@ -106,7 +106,11 @@
 }
 
 .weekDayNumberSelected{
-    background: #9EFF40;
+    background-color: #203c05;
+}
+
+.weekDayNumberToday{
+    background-color: #9dfd40;
 }
 
 .weekDayNumberText{
@@ -114,10 +118,6 @@
     font-family: 'Roboto-regular';
     font-size: 11px;
     line-height: 1;
-}
-
-.weekDayNumberSelected .weekDayNumberText{
-    color: #0b0b0b;
 }
 
 .weekBody{

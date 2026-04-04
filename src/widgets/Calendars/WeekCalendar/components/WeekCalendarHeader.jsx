@@ -8,6 +8,9 @@ import {useWeekDays} from "@features/calendar/hooks/useWeekDays.js";
 import {DOW, MONTH_NAMES} from "@features/calendar/constants/calendar.constants.js";
 import {useMemo} from "react";
 import {createNavCalendar} from "@features/calendar/utils/navCalendar.js";
+import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
+import {useNow} from "@features/calendar/hooks/useNow.js";
+import {MINICALENDAR_TICK_MS} from "@features/calendar/constants/miniCalendar.constants.js";
 
 export default function WeekCalendarHeader(props) {
 
@@ -17,6 +20,7 @@ export default function WeekCalendarHeader(props) {
         selected,
         onAnchorDateChange,
         onSelect,
+        monday
     } = props;
 
     const headerMonth = MONTH_NAMES[anchor.getMonth()];
@@ -28,12 +32,14 @@ export default function WeekCalendarHeader(props) {
         dowLabels: DOW,
     });
 
+    const today = useNow(MINICALENDAR_TICK_MS);
+
     const navCalendar = useMemo(
         () =>
             createNavCalendar({
                 setAnchor: (updater) => {
                     const next =
-                        typeof updater === "function" ? updater(anchor) : updater;
+                        typeof updater === "function" ? updater(monday) : updater;
 
                     onAnchorDateChange?.(next);
                     onSelect?.({
@@ -42,12 +48,12 @@ export default function WeekCalendarHeader(props) {
                         year: next.getFullYear(),
                     });
                 },
-                setWeekStart: ()=>{
+                setWeekStart: () => {
 
                 },
                 onAnchorDateChange,
             }),
-        [anchor, onAnchorDateChange, onSelect]
+        [monday, onAnchorDateChange, onSelect]
     );
 
     return (
@@ -67,19 +73,23 @@ export default function WeekCalendarHeader(props) {
             </div>
 
             <div className={eventsPageStyle.weekHeaderDays}>
-                {days.map((d) => (
-                    <div key={d.dateObj.toISOString()} className={eventsPageStyle.weekHeaderDay}>
-                        <Text className={eventsPageStyle.weekDayName} text={d.label}/>
-                        <div
-                            className={[
-                                eventsPageStyle.weekDayNumber,
-                                d.selected ? eventsPageStyle.weekDayNumberSelected : "",
-                            ].join(" ")}
-                        >
-                            <Text className={eventsPageStyle.weekDayNumberText} text={String(d.date)}/>
+                {days.map((d) => {
+                    const isToday = isSameDay(new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate()), today);
+                    return (
+                        <div key={d.dateObj.toISOString()} className={eventsPageStyle.weekHeaderDay}>
+                            <Text className={eventsPageStyle.weekDayName} text={d.label}/>
+                            <div
+                                className={[
+                                    eventsPageStyle.weekDayNumber,
+                                    d.selected ? eventsPageStyle.weekDayNumberSelected : "",
+                                    isToday && eventsPageStyle.weekDayNumberToday
+                                ].filter(Boolean).join(" ")}
+                            >
+                                <Text className={eventsPageStyle.weekDayNumberText} text={String(d.date)}/>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </header>
     )

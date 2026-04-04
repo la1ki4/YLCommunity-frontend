@@ -24,6 +24,7 @@ import {
     buildLongEventSegments,
     groupEventsByDateMap
 } from "@features/calendars/weekCalendar.utils.js";
+import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 
 export function WeekCalendarLayout(props) {
 
@@ -121,7 +122,7 @@ export function WeekCalendarLayout(props) {
     return (
         <section className={eventsPageStyle.weekCalendar}>
             <WeekCalendarHeader anchor={currentDate} selected={selected} onAnchorDateChange={onAnchorDateChange}
-                                weekStart={weekStart} onSelect={onSelect} />
+                                weekStart={weekStart} onSelect={onSelect} monday={monday}/>
             <div className={eventsPageStyle.weekBody}>
                 {longEventSegments.length > 0 && (
                     <div className={eventsPageStyle.weekLongEvents}>

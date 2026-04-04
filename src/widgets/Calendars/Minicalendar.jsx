@@ -92,7 +92,6 @@ export function MiniCalendar({ year, selected, onSelect, forceMonthIndex = null 
                                     !isOtherMonth &&
                                     isSameDay(new Date(view.year, view.monthIndex, dayNum), today);
 
-                                const shouldHighlight = isSelected || (!selected && isToday);
 
                                 return (
                                     <Button
@@ -104,7 +103,8 @@ export function MiniCalendar({ year, selected, onSelect, forceMonthIndex = null 
                                         className={[
                                             eventsPageStyle.miniCalendarDayButton,
                                             isOtherMonth && eventsPageStyle.miniCalendarOtherMonth,
-                                            shouldHighlight && eventsPageStyle.miniCalendarDaySelected,
+                                            isSelected && eventsPageStyle.miniCalendarDaySelected,
+                                            isToday && eventsPageStyle.miniCalendarTodaySelected
                                         ].filter(Boolean).join(" ")}
                                     >
                                         <Text
@@ -112,7 +112,6 @@ export function MiniCalendar({ year, selected, onSelect, forceMonthIndex = null 
                                             className={[
                                                 eventsPageStyle.miniCalendarDayNumber,
                                                 isOtherMonth && eventsPageStyle.miniCalendarOtherMonthText,
-                                                shouldHighlight && eventsPageStyle.miniCalendarTextDaySelected,
                                             ].filter(Boolean).join(" ")}
                                             text={cell.label}
                                         />

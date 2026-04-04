@@ -249,10 +249,6 @@
     border-radius: 50%;
 }
 
-.miniCalendarTextDaySelected{
-    color: #1B1B1B;
-}
-
 .miniCalendarDayNumber {
     display: block;
     line-height: 1;
@@ -265,11 +261,11 @@
 }
 
 .miniCalendarDaySelected{
-    background-color: #9EFF40;
+    background-color: rgb(23, 46, 4);
 }
 
 .miniCalendarDaySelected:hover{
-    background-color: #9EFF40;
+    background-color: #203c05;
 }
 
 .miniCalendarDaySelectedSoft{
@@ -324,8 +320,8 @@
     border-radius: 999px;
     display: grid;
     place-items: center;
-    background: rgb(157, 253, 64);
-    font-family: Roboto-light;
+    color: #9EFF40;
+    font-family: Roboto-regular;
 }
 
 .dayTitle {
@@ -394,6 +390,15 @@
     z-index: 1;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     transform: translateY(-2px);
+}
+
+.miniCalendarTodaySelected{
+    background-color: #9EFF40;
+    color: #1B1B1B;
+}
+
+.miniCalendarTodaySelected:hover {
+    background-color: #a9fa70;
 }
 
 .timeline {
