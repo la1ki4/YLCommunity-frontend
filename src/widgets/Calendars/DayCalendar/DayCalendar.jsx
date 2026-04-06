@@ -1,4 +1,4 @@
-import {useMemo, useRef} from "react";
+import {useCallback, useMemo, useRef} from "react";
 import eventsPageStyle from "@app/styles/events.module.css";
 import buttonStyle from "@app/styles/button.module.css";
 
@@ -38,6 +38,29 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
     const events = useEventsBetweenDates({startDate: viewDate, endDate: viewDate});
     const {timelineEvents, longEvents} = useDivideCalendarEvents({events, viewDate});
     const {isPopupOpen, selectedEvent, popupPosition, openPopup, closePopup} = useCalendarEventInfoPopup();
+    const dayScrollTopRef = useRef(0);
+
+    const handleDayBodyScroll = useCallback((event) => {
+        const {currentTarget} = event;
+
+        if (isPopupOpen) {
+            currentTarget.scrollTop = dayScrollTopRef.current;
+            closePopup();
+            return;
+        }
+
+        dayScrollTopRef.current = currentTarget.scrollTop;
+    }, [isPopupOpen, closePopup]);
+
+    const handleDayBodyWheel = useCallback((event) => {
+        if (!isPopupOpen) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        closePopup();
+    }, [isPopupOpen, closePopup]);
     const sortedEvents = useMemo(
         () => prepareDayEvents(timelineEvents),
         [timelineEvents]
@@ -77,7 +100,12 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                 )}
             </div>
 
-            <div className={eventsPageStyle.dayBody} ref={dayBodyRef}>
+            <div
+                className={eventsPageStyle.dayBody}
+                ref={dayBodyRef}
+                onScrollCapture={handleDayBodyScroll}
+                onWheelCapture={handleDayBodyWheel}
+            >
                 <div className={eventsPageStyle.timeline}>
                     <div className={eventsPageStyle.timeCol} aria-hidden="true">
                         {hours.map((time) => (

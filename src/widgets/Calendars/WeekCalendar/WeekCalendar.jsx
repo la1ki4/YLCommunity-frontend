@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import eventsPageStyle from "@app/styles/week-calendar.module.css";
 import {Text} from "@shared/Text/Text.jsx";
 
@@ -80,6 +80,31 @@ export function WeekCalendarLayout(props) {
         openPopup,
         closePopup,
     } = useCalendarEventInfoPopup();
+
+    const weekScrollRef = useRef(null);
+    const weekScrollTopRef = useRef(0);
+
+    const handleWeekScroll = useCallback((event) => {
+        const {currentTarget} = event;
+
+        if (isPopupOpen) {
+            currentTarget.scrollTop = weekScrollTopRef.current;
+            closePopup();
+            return;
+        }
+
+        weekScrollTopRef.current = currentTarget.scrollTop;
+    }, [isPopupOpen, closePopup]);
+
+    const handleWeekWheel = useCallback((event) => {
+        if (!isPopupOpen) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        closePopup();
+    }, [isPopupOpen, closePopup]);
 
     const result = groupEventsByDateMap(timelineEvents);
 
@@ -169,7 +194,12 @@ export function WeekCalendarLayout(props) {
                 )}
             </div>
             <div className={eventsPageStyle.weekBody}>
-                <div className={eventsPageStyle.weekScroll}>
+                <div
+                    className={eventsPageStyle.weekScroll}
+                    ref={weekScrollRef}
+                    onScrollCapture={handleWeekScroll}
+                    onWheelCapture={handleWeekWheel}
+                >
                     <div className={eventsPageStyle.weekTimes}>
                         {hours.map((h) => (
                             <div key={h} className={eventsPageStyle.weekTimeRow}>
