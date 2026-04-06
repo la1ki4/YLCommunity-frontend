@@ -44,7 +44,12 @@ export function CalendarInfoPopup({event, position, onClose}) {
         position?.placement === "above" ? calendarInfoPopupStyle.calendarInfoPopupAbove : "",
         position?.placement === "middle" ? calendarInfoPopupStyle.calendarInfoPopupMiddle : "",
         position?.placement === "below" ? calendarInfoPopupStyle.calendarInfoPopupBelow : "",
+        position?.horizontalPlacement === "left" ? calendarInfoPopupStyle.calendarInfoPopupLeft : "",
+        position?.horizontalPlacement === "right" ? calendarInfoPopupStyle.calendarInfoPopupRight : "",
+        !position?.horizontalPlacement || position?.horizontalPlacement === "center" ? calendarInfoPopupStyle.calendarInfoPopupCenter : "",
     ].filter(Boolean).join(" ");
+
+    const popupLeft = position?.left ?? "50%";
 
     const location = [event?.country, event?.city].filter(Boolean).join(", ");
     const ownerName = [event?.owner?.firstName, event?.owner?.lastName].filter(Boolean).join(" ");
@@ -52,7 +57,10 @@ export function CalendarInfoPopup({event, position, onClose}) {
     return (
         <div
             className={popupClassName}
-            style={{top: `${position?.top ?? 0}px`}}
+            style={{
+                top: `${position?.top ?? 0}px`,
+                left: typeof popupLeft === "number" ? `${popupLeft}px` : popupLeft,
+            }}
             onClick={(event) => event.stopPropagation()}
         >
             <div className={calendarInfoPopupStyle.calendarInfoHeader}>

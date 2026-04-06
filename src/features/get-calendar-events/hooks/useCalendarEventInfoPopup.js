@@ -28,9 +28,11 @@ export function useCalendarEventInfoPopup() {
         event: null,
         anchorTop: 0,
         placement: "below",
+        anchorLeft: "50%",
+        horizontalPlacement: "center",
     });
 
-    const openPopup = useCallback(({event, top, height, gridHeight, anchorTop, placement: explicitPlacement}) => {
+    const openPopup = useCallback(({event, top, height, gridHeight, anchorTop, placement: explicitPlacement, anchorLeft, horizontalPlacement = "center"}) => {
         const segmentStart = toDate(event.startDate);
         const segmentEnd = toDate(event.endDate);
         const originalStart = toDate(event.originalStartDate ?? event.startDate);
@@ -63,6 +65,8 @@ export function useCalendarEventInfoPopup() {
             },
             anchorTop: Math.max(0, resolvedAnchorTop ?? 0),
             placement,
+            anchorLeft: anchorLeft ?? "50%",
+            horizontalPlacement,
         });
     }, []);
 
@@ -82,14 +86,16 @@ export function useCalendarEventInfoPopup() {
 
     const popupPosition = useMemo(() => {
         if (!state.event) {
-            return {placement: "below", top: 0};
+            return {placement: "below", top: 0, left: "50%", horizontalPlacement: "center"};
         }
 
         return {
             placement: state.placement,
             top: state.anchorTop,
+            left: state.anchorLeft,
+            horizontalPlacement: state.horizontalPlacement,
         };
-    }, [state.anchorTop, state.event, state.placement]);
+    }, [state.anchorLeft, state.anchorTop, state.event, state.horizontalPlacement, state.placement]);
 
     return {
         isPopupOpen: state.isOpen,

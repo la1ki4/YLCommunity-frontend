@@ -178,10 +178,19 @@ export function WeekCalendarLayout(props) {
                                                 ? (eventRect.bottom - weekRect.top + 8)
                                                 : (segmentTop + 36);
 
+                                            const horizontalPlacement = segment.startDayIndex === 0 ? "right" : "left";
+                                            const anchorLeft = weekRect
+                                                ? (horizontalPlacement === "right"
+                                                    ? (eventRect.right - weekRect.left + 8)
+                                                    : (eventRect.left - weekRect.left - 8))
+                                                : undefined;
+
                                             openPopup({
                                                 event: segment,
                                                 anchorTop,
                                                 placement: "below",
+                                                anchorLeft,
+                                                horizontalPlacement,
                                             });
                                         }}
                                     >
@@ -260,12 +269,21 @@ export function WeekCalendarLayout(props) {
                                                 const anchorTop = weekRect
                                                     ? (eventRect.bottom - weekRect.top + 8)
                                                     : (top + height + 8);
+                                                const horizontalPlacement = dayIndex === 0 ? "right" : "left";
+                                                const anchorLeft = weekRect
+                                                    ? (horizontalPlacement === "right"
+                                                        ? (eventRect.right - weekRect.left + 8)
+                                                        : (eventRect.left - weekRect.left - 8))
+                                                    : undefined;
+
                                                 openPopup({
                                                     event,
                                                     top,
                                                     height,
                                                     gridHeight,
                                                     anchorTop,
+                                                    anchorLeft,
+                                                    horizontalPlacement,
                                                 });
                                             }}
                                         />

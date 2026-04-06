@@ -1,4 +1,5 @@
 .weekCalendar{
+    position: relative;
     --timeColW: 50px;
     --headerPadY: 8px;
     --headerPadX: 10px;
@@ -345,6 +346,7 @@
     }
 
     .weekCalendar{
+    position: relative;
         height: auto;
         overflow: visible;
     }

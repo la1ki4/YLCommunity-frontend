@@ -175,8 +175,10 @@
     font-family: "Roboto-regular";
 }
 .calendarInfoPopup {
+    --popup-translate-x: -50%;
+    --popup-translate-y: 0;
+
     position: absolute;
-    left: 50%;
     width: min(600px, calc(100% - 32px));
     padding: 20px;
     background-color: #111111;
@@ -184,18 +186,31 @@
     border-radius: 18px;
     z-index: 4;
     box-sizing: border-box;
+    transform: translate(var(--popup-translate-x), var(--popup-translate-y));
 }
 
 .calendarInfoPopupBelow {
-    transform: translate(-50%, 0);
+    --popup-translate-y: 0;
 }
 
 .calendarInfoPopupAbove {
-    transform: translate(-50%, -100%);
+    --popup-translate-y: -100%;
 }
 
 .calendarInfoPopupMiddle {
-    transform: translate(-50%, -50%);
+    --popup-translate-y: -50%;
+}
+
+.calendarInfoPopupCenter {
+    --popup-translate-x: -50%;
+}
+
+.calendarInfoPopupLeft {
+    --popup-translate-x: -100%;
+}
+
+.calendarInfoPopupRight {
+    --popup-translate-x: 0;
 }
 
 .calendarInfoHeader {
