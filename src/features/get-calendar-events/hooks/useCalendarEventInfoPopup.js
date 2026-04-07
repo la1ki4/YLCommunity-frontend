@@ -52,8 +52,6 @@ export function useCalendarEventInfoPopup() {
             }
         }
 
-        console.log(resolvedAnchorTop);
-
         setState({
             isOpen: true,
             event: {
