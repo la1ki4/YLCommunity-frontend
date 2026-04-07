@@ -34,25 +34,17 @@ function formatEventDateRange(start, end) {
     return `${startFormatted} - ${endFormatted}`;
 }
 
-export function CalendarInfoPopup({event, position, onClose}) {
+export function CalendarInfoPopup({event, onClose}) {
     if (!event) {
         return null;
     }
-
-    const popupClassName = [
-        calendarInfoPopupStyle.calendarInfoPopup,
-        position?.placement === "above" ? calendarInfoPopupStyle.calendarInfoPopupAbove : "",
-        position?.placement === "middle" ? calendarInfoPopupStyle.calendarInfoPopupMiddle : "",
-        position?.placement === "below" ? calendarInfoPopupStyle.calendarInfoPopupBelow : "",
-    ].filter(Boolean).join(" ");
 
     const location = [event?.country, event?.city].filter(Boolean).join(", ");
     const ownerName = [event?.owner?.firstName, event?.owner?.lastName].filter(Boolean).join(" ");
 
     return (
         <div
-            className={popupClassName}
-            style={{top: `${position?.top ?? 0}px`}}
+            className={calendarInfoPopupStyle.calendarInfoPopup}
             onClick={(event) => event.stopPropagation()}
         >
             <div className={calendarInfoPopupStyle.calendarInfoHeader}>

@@ -9,11 +9,9 @@ import {useElementHeight} from "@features/calendar/hooks/useElementHeight.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
 import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js"
 import {useDivideCalendarEvents} from "@features/get-calendar-events/hooks/useDivideCalendarEvents.js"
-import {useCalendarEventInfoPopup} from "@features/get-calendar-events/hooks/useCalendarEventInfoPopup.js";
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {DayCalendarHeader} from "@widgets/Calendars/DayCalendar/components/DayCalendarHeader.jsx";
-import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 
 export function DayCalendar({date, onChangeDate, onSelect}) {
 
@@ -26,7 +24,6 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
         []
     );
 
-    const dayRef = useRef(null);
     const gridRef = useRef(null);
     const dayBodyRef = useRef(null);
     const gridHeight = useElementHeight(gridRef);
@@ -37,14 +34,13 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
     const showNowLine = isSameDay(viewDate, now);
     const events = useEventsBetweenDates({startDate: viewDate, endDate: viewDate});
     const {timelineEvents, longEvents} = useDivideCalendarEvents({events, viewDate});
-    const {isPopupOpen, selectedEvent, popupPosition, openPopup, closePopup} = useCalendarEventInfoPopup();
     const sortedEvents = useMemo(
         () => prepareDayEvents(timelineEvents),
         [timelineEvents]
     );
 
     return (
-        <section className={eventsPageStyle.day} aria-label="Day calendar" onClick={closePopup} ref={dayRef}>
+        <section className={eventsPageStyle.day} aria-label="Day calendar">
             <div className={eventsPageStyle.dayTop}>
                 <DayCalendarHeader viewDate={viewDate} onChangeDate={onChangeDate} onSelect={onSelect}></DayCalendarHeader>
                 {longEvents.length > 0 && (
@@ -54,21 +50,6 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                                 type="button"
                                 key={`${event.startDate}-${event.endDate}-${index}`}
                                 className={`${eventsPageStyle.dayLongEvent} ${buttonStyle.dayLongEventButton}`}
-                                onClick={(clickEvent) => {
-                                    clickEvent.stopPropagation();
-
-                                    const dayRect = dayRef.current?.getBoundingClientRect();
-                                    const eventRect = clickEvent.currentTarget.getBoundingClientRect();
-                                    const anchorTop = dayRect
-                                        ? (eventRect.bottom - dayRect.top + 8)
-                                        : 0;
-
-                                    openPopup({
-                                        event,
-                                        anchorTop,
-                                        placement: "below",
-                                    });
-                                }}
                             >
                                 {event.title}
                             </button>
@@ -119,23 +100,6 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                                         right: `${reservedRight}%`,
                                     }}
                                     title={event.title}
-                                    onClick={(clickEvent) => {
-                                        clickEvent.stopPropagation();
-
-                                        const dayRect = dayRef.current?.getBoundingClientRect();
-                                        const eventRect = clickEvent.currentTarget.getBoundingClientRect();
-                                        const anchorTop = dayRect
-                                            ? (eventRect.bottom - dayRect.top + 8)
-                                            : (top + height + 8);
-
-                                        openPopup({
-                                            event,
-                                            top,
-                                            height,
-                                            gridHeight,
-                                            anchorTop,
-                                        });
-                                    }}
                                 />
                             );
                         })}
@@ -151,14 +115,6 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                 </div>
 
             </div>
-
-            {isPopupOpen && (
-                <CalendarInfoPopup
-                    event={selectedEvent}
-                    position={popupPosition}
-                    onClose={closePopup}
-                />
-            )}
         </section>
     );
 }
