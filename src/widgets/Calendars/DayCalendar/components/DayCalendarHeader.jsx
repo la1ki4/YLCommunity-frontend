@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import {DOW} from "@features/calendar/constants/calendar.constants.js";
 import eventsPageStyle from "@app/styles/events.module.css";
 import {formatDayTitle} from "@features/calendar/utils/dayCalendar.utils.js";
@@ -11,8 +12,7 @@ import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
 import {MINICALENDAR_TICK_MS} from "@features/calendar/constants/miniCalendar.constants.js";
 
-export function DayCalendarHeader(props) {
-    const { viewDate, onChangeDate, onSelect } = props;
+export const DayCalendarHeader = forwardRef(function DayCalendarHeader({ viewDate, onChangeDate, onSelect}, ref){
     const dowIndex = (viewDate.getDay() + 6) % 7;
     const dowText = DOW[dowIndex];
     const day = viewDate.getDate();
@@ -40,7 +40,7 @@ export function DayCalendarHeader(props) {
     );
 
     return (
-        <header className={eventsPageStyle.dayHeader}>
+        <header className={eventsPageStyle.dayHeader} ref={ref}>
             <div className={eventsPageStyle.dayLeft}>
                 <div className={eventsPageStyle.badge}>
                     <div>
@@ -79,4 +79,4 @@ export function DayCalendarHeader(props) {
             </div>
         </header>
     );
-}
+})

@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import calendarInfoPopupStyle from "@app/styles/popup.module.css"
 import {Button} from "@shared/Button/Button.jsx";
 import calendarInfoButtonStyle from "@app/styles/button.module.css"
@@ -34,7 +35,7 @@ function formatEventDateRange(start, end) {
     return `${startFormatted} - ${endFormatted}`;
 }
 
-export function CalendarInfoPopup({event, onClose}) {
+export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({event, onClose, style, isVisible}, ref){
     if (!event) {
         return null;
     }
@@ -44,8 +45,13 @@ export function CalendarInfoPopup({event, onClose}) {
 
     return (
         <div
-            className={calendarInfoPopupStyle.calendarInfoPopup}
+            className={[
+                calendarInfoPopupStyle.calendarInfoPopup,
+                isVisible && calendarInfoPopupStyle.calendarInfoPopupVisible,
+            ].filter(Boolean).join(" ")}
             onClick={(event) => event.stopPropagation()}
+            style={style}
+            ref={ref}
         >
             <div className={calendarInfoPopupStyle.calendarInfoHeader}>
                 <Button className={calendarInfoButtonStyle.newPopupButton} leftIcon={<Media image={editIcon}/>}/>
@@ -75,5 +81,5 @@ export function CalendarInfoPopup({event, onClose}) {
                 <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={ownerName || "Unknown organizer"}/>
             </div>
         </div>
-    )
-}
+    );
+});

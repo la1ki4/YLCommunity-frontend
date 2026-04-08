@@ -156,6 +156,7 @@
     font-family: "Roboto-regular";
 }
 .calendarInfoPopup {
+    position: absolute;
     width: min(600px, calc(100% - 32px));
     padding: 20px;
     background-color: #111111;
@@ -163,6 +164,22 @@
     border-radius: 18px;
     z-index: 4;
     box-sizing: border-box;
+
+    opacity: 0;
+    visibility: hidden;
+    transition:
+            top 0.22s ease,
+            opacity 0.22s ease,
+            transform 0.22s ease,
+            visibility 0.22s ease;
+
+    transform: translateX(-50%) translateY(8px) scale(0.98);
+}
+
+.calendarInfoPopupVisible{
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0) scale(1);
 }
 
 .calendarInfoHeader {
