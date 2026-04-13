@@ -46,6 +46,7 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
     const longEventRef = useRef(null);
     const [popupTop, setPopupTop] = useState(0);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const selectedLongEventNodeRef = useRef(null);
 
     const openPopup = (event) => {
         setSelectedEvent(event);
@@ -137,6 +138,23 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
         setPopupTop(nextTop);
     }, [selectedEvent, sortedEvents, longEvents.length]);
 
+    useEffect(() => {
+        const buttonNode = selectedLongEventNodeRef.current;
+        const popupNode = popupRef.current;
+        const rootNode = dayBodyRef.current?.parentElement;
+
+        if (!selectedEvent || !buttonNode || !popupNode || !rootNode) {
+            return;
+        }
+
+        const buttonRect = buttonNode.getBoundingClientRect();
+        const rootRect = rootNode.getBoundingClientRect();
+
+        const nextTop = buttonRect.bottom - rootRect.top;
+
+        setPopupTop(nextTop);
+    }, [selectedEvent, longEvents.length]);
+
 
     return (
         <section className={eventsPageStyle.day} aria-label="Day calendar">
@@ -149,6 +167,8 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                                 type="button"
                                 key={`${event.startDate}-${event.endDate}-${index}`}
                                 className={`${eventsPageStyle.dayLongEvent} ${buttonStyle.dayLongEventButton}`}
+                                ref={selectedEvent === event ? selectedLongEventNodeRef : null}
+                                onClick={() => openPopup(event)}
                             >
                                 {event.title}
                             </button>
