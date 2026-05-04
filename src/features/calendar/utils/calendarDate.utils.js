@@ -17,7 +17,6 @@ export function getSunday(date) {
     const day = d.getDay();
     const diff = (7 - day) % 7;
     d.setDate(d.getDate() + diff);
-
     return d;
 }
 

@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import eventsPageStyle from "@app/styles/week-calendar.module.css";
 import {Text} from "@shared/Text/Text.jsx";
 
@@ -23,10 +23,12 @@ import {useDivideCalendarEvents} from "@features/get-calendar-events/hooks/useDi
 import {getMinutesFromStartOfDay} from "@features/calendar/utils/dayCalendar.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {PX_PER_MINUTE} from "@features/calendar/constants/weekCalendar.constants.js";
+import calendarInfoPopupStyle from "@app/styles/popup.module.css";
+import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 
 export function WeekCalendarLayout(props) {
 
-    const {date, selected, onAnchorDateChange, onSelect} = props;
+    const {date, selected, onAnchorDateChange, onSelect, mainRef} = props;
 
     const [currentDate, setCurrentDate] = useState(() => date ?? new Date());
 
@@ -110,11 +112,204 @@ export function WeekCalendarLayout(props) {
         return (maxRow + 1) * rowHeight + maxRow * rowGap + verticalPadding * 2;
     }, [longEventSegments]);
 
+
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const openPopup = (event) => {
+        setSelectedEvent(event);
+        requestAnimationFrame(() => {
+            setIsPopupVisible(true);
+        });
+    };
+
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const closePopup = () => {
+        setIsPopupVisible(false);
+
+        setTimeout(() => {
+            setSelectedEvent(null);
+        }, 220);
+    };
+
+    const weekBodyRef = useRef(null);
+
+    useEffect(() => {
+        const node = weekBodyRef.current;
+        const mainNode = mainRef?.current;
+
+        if (!node) {
+            return;
+        }
+
+        const handleInnerScroll = () => {
+            closePopup();
+        };
+
+        const handlePageScroll = () => {
+            closePopup();
+        };
+
+        const handleClick = (e) => {
+            const isEvent = e.target.closest(`.${eventsPageStyle.weekEvent}`);
+            const isPopup = e.target.closest(`.${calendarInfoPopupStyle.calendarInfoPopup}`);
+
+            if (!isEvent && !isPopup) {
+                closePopup();
+            }
+        };
+
+        node.addEventListener("scroll", handleInnerScroll);
+        node.addEventListener("click", handleClick);
+
+        if (mainNode) {
+            mainNode.addEventListener("scroll", handlePageScroll, { passive: true });
+        }
+
+        return () => {
+            node.removeEventListener("scroll", handleInnerScroll);
+            node.removeEventListener("click", handleClick);
+
+            if (mainNode) {
+                mainNode.removeEventListener("scroll", handlePageScroll);
+            }
+        };
+    }, [mainRef]);
+
+    useEffect(() => {
+        if (!selectedEvent) {
+            return;
+        }
+
+        const preventZoomWheel = (e) => {
+            if (e.ctrlKey) {
+                e.preventDefault();
+            }
+        };
+
+        const preventZoomKeys = (e) => {
+            const isZoomKey =
+                e.key === "+" ||
+                e.key === "-" ||
+                e.key === "=" ||
+                e.key === "0";
+
+            if (e.ctrlKey && isZoomKey) {
+                e.preventDefault();
+            }
+        };
+
+        window.addEventListener("wheel", preventZoomWheel, { passive: false });
+        window.addEventListener("keydown", preventZoomKeys);
+
+        return () => {
+            window.removeEventListener("wheel", preventZoomWheel);
+            window.removeEventListener("keydown", preventZoomKeys);
+        };
+    }, [selectedEvent]);
+
+
+    const selectedEventNodeRef = useRef(null);
+    const popupRef = useRef(null);
+    const calendarHeaderRef = useRef(null);
+    const [popupTop, setPopupTop] = useState(0);
+
+    useLayoutEffect(() => {
+        const headerNode = calendarHeaderRef.current;
+        const eventNode = selectedEventNodeRef.current;
+        const popupNode = popupRef.current;
+        const container = weekBodyRef.current;
+
+        if (!selectedEvent || !headerNode || !eventNode || !popupNode || !container) {
+            return;
+        }
+
+        const headerHeight = headerNode.offsetHeight;
+        const eventHeight = eventNode.offsetHeight;
+        const popupHeight = popupNode.offsetHeight;
+        const popupHalfHeight = popupHeight / 2;
+
+        const distanceToEvent = eventNode.offsetTop - container.scrollTop;
+
+        let nextTop;
+
+        if (window.innerWidth <= 1100) {
+            nextTop = 0;
+        }
+        else if (distanceToEvent > popupHeight) {
+            nextTop =
+                headerHeight +
+                distanceToEvent -
+                popupHeight;
+        }
+        else if (distanceToEvent < popupHeight && distanceToEvent > 0) {
+            const progress = distanceToEvent / popupHeight;
+
+            const topNearHeader = headerHeight;
+            const topNearEvent =
+                headerHeight +
+                distanceToEvent +
+                eventHeight / 2 -
+                popupHalfHeight;
+
+            nextTop =
+                topNearHeader +
+                (topNearEvent - topNearHeader) * progress;
+        }
+        else if (distanceToEvent < 0) {
+            nextTop = headerHeight;
+        }
+
+        setPopupTop(nextTop);
+    }, [selectedEvent]);
+
+    const [popupLeft, setPopupLeft] = useState(0);
+
+    useLayoutEffect(() => {
+        const calendarNode = weekCalendarRef.current;
+        const eventNode = selectedEventNodeRef.current;
+        const popupNode = popupRef.current;
+
+        if (!selectedEvent || !calendarNode || !eventNode || !popupNode) {
+            return;
+        }
+
+        const calendarRect = calendarNode.getBoundingClientRect();
+        const eventRect = eventNode.getBoundingClientRect();
+        const popupWidth = popupNode.offsetWidth;
+
+        const gap = 8;
+
+        const start = new Date(selectedEvent.startDate);
+        const dayIndex = getMondayBasedDayIndex(start);
+
+        let leftDistanceForPopup = 800;
+        let leftDistanceForMonday = 800;
+
+        if (window.innerWidth <= 1150 && window.innerWidth > 1100) {
+            leftDistanceForMonday = 750;
+        }
+
+        if (window.innerWidth <= 1100){
+            leftDistanceForMonday = 480;
+            leftDistanceForPopup = 480;
+        }
+
+        let nextLeft;
+
+        if (dayIndex === 0) {
+            nextLeft = eventRect.right - calendarRect.left + gap + leftDistanceForMonday;
+        }
+        else {
+            nextLeft = eventRect.left - calendarRect.left - popupWidth - gap + leftDistanceForPopup;
+        }
+
+        setPopupLeft(nextLeft);
+    }, [selectedEvent, popupTop]);
+
     return (
         <section className={eventsPageStyle.weekCalendar} ref={weekCalendarRef}>
             <div className={eventsPageStyle.weekTop}>
                 <WeekCalendarHeader anchor={currentDate} selected={selected} onAnchorDateChange={onAnchorDateChange}
-                                    weekStart={weekStart} onSelect={onSelect} monday={monday}/>
+                                    weekStart={weekStart} onSelect={onSelect} monday={monday} ref={calendarHeaderRef} />
                 {longEventSegments.length > 0 && (
                     <div className={eventsPageStyle.weekLongEvents}>
                         <div className={eventsPageStyle.weekLongEventsSpacer}/>
@@ -146,7 +341,7 @@ export function WeekCalendarLayout(props) {
                 )}
             </div>
             <div className={eventsPageStyle.weekBody}>
-                <div className={eventsPageStyle.weekScroll}>
+                <div className={eventsPageStyle.weekScroll} ref={weekBodyRef}>
                     <div className={eventsPageStyle.weekTimes}>
                         {hours.map((h) => (
                             <div key={h} className={eventsPageStyle.weekTimeRow}>
@@ -188,11 +383,13 @@ export function WeekCalendarLayout(props) {
                                     const dayWidth = 100 / 7;
                                     const width = dayWidth / events.length;
                                     const left = (dayWidth * dayIndex) + (width * index) - (overlap * 0.3);
+                                    const isSelected = selectedEvent === event;
 
                                     return (
                                         <CalendarEvent
-                                            key={`${date}-${event.startDate}`}
+                                            key={event.id}
                                             title={event.title}
+                                            ref={isSelected ? selectedEventNodeRef : null}
                                             className={eventsPageStyle.weekEvent}
                                             style={{
                                                 top: `${top}px`,
@@ -200,6 +397,7 @@ export function WeekCalendarLayout(props) {
                                                 left: `${left}%`,
                                                 width: `${width}%`,
                                             }}
+                                            onClick={() => openPopup(event)}
                                         />
                                     );
                                 })
@@ -215,6 +413,18 @@ export function WeekCalendarLayout(props) {
                     </div>
                 </div>
             </div>
+            {selectedEvent && (
+                <CalendarInfoPopup
+                    event={selectedEvent}
+                    onClose={closePopup}
+                    isVisible={isPopupVisible}
+                    ref={popupRef}
+                    style={{
+                        top: `${popupTop}px`,
+                        left: `${popupLeft}px`,
+                    }}
+                />
+            )}
         </section>
     );
 }

@@ -12,6 +12,7 @@ import { MonthCalendar } from "@widgets/Calendars/MonthCalendar/MonthCalendar.js
 import { YearCalendar } from "@widgets/Calendars/YearCalendar.jsx";
 
 import { useEventsPageCalendarController } from "@features/calendar/hooks/useEventsPageCalendarController";
+import {useRef} from "react";
 
 export default function EventsPage() {
     const {
@@ -32,10 +33,12 @@ export default function EventsPage() {
         yearCalApiRef,
     } = useEventsPageCalendarController();
 
+    const mainRef = useRef(null);
+
     return (
         <div className={mainPageStyle.layout}>
             <Header />
-            <Main>
+            <Main ref={mainRef}>
                 <div className={eventsPageStyle.mainLayer}>
                     <div className={eventsPageStyle.mainContainer}>
                         <div className={eventsPageStyle.menuLayer}>
@@ -52,7 +55,13 @@ export default function EventsPage() {
                             />
                         </div>
 
-                        {view === "Day" && <DayCalendar date={dayDate} onChangeDate={onDayChangeView} onSelect={onSelect} />}
+                        {view === "Day" &&
+                            <DayCalendar
+                                date={dayDate}
+                                onChangeDate={onDayChangeView}
+                                onSelect={onSelect}
+                            />
+                        }
 
                         {view === "Week" && (
                             <WeekCalendarLayout
@@ -60,6 +69,7 @@ export default function EventsPage() {
                                 selected={selected}
                                 onAnchorDateChange={onWeekChangeView}
                                 onSelect={onSelect}
+                                mainRef={mainRef}
                             />
                         )}
 

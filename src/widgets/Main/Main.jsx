@@ -1,9 +1,10 @@
 import mainStyles from '@app/styles/main.module.css'
+import { forwardRef } from "react";
 
-export function Main({children}) {
+export const Main = forwardRef(function Main({ children }, ref) {
     return (
-        <main className={mainStyles.main}>
+        <main ref={ref} className={mainStyles.main}>
             {children}
         </main>
-    )
-}
+    );
+});

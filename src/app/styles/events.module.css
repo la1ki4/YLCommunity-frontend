@@ -284,7 +284,7 @@
     width: 100%;
     min-width: 0;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .dayTop {
@@ -374,11 +374,10 @@
 .dayBody {
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
     padding: 0;
     background: #0f0f0f;
     position: relative;
+    overflow-y: auto;
 }
 
 
@@ -879,5 +878,14 @@
 
     .day {
         width: 100%;
+        height: auto;
+        overflow: visible;
+    }
+
+    .dayBody {
+        height: calc(100vh - 260px);
+        min-height: 420px;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 }

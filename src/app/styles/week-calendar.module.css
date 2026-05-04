@@ -2,7 +2,7 @@
     --timeColW: 50px;
     --headerPadY: 8px;
     --headerPadX: 10px;
-    --hourH: 34px;
+    --hourH: 50px;
     --gridPad: 1px;
 
     width: 100%;
@@ -14,7 +14,6 @@
     min-height: 0;
 
     box-sizing: border-box;
-
     background: #1B1B1B;
     border-radius: 20px;
     overflow: hidden;
@@ -43,7 +42,6 @@
     position: sticky;
     top: 0;
     z-index: 3;
-    background: #111111;
 }
 
 .weekHeaderLeft{
@@ -199,7 +197,7 @@
 .weekTimes{
     border-right: 1px solid rgba(255,255,255,0.08);
     background: #0e0e0e;
-    padding-top: 16px;
+    padding-top: 32px;
 }
 
 .weekTimeRow{
@@ -356,6 +354,5 @@
 
     .weekScroll{
         height: auto;
-        overflow: visible;
     }
 }

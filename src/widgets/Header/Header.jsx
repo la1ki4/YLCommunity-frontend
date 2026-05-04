@@ -9,6 +9,7 @@ import { Text } from '@shared/Text/Text.jsx'
 import ProfilePopup from '@widgets/Popup/Popup.jsx'
 import {IconText} from '@widgets/IconText/IconText.jsx'
 import userIcon from '@widgets/Header/assets/avatar.jpg'
+import {useLogout} from "@features/auth/logout/model/useLogout.js";
 
 export function Header(){
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -17,13 +18,22 @@ export function Header(){
         setIsPopupOpen(prev => !prev);
     };
 
+    const handleLogoutClick = useLogout();
+
+
     return(
         <header className={headerStyle.header}>
             <div className={headerStyle.headerContent}>
                 <Logo/>
                 <Menu/>
                 <ProfilePopup isOpen={isPopupOpen}>
-                    <Text className={`${textStyle.popUpTextBlock} ${textStyle.defaultWhiteText}` } as="a" text="Log out" href="#"/>
+                    <Text
+                        className={`${textStyle.popupTextBlock} ${textStyle.defaultWhiteText}`}
+                        as="a"
+                        text="Log out"
+                        href="#"
+                        onClick={handleLogoutClick}
+                    />
                 </ProfilePopup>
                 <div onClick={togglePopup}>
                 <IconText 

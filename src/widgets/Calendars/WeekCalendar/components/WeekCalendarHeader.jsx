@@ -1,3 +1,4 @@
+import { forwardRef, useMemo } from "react";
 import eventsPageStyle from "@app/styles/week-calendar.module.css";
 import {Text} from "@shared/Text/Text.jsx";
 import {Button} from "@shared/Button/Button.jsx";
@@ -6,14 +7,12 @@ import leftIcon from "@app/assets/Vector-left.svg";
 import rightIcon from "@app/assets/Vector-right.svg";
 import {useWeekDays} from "@features/calendar/hooks/useWeekDays.js";
 import {DOW, MONTH_NAMES} from "@features/calendar/constants/calendar.constants.js";
-import {useMemo} from "react";
 import {createNavCalendar} from "@features/calendar/utils/navCalendar.js";
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
 import {MINICALENDAR_TICK_MS} from "@features/calendar/constants/miniCalendar.constants.js";
 
-export default function WeekCalendarHeader(props) {
-
+const WeekCalendarHeader = forwardRef(function WeekCalendarHeader(props, ref) {
     const {
         anchor,
         weekStart,
@@ -48,16 +47,14 @@ export default function WeekCalendarHeader(props) {
                         year: next.getFullYear(),
                     });
                 },
-                setWeekStart: () => {
-
-                },
+                setWeekStart: () => {},
                 onAnchorDateChange,
             }),
         [monday, onAnchorDateChange, onSelect]
     );
 
     return (
-        <header className={eventsPageStyle.weekHeader}>
+        <header className={eventsPageStyle.weekHeader} ref={ref}>
             <div className={eventsPageStyle.weekHeaderLeft}>
                 <Text className={eventsPageStyle.weekMonth} text={headerMonth}/>
                 <Text className={eventsPageStyle.weekYear} text={headerYear}/>
@@ -75,6 +72,7 @@ export default function WeekCalendarHeader(props) {
             <div className={eventsPageStyle.weekHeaderDays}>
                 {days.map((d) => {
                     const isToday = isSameDay(d.dateObj, today);
+
                     return (
                         <div key={d.dateObj.toISOString()} className={eventsPageStyle.weekHeaderDay}>
                             <Text className={eventsPageStyle.weekDayName} text={d.label}/>
@@ -85,12 +83,21 @@ export default function WeekCalendarHeader(props) {
                                     isToday && eventsPageStyle.weekDayNumberToday,
                                 ].filter(Boolean).join(" ")}
                             >
-                                <Text className={isToday ? eventsPageStyle.weekDayNumberTextToday : eventsPageStyle.weekDayNumberText} text={String(d.date)}/>
+                                <Text
+                                    className={
+                                        isToday
+                                            ? eventsPageStyle.weekDayNumberTextToday
+                                            : eventsPageStyle.weekDayNumberText
+                                    }
+                                    text={String(d.date)}
+                                />
                             </div>
                         </div>
                     );
                 })}
             </div>
         </header>
-    )
-}
+    );
+});
+
+export default WeekCalendarHeader;

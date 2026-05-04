@@ -5,9 +5,7 @@ const Popup = ({ isOpen, children }) => {
 
   return (
     <div className={popupStyle.popupOverlay}>
-      <div>
         {children}
-      </div>
     </div>
   );
 };

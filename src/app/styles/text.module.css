@@ -3,7 +3,7 @@
     src: url('@fonts/klavika-light.otf') format('woff2');
 }
 
-.popUpTextBlock{
+.popupTextBlock{
     display: block;
     padding: 10px;
     border-radius: 10px;
@@ -14,6 +14,11 @@
     color: white;
     font-family: 'Klavika-light';
     text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.defaultWhiteText:hover{
+    background-color: #191919;
 }
 
 .leftDistance{
