@@ -31,7 +31,6 @@ export function Header(){
                         className={`${textStyle.popupTextBlock} ${textStyle.defaultWhiteText}`}
                         as="a"
                         text="Log out"
-                        href="#"
                         onClick={handleLogoutClick}
                     />
                 </ProfilePopup>
