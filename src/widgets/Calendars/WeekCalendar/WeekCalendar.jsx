@@ -49,6 +49,7 @@ export function WeekCalendarLayout(props) {
         startDate: monday,
         endDate: sunday
     });
+
     const {timelineEvents, longEvents} = useDivideCalendarEvents({
         events,
         startDate: monday,
