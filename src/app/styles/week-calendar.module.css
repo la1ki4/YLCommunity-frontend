@@ -166,11 +166,15 @@
     background: rgb(157, 253, 64);
     color: #1B1B1B;
     border-left: 3px solid rgb(75, 136, 12);
+    border-right: none;
+    border-bottom: none;
+    border-top: none;
     border-radius: 6px;
     padding: 6px 8px;
     height: 28px;
     box-sizing: border-box;
     font-family: Roboto-bold;
+    text-align: left;
     font-size: 12px;
     overflow: hidden;
     white-space: nowrap;

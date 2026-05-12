@@ -128,7 +128,29 @@
 .monthEventText {
     font-size: 12px;
     color: #ffffff;
+    font-family: Roboto-regular;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.dayEventButton{
+    position: absolute;
+    border: none;
+    background: none;
+    padding: 4px 8px;
+    width: 100%;
+    border-radius: 6px;
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.dayEventButton:hover{
+    background-color: #1e1e1e;
+}
+
+.dayEventButtonText{
+    color: #fff;
+    font-family: Roboto-regular;
+    text-align: left;
 }

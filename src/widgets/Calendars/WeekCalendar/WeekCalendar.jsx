@@ -25,6 +25,7 @@ import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarE
 import {PX_PER_MINUTE} from "@features/calendar/constants/weekCalendar.constants.js";
 import calendarInfoPopupStyle from "@app/styles/popup.module.css";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
+import {Button} from "@shared/Button/Button.jsx";
 
 export function WeekCalendarLayout(props) {
 
@@ -123,8 +124,11 @@ export function WeekCalendarLayout(props) {
     };
 
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+
     const closePopup = () => {
         setIsPopupVisible(false);
+
+        selectedLongEventRef.current = null;
 
         setTimeout(() => {
             setSelectedEvent(null);
@@ -211,11 +215,13 @@ export function WeekCalendarLayout(props) {
     const selectedEventNodeRef = useRef(null);
     const popupRef = useRef(null);
     const calendarHeaderRef = useRef(null);
+    const selectedLongEventRef = useRef(null);
+    const calenderEventsTrackRef = useRef(null);
     const [popupTop, setPopupTop] = useState(0);
 
     useLayoutEffect(() => {
         const headerNode = calendarHeaderRef.current;
-        const eventNode = selectedEventNodeRef.current;
+        const eventNode = selectedEventNodeRef.current || selectedLongEventRef.current;
         const popupNode = popupRef.current;
         const container = weekBodyRef.current;
 
@@ -227,36 +233,44 @@ export function WeekCalendarLayout(props) {
         const eventHeight = eventNode.offsetHeight;
         const popupHeight = popupNode.offsetHeight;
         const popupHalfHeight = popupHeight / 2;
+        const paddingTop = 35;
 
-        const distanceToEvent = eventNode.offsetTop - container.scrollTop;
+        const eventRect = eventNode.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+
+        const distanceToEvent = eventRect.top - containerRect.top;
 
         let nextTop;
+        if (window.innerHeight >= 645){
+            if (distanceToEvent > popupHeight) {
+                nextTop =
+                    headerHeight +
+                    distanceToEvent -
+                    popupHeight + 145;
+            }
+            else if (eventNode === selectedLongEventRef.current){
+                nextTop = eventRect.top + paddingTop;
+            }
+            else if (distanceToEvent < popupHeight && distanceToEvent > 0) {
+                const progress = distanceToEvent / popupHeight;
 
-        if (window.innerWidth <= 1100) {
-            nextTop = 0;
-        }
-        else if (distanceToEvent > popupHeight) {
-            nextTop =
-                headerHeight +
-                distanceToEvent -
-                popupHeight;
-        }
-        else if (distanceToEvent < popupHeight && distanceToEvent > 0) {
-            const progress = distanceToEvent / popupHeight;
+                const topNearHeader = headerHeight;
+                const topNearEvent =
+                    headerHeight +
+                    distanceToEvent +
+                    eventHeight / 2 -
+                    popupHalfHeight;
 
-            const topNearHeader = headerHeight;
-            const topNearEvent =
-                headerHeight +
-                distanceToEvent +
-                eventHeight / 2 -
-                popupHalfHeight;
-
-            nextTop =
-                topNearHeader +
-                (topNearEvent - topNearHeader) * progress;
+                nextTop =
+                    topNearHeader +
+                    (topNearEvent - topNearHeader) * progress;
+            }
+            else if (distanceToEvent < 0) {
+                nextTop = headerHeight;
+            }
         }
-        else if (distanceToEvent < 0) {
-            nextTop = headerHeight;
+        else {
+            nextTop = window.innerHeight / 2 - popupHeight / 2;
         }
 
         setPopupTop(nextTop);
@@ -266,7 +280,7 @@ export function WeekCalendarLayout(props) {
 
     useLayoutEffect(() => {
         const calendarNode = weekCalendarRef.current;
-        const eventNode = selectedEventNodeRef.current;
+        const eventNode = selectedEventNodeRef.current || selectedLongEventRef.current;
         const popupNode = popupRef.current;
 
         if (!selectedEvent || !calendarNode || !eventNode || !popupNode) {
@@ -277,7 +291,7 @@ export function WeekCalendarLayout(props) {
         const eventRect = eventNode.getBoundingClientRect();
         const popupWidth = popupNode.offsetWidth;
 
-        const gap = 8;
+        let gap = 4;
 
         const start = new Date(selectedEvent.startDate);
         const dayIndex = getMondayBasedDayIndex(start);
@@ -292,14 +306,18 @@ export function WeekCalendarLayout(props) {
         if (window.innerWidth <= 1100){
             leftDistanceForMonday = 480;
             leftDistanceForPopup = 480;
+            gap = 0;
         }
 
         let nextLeft;
 
-        if (dayIndex === 0) {
+        if(eventNode === selectedLongEventRef.current){
+            nextLeft = leftDistanceForPopup + gap + ((weekCalendarRef.current.offsetWidth - popupWidth) / 2);
+        }
+        else if (dayIndex === 0) {
             nextLeft = eventRect.right - calendarRect.left + gap + leftDistanceForMonday;
         }
-        else {
+        else if (dayIndex > 0){
             nextLeft = eventRect.left - calendarRect.left - popupWidth - gap + leftDistanceForPopup;
         }
 
@@ -312,11 +330,12 @@ export function WeekCalendarLayout(props) {
                 <WeekCalendarHeader anchor={currentDate} selected={selected} onAnchorDateChange={onAnchorDateChange}
                                     weekStart={weekStart} onSelect={onSelect} monday={monday} ref={calendarHeaderRef} />
                 {longEventSegments.length > 0 && (
-                    <div className={eventsPageStyle.weekLongEvents}>
+                    <div className={eventsPageStyle.weekLongEvents} >
                         <div className={eventsPageStyle.weekLongEventsSpacer}/>
                         <div
                             className={eventsPageStyle.weekLongEventsTrack}
                             style={{height: `${longEventsHeight}px`}}
+                            ref={calenderEventsTrackRef}
                         >
                             {longEventSegments.map((segment, index) => {
                                 const left = (segment.startDayIndex / DAY_COUNT_IN_WEEK) * 100;
@@ -324,7 +343,7 @@ export function WeekCalendarLayout(props) {
                                 const segmentTop = 8 + (segment.rowIndex * 34);
 
                                 return (
-                                    <div
+                                    <Button
                                         key={`${segment.startDate}-${segment.endDate}-${index}`}
                                         className={eventsPageStyle.weekLongEvent}
                                         style={{
@@ -332,9 +351,13 @@ export function WeekCalendarLayout(props) {
                                             width: `${width}%`,
                                             top: `${segmentTop}px`,
                                         }}
+                                        onClick={(e) => {
+                                            selectedLongEventRef.current = e.currentTarget;
+                                            openPopup(segment);
+                                        }}
                                     >
                                         {segment.title}
-                                    </div>
+                                    </Button>
                                 );
                             })}
                         </div>

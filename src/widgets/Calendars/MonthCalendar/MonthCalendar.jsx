@@ -24,8 +24,30 @@ export function MonthCalendar({view, onChangeView}) {
         return new Date(view.year, view.monthIndex + 1, 0);
     }, [view.year, view.monthIndex]);
 
-    const eventsBetweenDates = useEventsBetweenDates({startDate: startDate, endDate: endDate});
+    const monthEvents = useEventsBetweenDates({startDate: startDate, endDate: endDate});
 
+    const monthEventsGroup = monthEvents.reduce((acc, event) => {
+        const currentDate = new Date(event.startDate);
+        const endEventDate = new Date(event.endDate);
+
+        while (currentDate <= endEventDate) {
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const year = currentDate.getFullYear();
+
+            const key = `${day}-${month}-${year}`;
+
+            if (!acc[key]) {
+                acc[key] = [];
+            }
+
+            acc[key].push(event);
+
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return acc;
+    }, {});
 
     const [cellWidth, setCellWidth] = useState(0);
     const cellRef = useRef(null);
@@ -99,6 +121,14 @@ export function MonthCalendar({view, onChangeView}) {
                     return (
                     <div key={rowIndex} className={MonthCalendarStyle.weekRow}>
                         {week.map((cell, colIndex) => {
+                            const currentDate = new Date(view.year, view.monthIndex, cell.label);
+                            const day = String(currentDate.getDate()).padStart(2, '0');
+                            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                            const year = currentDate.getFullYear();
+                            const key = `${day}-${month}-${year}`;
+                            const dayEvents = monthEventsGroup[key] || [];
+
+
                             return (
                                 <div
                                     key={`${rowIndex}-${colIndex}`}
@@ -121,6 +151,43 @@ export function MonthCalendar({view, onChangeView}) {
                                             .join(" ")}
                                         text={cell.label}
                                     />
+                                    {dayEvents.slice(0, 2).map((event, index) => {
+                                        const date = new Date(event.startDate);
+                                        const durability = getEventBlockWidth(event);
+
+                                        const day = String(date.getUTCDate()).padStart(2, "0");
+                                        const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+                                        const year = date.getUTCFullYear();
+
+                                        const formatted = `${day}-${month}-${year}`;
+
+                                        if (formatted === key && !cell.isOtherMonth) {
+                                            return (
+                                                <div
+                                                    key={event.id}
+                                                    className={MonthCalendarStyle.dayEventsBlock}
+                                                    style={{
+                                                        top: `${(rowIndex === 0 ? 55 : 35) + index * 35}px`,
+                                                        width: cellWidth * durability,
+                                                    }}
+                                                >
+                                                    <div className={MonthCalendarStyle.monthEvent}>
+                                                        <Text
+                                                            text={event.title}
+                                                            className={MonthCalendarStyle.monthEventText}
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                            );
+                                        }
+                                    })}
+                                    {dayEvents.length > 2 && !cell.isOtherMonth && (
+                                        <Button className={MonthCalendarStyle.dayEventButton}
+                                        style={{top: `${(rowIndex === 0 ? 55 : 35) + 2 * 35}px`}}>
+                                            <Text className={MonthCalendarStyle.dayEventButtonText} as={"div"} text={`${dayEvents.length - 2} more...`} />
+                                        </Button>
+                                    )}
                                 </div>
                             );
                         })}
