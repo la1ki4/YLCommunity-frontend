@@ -1,19 +1,20 @@
 import Popup from "@widgets/Popup/Popup.jsx";
+import {forwardRef} from "react";
 import {Text} from "@shared/Text/Text.jsx"
 import MoreEventsPopupStyle from "@app/styles/popup.module.css";
-import {useMemo, useRef} from "react";
+import {useMemo} from "react";
 import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js";
 import {Button} from "@shared/Button/Button.jsx";
 import {useOutsideClick} from "@features/calendar/utils/eventPopup.utils.js";
 
-export function MoreEventsPopup({
-                                    isOpen,
-                                    dayOfWeek,
-                                    onClose,
-                                    dayNumber,
-                                    moreButtonRef,
-                                    view
-                                }) {
+export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
+                                                                      isOpen,
+                                                                      dayOfWeek,
+                                                                      onClose,
+                                                                      dayNumber,
+                                                                      moreButtonRef,
+                                                                      view}, ref) {
+
     const date = useMemo(() => {
         return new Date(
             view.year,
@@ -27,10 +28,8 @@ export function MoreEventsPopup({
         endDate: date,
     });
 
-    const popupRef = useRef(null);
-
     useOutsideClick({
-        ref: popupRef,
+        ref: ref,
         ignoreRefs: [moreButtonRef],
         isEnabled: isOpen,
         onOutsideClick: onClose,
@@ -40,7 +39,7 @@ export function MoreEventsPopup({
         <Popup isOpen={isOpen} onClose={onClose} style={{position:"absolute"}}>
             <div className={MoreEventsPopupStyle.morePopupContent}
                  onClick={(e) => e.stopPropagation()}
-                 ref={popupRef}>
+                 ref={ref}>
                 <Button className={MoreEventsPopupStyle.morePopupCloseButton} onClick={onClose}>×</Button>
                 <div
                     className={MoreEventsPopupStyle.morePopupHeader}
@@ -76,4 +75,4 @@ export function MoreEventsPopup({
             </div>
         </Popup>
     );
-}
+});

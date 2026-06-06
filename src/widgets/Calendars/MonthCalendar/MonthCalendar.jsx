@@ -4,16 +4,25 @@ import {Text} from "@shared/Text/Text.jsx";
 import {Media} from "@shared/Image/Media.jsx";
 import leftIcon from "@app/assets/Vector-left.svg";
 import rightIcon from "@app/assets/Vector-right.svg";
-
 import {DOW, MONTH_NAMES} from "@features/calendar/constants/calendar.constants.js";
-import {shiftMonth} from "@features/calendar/utils/monthCalendar.utils.js";
+import {
+    calculatePopupLeft,
+    calculatePopupTop,
+    getEventBlockWidth,
+    shiftMonth, sortEventsByDuration
+} from "@features/calendar/utils/monthCalendar.utils.js";
 import {useMonthGrid} from "@features/calendar/hooks/useMonthGrid.js";
 import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js";
-import {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import {formatDateKey, getMonday, getSunday} from "@features/calendar/utils/calendarDate.utils.js";
+import {useMemo, useRef, useState} from "react";
+import {formatDateKey, getMonday} from "@features/calendar/utils/calendarDate.utils.js";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 import {MoreEventsPopup} from "@widgets/Calendars/EventPopup/MoreEventsPopup.jsx";
-
+import {useClosePopupOnZoom} from "@features/calendar/hooks/useClosePopupOnZoom.js";
+import {useCalculateEventPopupPositionForMonthCalendar} from "@features/calendar/hooks/useCalculateEventPopupPosition.js";
+import {createEventPopupHandlers} from "@features/calendar/utils/eventPopup.utils.js";
+import {useCalculateMonthCellSize} from "@features/calendar/hooks/useCalculateMontCellSize.js";
+import {useCalculateMonthEventSize} from "@features/calendar/hooks/useCalculateMonthEventSize.js";
+import {INITIAL_CELL_SIZE, INITIAL_ELEMENT_SIZES} from "@features/calendar/constants/monthCalendar.constants.js";
 
 export function MonthCalendar({view, onChangeView}) {
     const calendar = useMonthGrid(view.year, view.monthIndex);
@@ -48,151 +57,26 @@ export function MonthCalendar({view, onChangeView}) {
         return acc;
     }, {});
 
-    const [cellSize, setCellSize] = useState({
-        width: 0,
-        height: 0,
-    });
+    const [cellSize, setCellSize] = useState(INITIAL_CELL_SIZE);
     const cellRef = useRef(null);
 
-    useEffect(() => {
-        if (!cellRef.current) return;
-
-        const observer = new ResizeObserver(([entry]) => {
-            const borderSize = entry.borderBoxSize?.[0];
-
-            const width = borderSize?.inlineSize ?? entry.contentRect.width;
-            const height = borderSize?.blockSize ?? entry.contentRect.height;
-
-            setCellSize((prev) => {
-                if (
-                    Math.abs(prev.width - width) < 1 &&
-                    Math.abs(prev.height - height) < 1
-                ) {
-                    return prev;
-                }
-
-                return {
-                    width,
-                    height,
-                };
-            });
-        });
-
-        observer.observe(cellRef.current);
-
-        return () => observer.disconnect();
-    }, []);
-
-    function getEventBlockWidth(event, currentDate) {
-        const start = new Date(event.startDate);
-        const end = new Date(event.endDate);
-
-        const monday = getMonday(currentDate);
-        const sunday = getSunday(currentDate);
-
-        const startUtc = Date.UTC(
-            start.getFullYear(),
-            start.getMonth(),
-            start.getDate()
-        );
-
-        const endUtc = Date.UTC(
-            end.getFullYear(),
-            end.getMonth(),
-            end.getDate()
-        );
-
-        const mondayUtc = Date.UTC(
-            monday.getFullYear(),
-            monday.getMonth(),
-            monday.getDate()
-        );
-
-        const sundayUtc = Date.UTC(
-            sunday.getFullYear(),
-            sunday.getMonth(),
-            sunday.getDate()
-        );
-
-        const visibleStartUtc =
-            startUtc < mondayUtc
-                ? mondayUtc
-                : startUtc;
-
-        const visibleEndUtc =
-            endUtc > sundayUtc
-                ? sundayUtc
-                : endUtc;
-
-        return (
-            (visibleEndUtc - visibleStartUtc) /
-            (1000 * 60 * 60 * 24) + 1
-        );
-    }
-
-    function sortEventsByDuration(events) {
-        return [...events].sort((a, b) => {
-            const aStart = new Date(a.startDate);
-            const aEnd = new Date(a.endDate);
-
-            const bStart = new Date(b.startDate);
-            const bEnd = new Date(b.endDate);
-
-            const aDuration =
-                (Date.UTC(
-                        aEnd.getFullYear(),
-                        aEnd.getMonth(),
-                        aEnd.getDate()
-                    ) -
-                    Date.UTC(
-                        aStart.getFullYear(),
-                        aStart.getMonth(),
-                        aStart.getDate()
-                    )) /
-                (1000 * 60 * 60 * 24);
-
-            const bDuration =
-                (Date.UTC(
-                        bEnd.getFullYear(),
-                        bEnd.getMonth(),
-                        bEnd.getDate()
-                    ) -
-                    Date.UTC(
-                        bStart.getFullYear(),
-                        bStart.getMonth(),
-                        bStart.getDate()
-                    )) /
-                (1000 * 60 * 60 * 24);
-
-            if (bDuration !== aDuration) {
-                return bDuration - aDuration;
-            }
-
-            return aStart - bStart;
-        });
-    }
+    useCalculateMonthCellSize({
+        cellRef,
+        setCellSize,
+    });
 
     const dayNumberRef = useRef(null);
     const moreButtonRefs = useRef([]);
-    const [elementSizes, setElementSizes] = useState({
-        dayNumberHeight: 0,
-        buttonHeight: 0,
-    });
+    const [elementSizes, setElementSizes] = useState(INITIAL_ELEMENT_SIZES);
 
     const measureButtonRef = useRef(null);
 
-    useEffect(() => {
-        const dayNumberHeight =
-            dayNumberRef.current?.getBoundingClientRect().height || 0;
-
-        const buttonHeight =
-            measureButtonRef.current?.getBoundingClientRect().height || 0;
-
-        setElementSizes({
-            dayNumberHeight,
-            buttonHeight,
-        });
-    }, [cellSize.height]);
+    useCalculateMonthEventSize({
+        cellHeight: cellSize.height,
+        dayNumberRef,
+        measureButtonRef,
+        setElementSizes,
+    });
 
 
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -200,32 +84,20 @@ export function MonthCalendar({view, onChangeView}) {
     const selectedRowIndexRef = useRef(null);
     const selectedColIndexRef = useRef(null);
     const [popupPositionVersion, setPopupPositionVersion] = useState(0);
-
-    const openPopup = (event, element, rowIndex, colIndex) => {
-        selectedEventRef.current = element;
-        selectedRowIndexRef.current = rowIndex;
-        selectedColIndexRef.current = colIndex;
-
-        setSelectedEvent(event);
-
-        setPopupPositionVersion((prev) => prev + 1);
-
-        requestAnimationFrame(() => {
-            setIsPopupVisible(true);
-        });
-    };
-
     const [isPopupVisible, setIsPopupVisible] = useState(false);
 
-    const closePopup = () => {
-        setIsPopupVisible(false);
+    const {
+        openPopup,
+        closePopup,
+    } = createEventPopupHandlers({
+        setIsPopupVisible,
+        setSelectedEvent,
+        setPopupPositionVersion,
 
-        selectedEventRef.current = null;
-
-        setTimeout(() => {
-            setSelectedEvent(null);
-        }, 220);
-    };
+        selectedEventRef,
+        selectedRowIndexRef,
+        selectedColIndexRef,
+    });
 
     const [selectedMoreButton, setSelectedMoreButton] = useState(false);
     const [selectedMorePopupData, setSelectedMorePopupData] = useState(null);
@@ -250,190 +122,37 @@ export function MonthCalendar({view, onChangeView}) {
     const [popupTop, setPopupTop] = useState(0);
     const [popupLeft, setPopupLeft] = useState(0);
 
-    function calculatePopupLeft({
-                                    calendarRect,
-                                    eventRect,
-                                    popupRect,
-                                    calendarSectionRect,
-                                    calendarCellRect,
-                                    colIndex,
-                                }) {
-        const GAP = 800;
-
-        const spaceLeft = calendarSectionRect.width - (calendarSectionRect.width - calendarCellRect.width * colIndex);
-
-        const spaceRight = calendarSectionRect.width - (spaceLeft + eventRect.width);
-
-        if (popupRect.width <= spaceLeft) {
-            return (
-                eventRect.left -
-                calendarRect.left -
-                popupRect.width +
-                GAP
-            );
-        }
-
-        if (popupRect.width <= spaceRight) {
-            return (
-                eventRect.right -
-                calendarRect.left +
-                GAP
-            );
-        }
-
-        return (
-            calendarRect.width / 2 -
-            popupRect.width / 2 +
-            GAP
-        );
-    }
-
-    function calculatePopupTop({
-                                   calendarRect,
-                                   eventRect,
-                                   popupRect,
-                                   calendarHeaderRect,
-                                   calendarSectionRect,
-                                   calendarRowRect,
-                                   rowIndex,
-                               }) {
-        const GAP = 12;
-
-        const spaceBottom = (calendarSectionRect.height - calendarHeaderRect.height) - (calendarRowRect.height * (1 + rowIndex));
+    useClosePopupOnZoom({
+        isEnabled: isPopupVisible,
+        onClose: closePopup,
+    });
 
 
-        if (spaceBottom > popupRect.height + GAP) {
-            return (
-                eventRect.top -
-                calendarRect.top -
-                popupRect.height +
-                calendarHeaderRect.height +
-                popupRect.height -
-                GAP
-            );
-        }
-        return (
-            eventRect.top -
-            calendarRect.top -
-            popupRect.height +
-            calendarHeaderRect.height -
-            GAP
-        );
-    }
+    useCalculateEventPopupPositionForMonthCalendar({
+        selectedEvent,
+        isPopupVisible,
+        popupPositionVersion,
 
-    useEffect(() => {
-        if (!isPopupVisible) {
-            return;
-        }
+        popupRef,
 
-        const preventZoom = (event) => {
-            if (event.ctrlKey) {
-                event.preventDefault();
-            }
-        };
+        calendarHeaderRef,
+        calendarSectionRef,
+        calendarRowRef,
+        cellRef,
 
-        const preventZoomKeys = (event) => {
-            if (
-                event.ctrlKey &&
-                [
-                    "Equal",
-                    "Minus",
-                    "NumpadAdd",
-                    "NumpadSubtract",
-                ].includes(event.code)
-            ) {
-                event.preventDefault();
-            }
-        };
+        selectedEventRef,
+        selectedRowIndexRef,
+        selectedColIndexRef,
 
-        const preventGesture = (event) => {
-            event.preventDefault();
-        };
+        calculatePopupLeft,
+        calculatePopupTop,
 
-        document.addEventListener("wheel", preventZoom, {
-            passive: false,
-        });
-
-        document.addEventListener("keydown", preventZoomKeys);
-
-        document.addEventListener("gesturestart", preventGesture);
-        document.addEventListener("gesturechange", preventGesture);
-        document.addEventListener("gestureend", preventGesture);
-
-        return () => {
-            document.removeEventListener("wheel", preventZoom);
-
-            document.removeEventListener("keydown", preventZoomKeys);
-
-            document.removeEventListener("gesturestart", preventGesture);
-            document.removeEventListener("gesturechange", preventGesture);
-            document.removeEventListener("gestureend", preventGesture);
-        };
-    }, [isPopupVisible]);
-
-    useLayoutEffect(() => {
-        const calendarNode = calendarHeaderRef.current;
-        const eventNode = selectedEventRef.current;
-        const popupNode = popupRef.current;
-        const calendarHeaderNode = calendarHeaderRef.current;
-        const calendarSectionNode = calendarSectionRef.current;
-        const calendarRowNode = calendarRowRef.current;
-        const calendarCellNode = cellRef.current;
-
-        if (
-            !selectedEvent ||
-            !calendarNode ||
-            !eventNode ||
-            !popupNode
-        ) {
-            return;
-        }
-
-        const calendarRect =
-            calendarNode.getBoundingClientRect();
-
-        const eventRect =
-            eventNode.getBoundingClientRect();
-
-        const popupRect =
-            popupNode.getBoundingClientRect();
-
-        const calendarHeaderRect = calendarHeaderNode.getBoundingClientRect();
-
-        const calendarSectionRect = calendarSectionNode.getBoundingClientRect();
-
-        const calendarRowRect = calendarRowNode.getBoundingClientRect();
-
-        const calendarCellRect = calendarCellNode.getBoundingClientRect();
-
-        const rowIndex = selectedRowIndexRef.current;
-        const colIndex = selectedColIndexRef.current;
-
-        setPopupLeft(
-            calculatePopupLeft({
-                calendarRect,
-                eventRect,
-                popupRect,
-                calendarSectionRect,
-                calendarCellRect,
-                colIndex,
-            })
-        );
-
-        setPopupTop(
-            calculatePopupTop({
-                calendarRect,
-                eventRect,
-                popupRect,
-                calendarHeaderRect,
-                calendarSectionRect,
-                calendarRowRect,
-                rowIndex
-            })
-        );
-    }, [selectedEvent, isPopupVisible, popupPositionVersion]);
+        setPopupLeft,
+        setPopupTop,
+    });
 
     const eventRefs = useRef({});
+    const morePopupRef = useRef(null);
 
     return (
         <section className={MonthCalendarStyle.calendarSection} ref={calendarSectionRef}>
@@ -469,7 +188,9 @@ export function MonthCalendar({view, onChangeView}) {
                             {week.map((cell, colIndex) => {
                                 const currentDate = new Date(view.year, view.monthIndex, cell.label);
                                 const key = formatDateKey(currentDate);
-                                const dayEvents = sortEventsByDuration(monthEventsGroup[key] || []);
+                                const dayEvents = sortEventsByDuration(
+                                        monthEventsGroup[key] || []
+                                    );
 
                                 const visibleEventsCount =
                                     cellSize.height <= 90
@@ -654,6 +375,7 @@ export function MonthCalendar({view, onChangeView}) {
                     dayOfWeek={selectedMorePopupData?.dayOfWeek}
                     dayNumber={selectedMorePopupData?.dayNumber}
                     view={view}
+                    ref={morePopupRef}
                 />
             )}
         </section>

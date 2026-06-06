@@ -36,7 +36,12 @@ function formatEventDateRange(start, end) {
     return `${startFormatted} - ${endFormatted}`;
 }
 
-export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({event, onClose, style, isVisible, eventRefs}, ref){
+export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({
+                                                                           event,
+                                                                           onClose,
+                                                                           style,
+                                                                           isVisible,
+                                                                           eventRefs}, ref){
 
     useOutsideClick({
         ref,

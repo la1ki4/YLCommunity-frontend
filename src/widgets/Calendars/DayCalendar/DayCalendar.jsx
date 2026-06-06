@@ -13,6 +13,7 @@ import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarE
 import {DayCalendarHeader} from "@widgets/Calendars/DayCalendar/components/DayCalendarHeader.jsx";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 import calendarInfoPopupStyle from "@app/styles/popup.module.css"
+import {useClosePopupOnZoom} from "@features/calendar/hooks/useClosePopupOnZoom.js";
 
 export function DayCalendar({date, onChangeDate, onSelect}) {
 
@@ -155,6 +156,10 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
         setPopupTop(nextTop);
     }, [selectedEvent, longEvents.length]);
 
+    useClosePopupOnZoom({
+        isEnabled: isPopupVisible,
+        onClose: closePopup,
+    });
 
     return (
         <section className={eventsPageStyle.day} aria-label="Day calendar">

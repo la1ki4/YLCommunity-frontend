@@ -78,3 +78,49 @@ export function useOutsideClick({
         onOutsideClick,
     ]);
 }
+
+export function createEventPopupHandlers({
+                                             setIsPopupVisible,
+                                             setSelectedEvent,
+                                             setPopupPositionVersion,
+
+                                             selectedEventRef,
+                                             selectedRowIndexRef,
+                                             selectedColIndexRef,
+                                         }) {
+    const closePopup = () => {
+        setIsPopupVisible(false);
+
+        selectedEventRef.current = null;
+
+        setTimeout(() => {
+            setSelectedEvent(null);
+        }, 220);
+    };
+
+    const openPopup = (
+        event,
+        element,
+        rowIndex = null,
+        colIndex = null,
+    ) => {
+        selectedEventRef.current = element;
+        selectedRowIndexRef.current = rowIndex;
+        selectedColIndexRef.current = colIndex;
+
+        setSelectedEvent(event);
+
+        setPopupPositionVersion((prev) => prev + 1);
+
+        requestAnimationFrame(() => {
+            setIsPopupVisible(true);
+        });
+    };
+
+    return {
+        openPopup,
+        closePopup,
+    };
+}
+
+

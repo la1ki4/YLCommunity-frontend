@@ -26,6 +26,7 @@ import {PX_PER_MINUTE} from "@features/calendar/constants/weekCalendar.constants
 import calendarInfoPopupStyle from "@app/styles/popup.module.css";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 import {Button} from "@shared/Button/Button.jsx";
+import {useClosePopupOnZoom} from "@features/calendar/hooks/useClosePopupOnZoom.js";
 
 export function WeekCalendarLayout(props) {
 
@@ -179,37 +180,10 @@ export function WeekCalendarLayout(props) {
         };
     }, [mainRef]);
 
-    useEffect(() => {
-        if (!selectedEvent) {
-            return;
-        }
-
-        const preventZoomWheel = (e) => {
-            if (e.ctrlKey) {
-                e.preventDefault();
-            }
-        };
-
-        const preventZoomKeys = (e) => {
-            const isZoomKey =
-                e.key === "+" ||
-                e.key === "-" ||
-                e.key === "=" ||
-                e.key === "0";
-
-            if (e.ctrlKey && isZoomKey) {
-                e.preventDefault();
-            }
-        };
-
-        window.addEventListener("wheel", preventZoomWheel, { passive: false });
-        window.addEventListener("keydown", preventZoomKeys);
-
-        return () => {
-            window.removeEventListener("wheel", preventZoomWheel);
-            window.removeEventListener("keydown", preventZoomKeys);
-        };
-    }, [selectedEvent]);
+    useClosePopupOnZoom({
+        isEnabled: selectedEvent,
+        onClose: closePopup,
+    });
 
 
     const selectedEventNodeRef = useRef(null);
