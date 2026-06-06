@@ -1,0 +1,79 @@
+import Popup from "@widgets/Popup/Popup.jsx";
+import {Text} from "@shared/Text/Text.jsx"
+import MoreEventsPopupStyle from "@app/styles/popup.module.css";
+import {useMemo, useRef} from "react";
+import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js";
+import {Button} from "@shared/Button/Button.jsx";
+import {useOutsideClick} from "@features/calendar/utils/eventPopup.utils.js";
+
+export function MoreEventsPopup({
+                                    isOpen,
+                                    dayOfWeek,
+                                    onClose,
+                                    dayNumber,
+                                    moreButtonRef,
+                                    view
+                                }) {
+    const date = useMemo(() => {
+        return new Date(
+            view.year,
+            view.monthIndex,
+            dayNumber
+        );
+    }, [view.year, view.monthIndex, dayNumber]);
+
+    const list = useEventsBetweenDates({
+        startDate: date,
+        endDate: date,
+    });
+
+    const popupRef = useRef(null);
+
+    useOutsideClick({
+        ref: popupRef,
+        ignoreRefs: [moreButtonRef],
+        isEnabled: isOpen,
+        onOutsideClick: onClose,
+    });
+
+    return (
+        <Popup isOpen={isOpen} onClose={onClose} style={{position:"absolute"}}>
+            <div className={MoreEventsPopupStyle.morePopupContent}
+                 onClick={(e) => e.stopPropagation()}
+                 ref={popupRef}>
+                <Button className={MoreEventsPopupStyle.morePopupCloseButton} onClick={onClose}>×</Button>
+                <div
+                    className={MoreEventsPopupStyle.morePopupHeader}
+                >
+                    <Text text={dayOfWeek} className={MoreEventsPopupStyle.morePopupHeaderText} style={{
+                        color: "#9dfd40",
+                    }}/>
+                    <Text
+                        text={dayNumber}
+                        className={MoreEventsPopupStyle.morePopupHeaderText}
+                        style={{
+                            color: "#242424",
+                            background: "#9dfd40",
+                            width: 32,
+                            height: 32,
+                            borderRadius: "50%",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    />
+                </div>
+
+                <div className={MoreEventsPopupStyle.morePopupEvents}>
+                    {list.map((event) => (
+                        <div
+                            className={MoreEventsPopupStyle.morePopupEvent}
+                        >
+                            {event.title}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </Popup>
+    );
+}

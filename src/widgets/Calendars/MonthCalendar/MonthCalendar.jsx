@@ -10,8 +10,9 @@ import {shiftMonth} from "@features/calendar/utils/monthCalendar.utils.js";
 import {useMonthGrid} from "@features/calendar/hooks/useMonthGrid.js";
 import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js";
 import {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import {getMonday, getSunday} from "@features/calendar/utils/calendarDate.utils.js";
+import {formatDateKey, getMonday, getSunday} from "@features/calendar/utils/calendarDate.utils.js";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
+import {MoreEventsPopup} from "@widgets/Calendars/EventPopup/MoreEventsPopup.jsx";
 
 
 export function MonthCalendar({view, onChangeView}) {
@@ -33,11 +34,7 @@ export function MonthCalendar({view, onChangeView}) {
         const endEventDate = new Date(event.endDate);
 
         while (currentDate <= endEventDate) {
-            const day = String(currentDate.getDate()).padStart(2, '0');
-            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-            const year = currentDate.getFullYear();
-
-            const key = `${day}-${month}-${year}`;
+            const key = formatDateKey(currentDate);
 
             if (!acc[key]) {
                 acc[key] = [];
@@ -176,18 +173,20 @@ export function MonthCalendar({view, onChangeView}) {
     }
 
     const dayNumberRef = useRef(null);
-    const moreButtonRef = useRef(null);
+    const moreButtonRefs = useRef([]);
     const [elementSizes, setElementSizes] = useState({
         dayNumberHeight: 0,
         buttonHeight: 0,
     });
+
+    const measureButtonRef = useRef(null);
 
     useEffect(() => {
         const dayNumberHeight =
             dayNumberRef.current?.getBoundingClientRect().height || 0;
 
         const buttonHeight =
-            moreButtonRef.current?.getBoundingClientRect().height || 0;
+            measureButtonRef.current?.getBoundingClientRect().height || 0;
 
         setElementSizes({
             dayNumberHeight,
@@ -200,6 +199,7 @@ export function MonthCalendar({view, onChangeView}) {
     const selectedEventRef = useRef(null);
     const selectedRowIndexRef = useRef(null);
     const selectedColIndexRef = useRef(null);
+    const [popupPositionVersion, setPopupPositionVersion] = useState(0);
 
     const openPopup = (event, element, rowIndex, colIndex) => {
         selectedEventRef.current = element;
@@ -207,6 +207,8 @@ export function MonthCalendar({view, onChangeView}) {
         selectedColIndexRef.current = colIndex;
 
         setSelectedEvent(event);
+
+        setPopupPositionVersion((prev) => prev + 1);
 
         requestAnimationFrame(() => {
             setIsPopupVisible(true);
@@ -225,14 +227,28 @@ export function MonthCalendar({view, onChangeView}) {
         }, 220);
     };
 
+    const [selectedMoreButton, setSelectedMoreButton] = useState(false);
+    const [selectedMorePopupData, setSelectedMorePopupData] = useState(null);
+    const openMoreButton = (dayOfWeek, dayNumber) => {
+
+        setSelectedMorePopupData({
+            dayOfWeek,
+            dayNumber,
+        });
+
+        setSelectedMoreButton(true);
+    }
+
+    const closeMoreButton = () => {
+        setSelectedMoreButton(false);
+    };
+
     const popupRef = useRef(null);
     const calendarHeaderRef = useRef(null);
-    const monthEventRef = useRef(null);
     const calendarSectionRef = useRef(null);
     const calendarRowRef = useRef(null);
     const [popupTop, setPopupTop] = useState(0);
     const [popupLeft, setPopupLeft] = useState(0);
-
 
     function calculatePopupLeft({
                                     calendarRect,
@@ -247,8 +263,6 @@ export function MonthCalendar({view, onChangeView}) {
         const spaceLeft = calendarSectionRect.width - (calendarSectionRect.width - calendarCellRect.width * colIndex);
 
         const spaceRight = calendarSectionRect.width - (spaceLeft + eventRect.width);
-
-        console.log(spaceRight)
 
         if (popupRect.width <= spaceLeft) {
             return (
@@ -417,7 +431,9 @@ export function MonthCalendar({view, onChangeView}) {
                 rowIndex
             })
         );
-    }, [selectedEvent, isPopupVisible]);
+    }, [selectedEvent, isPopupVisible, popupPositionVersion]);
+
+    const eventRefs = useRef({});
 
     return (
         <section className={MonthCalendarStyle.calendarSection} ref={calendarSectionRef}>
@@ -452,10 +468,7 @@ export function MonthCalendar({view, onChangeView}) {
                         <div key={rowIndex} className={MonthCalendarStyle.weekRow} ref={calendarRowRef}>
                             {week.map((cell, colIndex) => {
                                 const currentDate = new Date(view.year, view.monthIndex, cell.label);
-                                const day = String(currentDate.getDate()).padStart(2, '0');
-                                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-                                const year = currentDate.getFullYear();
-                                const key = `${day}-${month}-${year}`;
+                                const key = formatDateKey(currentDate);
                                 const dayEvents = sortEventsByDuration(monthEventsGroup[key] || []);
 
                                 const visibleEventsCount =
@@ -563,8 +576,23 @@ export function MonthCalendar({view, onChangeView}) {
                                                             top: `${(rowIndex === 0 ? 55 : 35) + index * 35}px`,
                                                             width: cellSize.width * durability,
                                                         }}
-                                                        onClick={(e) => openPopup(event, e.currentTarget, rowIndex, colIndex)}
-                                                        ref={monthEventRef}
+                                                        ref={(el) => {
+                                                            const key = `${rowIndex}-${colIndex}-${event.id}`;
+
+                                                            if (el) {
+                                                                eventRefs.current[key] = el;
+                                                            } else {
+                                                                delete eventRefs.current[key];
+                                                            }
+                                                        }}
+                                                        onClick={(e) =>
+                                                            openPopup(
+                                                                event,
+                                                                e.currentTarget,
+                                                                rowIndex,
+                                                                colIndex
+                                                            )
+                                                        }
                                                     >
                                                         <div className={MonthCalendarStyle.monthEvent}>
                                                             <Text
@@ -580,7 +608,20 @@ export function MonthCalendar({view, onChangeView}) {
                                         {hiddenEventsCount > 0 && !cell.isOtherMonth && (
                                             <Button className={MonthCalendarStyle.dayEventButton}
                                                     style={{top: `${buttonTop}px`}}
-                                                    ref={moreButtonRef}>
+                                                    ref={(el) => {
+                                                        if (!measureButtonRef.current && el) {
+                                                            measureButtonRef.current = el;
+                                                        }
+
+                                                        moreButtonRefs.current[`${rowIndex}-${colIndex}`] = el;
+                                                    }}
+                                                    onClick={() =>
+                                                        openMoreButton(
+                                                            DOW[colIndex],
+                                                            cell.label
+                                                        )
+                                                    }
+                                            >
                                                 <Text className={MonthCalendarStyle.dayEventButtonText} as={"div"}
                                                       text={`${dayEvents.length - visibleEventsCount} more...`}/>
                                             </Button>
@@ -598,10 +639,21 @@ export function MonthCalendar({view, onChangeView}) {
                     onClose={closePopup}
                     isVisible={isPopupVisible}
                     ref={popupRef}
+                    eventRefs={eventRefs}
                     style={{
                         top: `${popupTop}px`,
                         left: `${popupLeft}px`,
                     }}
+                />
+            )}
+            {selectedMoreButton && (
+                <MoreEventsPopup
+                    isOpen={selectedMoreButton}
+                    onClose={closeMoreButton}
+                    moreButtonRef={moreButtonRefs}
+                    dayOfWeek={selectedMorePopupData?.dayOfWeek}
+                    dayNumber={selectedMorePopupData?.dayNumber}
+                    view={view}
                 />
             )}
         </section>

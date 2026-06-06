@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import {forwardRef} from "react";
 import calendarInfoPopupStyle from "@app/styles/popup.module.css"
 import {Button} from "@shared/Button/Button.jsx";
 import calendarInfoButtonStyle from "@app/styles/button.module.css"
@@ -11,6 +11,7 @@ import descriptionIcon from "@app/assets/text-description.svg"
 import userIcon from "@app/assets/user.svg"
 import {Media} from "@shared/Image/Media.jsx";
 import {Text} from "@shared/Text/Text.jsx";
+import {useOutsideClick} from "@features/calendar/utils/eventPopup.utils.js";
 
 function formatEventDateRange(start, end) {
     if (!(start instanceof Date) || !(end instanceof Date)) {
@@ -35,7 +36,15 @@ function formatEventDateRange(start, end) {
     return `${startFormatted} - ${endFormatted}`;
 }
 
-export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({event, onClose, style, isVisible}, ref){
+export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({event, onClose, style, isVisible, eventRefs}, ref){
+
+    useOutsideClick({
+        ref,
+        ignoreRefs: [eventRefs],
+        isEnabled: isVisible,
+        onOutsideClick: onClose,
+    });
+
     if (!event) {
         return null;
     }

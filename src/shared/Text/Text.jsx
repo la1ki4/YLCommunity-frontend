@@ -1,12 +1,17 @@
-
-export function Text(
-    {
-    text, 
-    className='',
-    as : Component = 'span',
-    ...restProps 
-}) {
-    return(
-        <Component className={className} {...restProps}>{text}</Component>
-    )
+export function Text({
+                         text,
+                         className = '',
+                         as: Component = 'span',
+                         style,
+                         ...restProps
+                     }) {
+    return (
+        <Component
+            className={className}
+            style={style}
+            {...restProps}
+        >
+            {text}
+        </Component>
+    );
 }

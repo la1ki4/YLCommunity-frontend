@@ -26,7 +26,13 @@ export function Header(){
             <div className={headerStyle.headerContent}>
                 <Logo/>
                 <Menu/>
-                <ProfilePopup isOpen={isPopupOpen}>
+                <ProfilePopup isOpen={isPopupOpen} style={
+                    {
+                        background: "#111111",
+                        width:"220px",
+                        position: "fixed",
+                        bottom: "0"}
+                }>
                     <Text
                         className={`${textStyle.popupTextBlock} ${textStyle.defaultWhiteText}`}
                         as="a"

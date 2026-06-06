@@ -1,11 +1,7 @@
 .popupOverlay{
-    position: fixed;
-    bottom: 0;
-    background-color: #111111;
     border-radius: 10px;
     margin-bottom: 105px;
-    width: 220px;
-    z-index: 1;
+    z-index: 3;
 }
 
 .backdrop {
@@ -226,3 +222,64 @@
     align-items: flex-start;
     margin-top: 15px;
 }
+
+.morePopupContent {
+    position: relative;
+    background: #1c1c1c;
+    opacity: 0.95;
+    padding: 16px;
+    border-radius: 8px;
+    width: 200px;
+    min-width: 200px;
+}
+
+.morePopupHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.morePopupHeaderText{
+    font-family: "Roboto-regular";
+}
+
+.morePopupEvents {
+    margin-bottom: 8px;
+    margin-top: 12px;
+}
+
+.morePopupEvent{
+    background-color: #9EFF40;
+    padding: 4px;
+    border-radius: 8px;
+    border-left: 4px solid #203c05;
+    color: #1B1B1B;
+    font-size: 12px;
+    font-family: "Roboto-bold";
+    margin-top: 8px;
+}
+
+.morePopupCloseButton{
+    position: absolute;
+    top: 8px;
+    right: 12px;
+
+    background: transparent;
+    border: none;
+
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 32px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease;
+}
+
+.morePopupCloseButton:hover{
+    color: rgba(255, 255, 255, 0.7);
+}
+
