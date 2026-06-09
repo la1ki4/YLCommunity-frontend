@@ -5,7 +5,7 @@ import {Button} from "@shared/Button/Button.jsx";
 import {Media} from "@shared/Image/Media.jsx";
 import leftIcon from "@app/assets/Vector-left.svg";
 import rightIcon from "@app/assets/Vector-right.svg";
-import {useWeekDays} from "@features/calendar/hooks/useWeekDays.js";
+import {useWeekDays} from "@features/calendar/hooks/week/useWeekDays.js";
 import {DOW, MONTH_NAMES} from "@features/calendar/constants/calendar.constants.js";
 import {createNavCalendar} from "@features/calendar/utils/navCalendar.js";
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";

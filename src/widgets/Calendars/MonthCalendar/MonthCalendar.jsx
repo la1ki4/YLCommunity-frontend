@@ -6,22 +6,22 @@ import leftIcon from "@app/assets/Vector-left.svg";
 import rightIcon from "@app/assets/Vector-right.svg";
 import {DOW, MONTH_NAMES} from "@features/calendar/constants/calendar.constants.js";
 import {
+    calculateMonthCellEventsLayout, calculateMonthEventDisplayData,
     calculatePopupLeft,
     calculatePopupTop,
-    getEventBlockWidth,
     shiftMonth, sortEventsByDuration
 } from "@features/calendar/utils/monthCalendar.utils.js";
-import {useMonthGrid} from "@features/calendar/hooks/useMonthGrid.js";
+import {useMonthGrid} from "@features/calendar/hooks/month/useMonthGrid.js";
 import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js";
 import {useMemo, useRef, useState} from "react";
-import {formatDateKey, getMonday} from "@features/calendar/utils/calendarDate.utils.js";
+import {formatDateKey} from "@features/calendar/utils/calendarDate.utils.js";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 import {MoreEventsPopup} from "@widgets/Calendars/EventPopup/MoreEventsPopup.jsx";
 import {useClosePopupOnZoom} from "@features/calendar/hooks/useClosePopupOnZoom.js";
 import {useCalculateEventPopupPositionForMonthCalendar} from "@features/calendar/hooks/useCalculateEventPopupPosition.js";
-import {createEventPopupHandlers} from "@features/calendar/utils/eventPopup.utils.js";
-import {useCalculateMonthCellSize} from "@features/calendar/hooks/useCalculateMontCellSize.js";
-import {useCalculateMonthEventSize} from "@features/calendar/hooks/useCalculateMonthEventSize.js";
+import {createEventPopupMonthHandler} from "@features/calendar/utils/eventPopup.utils.js";
+import {useCalculateMonthCellSize} from "@features/calendar/hooks/month/useCalculateMonthCellSize.js";
+import {useCalculateMonthEventSize} from "@features/calendar/hooks/month/useCalculateMonthEventSize.js";
 import {INITIAL_CELL_SIZE, INITIAL_ELEMENT_SIZES} from "@features/calendar/constants/monthCalendar.constants.js";
 
 export function MonthCalendar({view, onChangeView}) {
@@ -89,7 +89,7 @@ export function MonthCalendar({view, onChangeView}) {
     const {
         openPopup,
         closePopup,
-    } = createEventPopupHandlers({
+    } = createEventPopupMonthHandler({
         setIsPopupVisible,
         setSelectedEvent,
         setPopupPositionVersion,
@@ -192,45 +192,19 @@ export function MonthCalendar({view, onChangeView}) {
                                         monthEventsGroup[key] || []
                                     );
 
-                                const visibleEventsCount =
-                                    cellSize.height <= 90
-                                        ? 0
-                                        : cellSize.height <= 137
-                                            ? 1
-                                            : 2;
-                                const hiddenEventsCount = dayEvents.length - visibleEventsCount;
-                                const buttonTop = (() => {
-                                    const {dayNumberHeight, buttonHeight} = elementSizes;
-
-                                    if (visibleEventsCount === 0) {
-                                        if (cellSize.height -
-                                            dayNumberHeight -
-                                            buttonHeight > 0) {
-                                            if (rowIndex === 0) {
-                                                return (cellSize.height / 2) - buttonHeight;
-                                            }
-                                            return (
-                                                cellSize.height -
-                                                dayNumberHeight -
-                                                buttonHeight
-                                            );
-                                        } else {
-                                            return 0;
-                                        }
-
-                                    }
-
-                                    if (visibleEventsCount === 1) {
-                                        return Math.max(
-                                            (rowIndex === 0 ? 55 : 35) +
-                                            35 -
-                                            (137 - cellSize.height),
-                                            60
-                                        );
-                                    }
-
-                                    return (rowIndex === 0 ? 55 : 35) + 70;
-                                })();
+                                const {
+                                    visibleEventsCount,
+                                    hiddenEventsCount,
+                                    buttonTop,
+                                } = calculateMonthCellEventsLayout({
+                                    cellHeight: cellSize.height,
+                                    dayEventsCount: dayEvents.length,
+                                    rowIndex,
+                                    dayNumberHeight:
+                                    elementSizes.dayNumberHeight,
+                                    buttonHeight:
+                                    elementSizes.buttonHeight,
+                                });
 
 
                                 return (
@@ -257,36 +231,7 @@ export function MonthCalendar({view, onChangeView}) {
                                             ref={dayNumberRef}
                                         />
                                         {dayEvents.slice(0, visibleEventsCount).map((event, index) => {
-                                            const startDate = new Date(event.startDate);
-
-                                            const durability = getEventBlockWidth(event, currentDate);
-
-                                            const startUtc = Date.UTC(
-                                                startDate.getFullYear(),
-                                                startDate.getMonth(),
-                                                startDate.getDate()
-                                            );
-
-                                            const currentUtc = Date.UTC(
-                                                currentDate.getFullYear(),
-                                                currentDate.getMonth(),
-                                                currentDate.getDate()
-                                            );
-
-                                            const monday = getMonday(currentDate);
-
-                                            const mondayUtc = Date.UTC(
-                                                monday.getFullYear(),
-                                                monday.getMonth(),
-                                                monday.getDate()
-                                            );
-
-                                            const isRealStart = startUtc === currentUtc;
-
-                                            const isWeekContinuation =
-                                                startUtc < mondayUtc &&
-                                                currentUtc === mondayUtc;
-
+                                            const {isRealStart,isWeekContinuation,durability} = calculateMonthEventDisplayData(event, currentDate);
 
                                             if ((isRealStart || isWeekContinuation) && !cell.isOtherMonth) {
                                                 return (

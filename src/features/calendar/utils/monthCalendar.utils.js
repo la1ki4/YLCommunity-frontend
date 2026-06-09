@@ -203,3 +203,108 @@ export function sortEventsByDuration(events) {
         return aStart - bStart;
     });
 }
+
+export function calculateMonthCellEventsLayout({
+                                                   cellHeight,
+                                                   dayEventsCount,
+                                                   rowIndex,
+                                                   dayNumberHeight,
+                                                   buttonHeight,
+                                               }) {
+    const visibleEventsCount =
+        cellHeight <= 90
+            ? 0
+            : cellHeight <= 137
+                ? 1
+                : 2;
+
+    const hiddenEventsCount =
+        dayEventsCount - visibleEventsCount;
+
+    let buttonTop;
+
+    if (visibleEventsCount === 0) {
+        if (
+            cellHeight -
+            dayNumberHeight -
+            buttonHeight >
+            0
+        ) {
+            if (rowIndex === 0) {
+                buttonTop =
+                    cellHeight / 2 -
+                    buttonHeight;
+            } else {
+                buttonTop =
+                    cellHeight -
+                    dayNumberHeight -
+                    buttonHeight;
+            }
+        } else {
+            buttonTop = 0;
+        }
+    } else if (visibleEventsCount === 1) {
+        buttonTop = Math.max(
+            (rowIndex === 0 ? 55 : 35) +
+            35 -
+            (137 - cellHeight),
+            60
+        );
+    } else {
+        buttonTop =
+            (rowIndex === 0 ? 55 : 35) +
+            70;
+    }
+
+    return {
+        visibleEventsCount,
+        hiddenEventsCount,
+        buttonTop,
+    };
+}
+
+export function calculateMonthEventDisplayData(
+    event,
+    currentDate
+) {
+    const startDate = new Date(event.startDate);
+
+    const durability =
+        getEventBlockWidth(
+            event,
+            currentDate
+        );
+
+    const startUtc = Date.UTC(
+        startDate.getFullYear(),
+        startDate.getMonth(),
+        startDate.getDate()
+    );
+
+    const currentUtc = Date.UTC(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate()
+    );
+
+    const monday = getMonday(currentDate);
+
+    const mondayUtc = Date.UTC(
+        monday.getFullYear(),
+        monday.getMonth(),
+        monday.getDate()
+    );
+
+    const isRealStart =
+        startUtc === currentUtc;
+
+    const isWeekContinuation =
+        startUtc < mondayUtc &&
+        currentUtc === mondayUtc;
+
+    return {
+        durability,
+        isRealStart,
+        isWeekContinuation,
+    };
+}

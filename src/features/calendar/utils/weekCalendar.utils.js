@@ -1,8 +1,10 @@
 import {
     DAY_COUNT_IN_WEEK,
     HOURS_IN_DAY,
-    MINUTES_IN_DAY
+    MINUTES_IN_DAY, PX_PER_MINUTE
 } from "@features/calendar/constants/weekCalendar.constants";
+import {getMondayBasedDayIndex} from "@features/calendar/utils/calendarDate.utils.js";
+import {getMinutesFromStartOfDay} from "@features/calendar/utils/dayCalendar.utils.js";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -88,4 +90,117 @@ export function buildLongEventSegments(longEvents, monday) {
         })
         .filter(Boolean)
         .sort((a, b) => a.startDayIndex - b.startDayIndex || a.endDayIndex - b.endDayIndex);
+}
+
+export function WeekCalendarLongEventsHeight(
+    longEventSegments
+) {
+    if (longEventSegments.length === 0) {
+        return 0;
+    }
+
+    const rowHeight = 28;
+    const rowGap = 6;
+    const verticalPadding = 8;
+
+    const maxRow = Math.max(
+        ...longEventSegments.map(
+            (segment) => segment.rowIndex
+        )
+    );
+
+    return (
+        (maxRow + 1) * rowHeight +
+        maxRow * rowGap +
+        verticalPadding * 2
+    );
+}
+
+export function longEventSegments(
+    longEvents,
+    monday
+) {
+    const segments =
+        buildLongEventSegments(
+            longEvents,
+            monday
+        );
+
+    const rowsLastEnd = [];
+
+    return segments.map((segment) => {
+        let rowIndex =
+            rowsLastEnd.findIndex(
+                (endDayIndex) =>
+                    segment.startDayIndex >
+                    endDayIndex
+            );
+
+        if (rowIndex === -1) {
+            rowIndex =
+                rowsLastEnd.length;
+
+            rowsLastEnd.push(
+                segment.endDayIndex
+            );
+        } else {
+            rowsLastEnd[rowIndex] =
+                segment.endDayIndex;
+        }
+
+        return {
+            ...segment,
+            rowIndex,
+        };
+    });
+}
+
+
+export function eventSizeAndPos({
+                                    event,
+                                    index,
+                                    eventsCount,
+                                    selectedEvent,
+                                }) {
+    const start = new Date(event.startDate);
+    const end = new Date(event.endDate);
+
+    const startMinutes =
+        getMinutesFromStartOfDay(start);
+
+    const durationMinutes =
+        (end - start) / 1000 / 60;
+
+    const top =
+        startMinutes * PX_PER_MINUTE;
+
+    const height =
+        durationMinutes * PX_PER_MINUTE;
+
+    const dayIndex =
+        getMondayBasedDayIndex(start);
+
+    const overlap = index;
+
+    const dayWidth = 100 / 7;
+
+    const width =
+        dayWidth / eventsCount;
+
+    const left =
+        dayWidth * dayIndex +
+        width * index -
+        overlap * 0.3;
+
+    const isSelected =
+        selectedEvent === event;
+
+    return {
+        top,
+        height,
+        left,
+        width,
+        dayIndex,
+        isSelected,
+    };
 }

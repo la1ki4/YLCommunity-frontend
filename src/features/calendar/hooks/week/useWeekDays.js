@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { addDays, isSelectedInThisWeek } from "@features/calendar/utils/calendarDate.utils";
+import { addDays, isSelectedInThisWeek } from "@features/calendar/utils/calendarDate.utils.js";
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 
 export function useWeekDays({ weekStart, selected, dowLabels }) {

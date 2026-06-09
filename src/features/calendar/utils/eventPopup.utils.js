@@ -79,7 +79,7 @@ export function useOutsideClick({
     ]);
 }
 
-export function createEventPopupHandlers({
+export function createEventPopupMonthHandler({
                                              setIsPopupVisible,
                                              setSelectedEvent,
                                              setPopupPositionVersion,
@@ -112,6 +112,33 @@ export function createEventPopupHandlers({
 
         setPopupPositionVersion((prev) => prev + 1);
 
+        requestAnimationFrame(() => {
+            setIsPopupVisible(true);
+        });
+    };
+
+    return {
+        openPopup,
+        closePopup,
+    };
+}
+
+export function createEventPopupHandlers({
+                                                 setIsPopupVisible,
+                                                 setSelectedEvent,
+                                             }) {
+    const closePopup = () => {
+        setIsPopupVisible(false);
+
+        setTimeout(() => {
+            setSelectedEvent(null);
+        }, 220);
+    };
+
+    const openPopup = (
+        event,
+    ) => {
+        setSelectedEvent(event);
         requestAnimationFrame(() => {
             setIsPopupVisible(true);
         });

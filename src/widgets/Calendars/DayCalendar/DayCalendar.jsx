@@ -1,9 +1,11 @@
-import {useMemo, useRef, useState, useEffect} from "react";
+import {useMemo, useRef, useState} from "react";
 import eventsPageStyle from "@app/styles/events.module.css";
 import buttonStyle from "@app/styles/button.module.css";
 import {NOW_TICK_MS} from "@features/calendar/constants/calendar.constants.js";
-import {PX_PER_MINUTE} from "@features/calendar/constants/dayCalendar.constants.js"
-import {getMinutesFromStartOfDay, prepareDayEvents} from "@features/calendar/utils/dayCalendar.utils.js";
+import {
+    calculateEventPositionAndSize,
+    prepareDayEvents
+} from "@features/calendar/utils/dayCalendar.utils.js";
 import {useElementHeight} from "@features/calendar/hooks/useElementHeight.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
 import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js"
@@ -12,8 +14,13 @@ import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {DayCalendarHeader} from "@widgets/Calendars/DayCalendar/components/DayCalendarHeader.jsx";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
-import calendarInfoPopupStyle from "@app/styles/popup.module.css"
 import {useClosePopupOnZoom} from "@features/calendar/hooks/useClosePopupOnZoom.js";
+import {
+    useSetDefaultEventTopPopupPosition,
+    useSetLongEventTopPopupPosition
+} from "@features/calendar/hooks/day/usePopupPosition.js";
+import {useRemoveEventPopupOnScrollAndClick} from "@features/calendar/hooks/day/useRemoveEventPopup.js";
+import {createEventPopupHandlers} from "@features/calendar/utils/eventPopup.utils.js";
 
 export function DayCalendar({date, onChangeDate, onSelect}) {
 
@@ -49,112 +56,43 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const selectedLongEventNodeRef = useRef(null);
 
-    const openPopup = (event) => {
-        setSelectedEvent(event);
-        requestAnimationFrame(() => {
-            setIsPopupVisible(true);
-        });
-    };
+    const {
+        openPopup,
+        closePopup,
+    } = createEventPopupHandlers({
+        setIsPopupVisible,
+        setSelectedEvent,
+    });
 
-    const closePopup = () => {
-        setIsPopupVisible(false);
+    useRemoveEventPopupOnScrollAndClick({
+        dayBodyRef,
+        closePopup,
+    });
 
-        setTimeout(() => {
-            setSelectedEvent(null);
-            setPopupTop(null);
-        }, 220);
-    };
+    useSetDefaultEventTopPopupPosition({
+        selectedEvent,
+        sortedEvents,
+        longEventsLength: longEvents.length,
 
-    useEffect(() => {
-        const node = dayBodyRef.current;
+        dayBodyRef,
+        selectedEventNodeRef,
+        popupRef,
+        headerRef,
+        longEventRef,
 
-        if (!node) {
-            return;
-        }
+        setPopupTop,
+    });
 
-        const handleScroll = () => {
-            closePopup();
-        };
+    useSetLongEventTopPopupPosition({
+        selectedEvent,
+        longEventsLength: longEvents.length,
 
-        const handleClick = (e) => {
-            const isEvent = e.target.closest(`.${eventsPageStyle.dayEvent}`);
-            const isPopup = e.target.closest(`.${calendarInfoPopupStyle.calendarInfoPopup}`);
+        selectedLongEventNodeRef,
+        popupRef,
+        dayBodyRef,
 
-            if (!isEvent && !isPopup) {
-                closePopup();
-            }
-        };
-
-
-        node.addEventListener("scroll", handleScroll);
-        node.addEventListener("click", handleClick);
-
-        return () => {
-            node.removeEventListener("scroll", handleScroll);
-            node.removeEventListener("click", handleClick);
-        };
-    }, []);
-
-    useEffect(() => {
-        const container = dayBodyRef.current;
-        const eventNode = selectedEventNodeRef.current;
-        const popupNode = popupRef.current;
-        const headerNode = headerRef.current;
-        const longEventNode = longEventRef.current;
-
-
-        if (!selectedEvent || !container || !eventNode || !popupNode || !headerNode) {
-            return;
-        }
-
-        const visibleTop = eventNode.offsetTop - container.scrollTop;
-        const popupHeight = popupNode.offsetHeight;
-        const headerHeight = headerNode.offsetHeight;
-        const longEventBlockHeight = longEventNode?.offsetHeight ?? 0;
-
-        const eventHeight = eventNode.offsetHeight;
-        const containerHeight = container.clientHeight;
-
-        const eventVisibleBottom = visibleTop + eventHeight;
-
-        const topBase = headerHeight + longEventBlockHeight;
-
-        const spaceAbove = visibleTop;
-        const spaceBelow = containerHeight - eventVisibleBottom;
-
-        let nextTop;
-
-        if (spaceAbove >= popupHeight) {
-            nextTop = topBase + visibleTop - popupHeight;
-        }
-
-        else if (spaceBelow >= popupHeight) {
-            nextTop = topBase + visibleTop + eventHeight;
-        }
-
-        else {
-            nextTop = 0;
-        }
-
-        setPopupTop(nextTop);
-    }, [selectedEvent, sortedEvents, longEvents.length]);
-
-    useEffect(() => {
-        const buttonNode = selectedLongEventNodeRef.current;
-        const popupNode = popupRef.current;
-        const rootNode = dayBodyRef.current?.parentElement;
-
-        if (!selectedEvent || !buttonNode || !popupNode || !rootNode) {
-            return;
-        }
-
-        const buttonRect = buttonNode.getBoundingClientRect();
-        const rootRect = rootNode.getBoundingClientRect();
-
-        const nextTop = buttonRect.bottom - rootRect.top;
-
-        setPopupTop(nextTop);
-    }, [selectedEvent, longEvents.length]);
+        setPopupTop,
+    });
 
     useClosePopupOnZoom({
         isEnabled: isPopupVisible,
@@ -199,20 +137,17 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
 
 
                         {sortedEvents.map((event, index) => {
-                            const startMinutes = getMinutesFromStartOfDay(event.start);
-                            const durationMinutes = (event.end - event.start) / 1000 / 60;
-
-                            const top = startMinutes * PX_PER_MINUTE;
-                            const height = durationMinutes * PX_PER_MINUTE;
-
-                            const reservedRight = 3;
-                            const overlapGap = 1;
-
-                            const availableWidth = 100 - reservedRight + overlapGap;
-
-                            const width = availableWidth / event.overlapCount;
-                            const left = (width - overlapGap) * event.overlapIndex;
-                            const isSelected = selectedEvent === event;
+                            const {
+                                top,
+                                height,
+                                left,
+                                width,
+                                isSelected,
+                                reservedRight,
+                            } = calculateEventPositionAndSize({
+                                event,
+                                selectedEvent,
+                            });
                             return (
                                 <CalendarEvent
                                     key={index}

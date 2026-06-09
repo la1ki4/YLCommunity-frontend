@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { buildMonthGrid } from "@features/calendar/utils/monthCalendar.utils";
+import { buildMonthGrid } from "@features/calendar/utils/monthCalendar.utils.js";
 
 export function useMonthGrid(year, monthIndex) {
     return useMemo(() => buildMonthGrid(year, monthIndex), [year, monthIndex]);

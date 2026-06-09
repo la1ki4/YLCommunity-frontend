@@ -1,4 +1,5 @@
 import {MONTH_NAMES} from "@features/calendar/constants/calendar.constants.js";
+import {PX_PER_MINUTE} from "@features/calendar/constants/dayCalendar.constants.js";
 
 export function getMinutesFromStartOfDay(date) {
     return date.getHours() * 60 + date.getMinutes();
@@ -58,6 +59,57 @@ export function prepareDayEvents(events) {
             overlapCount: group.length,
         }))
     );
+}
+
+export function calculateEventPositionAndSize({
+                                                  event,
+                                                  selectedEvent,
+                                              }) {
+    const startMinutes =
+        getMinutesFromStartOfDay(
+            event.start
+        );
+
+    const durationMinutes =
+        (event.end - event.start) /
+        1000 /
+        60;
+
+    const top =
+        startMinutes *
+        PX_PER_MINUTE;
+
+    const height =
+        durationMinutes *
+        PX_PER_MINUTE;
+
+    const reservedRight = 3;
+    const overlapGap = 1;
+
+    const availableWidth =
+        100 -
+        reservedRight +
+        overlapGap;
+
+    const width =
+        availableWidth /
+        event.overlapCount;
+
+    const left =
+        (width - overlapGap) *
+        event.overlapIndex;
+
+    const isSelected =
+        selectedEvent === event;
+
+    return {
+        top,
+        height,
+        left,
+        width,
+        isSelected,
+        reservedRight
+    };
 }
 
 
