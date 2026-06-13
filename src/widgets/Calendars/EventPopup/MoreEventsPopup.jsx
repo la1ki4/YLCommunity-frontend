@@ -8,12 +8,16 @@ import {Button} from "@shared/Button/Button.jsx";
 import {useOutsideClick} from "@features/calendar/utils/eventPopup.utils.js";
 
 export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
-                                                                      isOpen,
-                                                                      dayOfWeek,
-                                                                      onClose,
-                                                                      dayNumber,
-                                                                      moreButtonRef,
-                                                                      view}, ref) {
+                                                                       isOpen,
+                                                                       dayOfWeek,
+                                                                       onClose,
+                                                                       dayNumber,
+                                                                       moreButtonRef,
+                                                                       popupStyle,
+                                                                       view,
+                                                                       onEventClick,
+                                                                       moreEventsRef
+                                                                   }, ref) {
 
     const date = useMemo(() => {
         return new Date(
@@ -36,7 +40,7 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
     });
 
     return (
-        <Popup isOpen={isOpen} onClose={onClose} style={{position:"absolute"}}>
+        <Popup isOpen={isOpen} onClose={onClose} style={popupStyle}>
             <div className={MoreEventsPopupStyle.morePopupContent}
                  onClick={(e) => e.stopPropagation()}
                  ref={ref}>
@@ -66,7 +70,19 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
                 <div className={MoreEventsPopupStyle.morePopupEvents}>
                     {list.map((event) => (
                         <div
+                            key={event.id}
                             className={MoreEventsPopupStyle.morePopupEvent}
+                            onClick={(e) => {
+                                e.stopPropagation();
+
+                                onEventClick?.(
+                                    event,
+                                    e.currentTarget
+                                );
+                            }}
+                            ref={(el) => {
+                                moreEventsRef.current[event.id] = el;
+                            }}
                         >
                             {event.title}
                         </div>

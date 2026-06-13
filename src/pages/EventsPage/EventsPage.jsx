@@ -74,7 +74,7 @@ export default function EventsPage() {
                         )}
 
                         {view === "Month" && (
-                            <MonthCalendar view={monthView} onChangeView={onMonthChangeView} />
+                            <MonthCalendar view={monthView} onChangeView={onMonthChangeView} mainRef={mainRef} />
                         )}
 
                         {view === "Year" && (

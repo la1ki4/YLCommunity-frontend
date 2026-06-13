@@ -1,65 +1,54 @@
 import {useLayoutEffect} from "react";
 
 export function useCalculateEventPopupPositionForMonthCalendar({
-                                                                selectedEvent,
-                                                                isPopupVisible,
-                                                                popupPositionVersion,
+                                                                   selectedEvent,
+                                                                   isPopupVisible,
+                                                                   popupPositionVersion,
 
-                                                                popupRef,
+                                                                   popupRef,
 
-                                                                calendarHeaderRef,
-                                                                calendarSectionRef,
-                                                                calendarRowRef,
-                                                                cellRef,
+                                                                   calendarHeaderRef,
+                                                                   calendarSectionRef,
+                                                                   moreEventPopupRef,
+                                                                   calendarRowRef,
+                                                                   cellRef,
 
-                                                                selectedEventRef,
-                                                                selectedRowIndexRef,
-                                                                selectedColIndexRef,
+                                                                   selectedEventRef,
+                                                                   selectedRowIndexRef,
+                                                                   selectedColIndexRef,
 
-                                                                calculatePopupLeft,
-                                                                calculatePopupTop,
+                                                                   calculatePopupLeft,
+                                                                   calculatePopupTop,
 
-                                                                setPopupLeft,
-                                                                setPopupTop,
-                                                            }) {
+                                                                   setPopupLeft,
+                                                                   setPopupTop,
+                                                               }) {
     useLayoutEffect(() => {
-        const calendarNode = calendarHeaderRef.current;
+        const calendarHeaderNode = calendarHeaderRef.current;
         const eventNode = selectedEventRef.current;
         const popupNode = popupRef.current;
-        const calendarHeaderNode = calendarHeaderRef.current;
         const calendarSectionNode = calendarSectionRef.current;
         const calendarRowNode = calendarRowRef.current;
         const calendarCellNode = cellRef.current;
+        const moreEventPopupNode = moreEventPopupRef?.current;
 
         if (
             !selectedEvent ||
-            !calendarNode ||
+            !calendarHeaderNode ||
             !eventNode ||
             !popupNode
         ) {
             return;
         }
 
-        const calendarRect =
-            calendarNode.getBoundingClientRect();
 
-        const eventRect =
-            eventNode.getBoundingClientRect();
-
-        const popupRect =
-            popupNode.getBoundingClientRect();
-
-        const calendarHeaderRect =
-            calendarHeaderNode.getBoundingClientRect();
-
-        const calendarSectionRect =
-            calendarSectionNode.getBoundingClientRect();
-
-        const calendarRowRect =
-            calendarRowNode.getBoundingClientRect();
-
-        const calendarCellRect =
-            calendarCellNode.getBoundingClientRect();
+        const calendarHeaderRect = calendarHeaderNode.getBoundingClientRect();
+        const eventRect = eventNode.getBoundingClientRect();
+        const popupRect = popupNode.getBoundingClientRect();
+        const calendarSectionRect = calendarSectionNode.getBoundingClientRect();
+        const calendarRowRect = calendarRowNode.getBoundingClientRect();
+        const calendarCellRect = calendarCellNode.getBoundingClientRect();
+        const moreEventPopupRect = moreEventPopupNode?.getBoundingClientRect();
 
         const rowIndex =
             selectedRowIndexRef.current;
@@ -69,46 +58,26 @@ export function useCalculateEventPopupPositionForMonthCalendar({
 
         setPopupLeft(
             calculatePopupLeft({
-                calendarRect,
+                calendarHeaderRect,
                 eventRect,
                 popupRect,
                 calendarSectionRect,
                 calendarCellRect,
                 colIndex,
+                moreEventPopupRect,
             })
         );
 
         setPopupTop(
             calculatePopupTop({
-                calendarRect,
+                calendarHeaderRect,
                 eventRect,
                 popupRect,
-                calendarHeaderRect,
                 calendarSectionRect,
                 calendarRowRect,
+                moreEventPopupRect,
                 rowIndex,
             })
         );
-    }, [
-        selectedEvent,
-        isPopupVisible,
-        popupPositionVersion,
-
-        popupRef,
-
-        calendarHeaderRef,
-        calendarSectionRef,
-        calendarRowRef,
-        cellRef,
-
-        selectedEventRef,
-        selectedRowIndexRef,
-        selectedColIndexRef,
-
-        calculatePopupLeft,
-        calculatePopupTop,
-
-        setPopupLeft,
-        setPopupTop,
-    ]);
+    }, [selectedEvent, isPopupVisible, popupPositionVersion, popupRef, calendarHeaderRef, calendarSectionRef, calendarRowRef, cellRef, selectedEventRef, selectedRowIndexRef, selectedColIndexRef, calculatePopupLeft, calculatePopupTop, setPopupLeft, setPopupTop, moreEventPopupRef]);
 }

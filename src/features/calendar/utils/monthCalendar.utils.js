@@ -41,23 +41,66 @@ export function shiftMonth(year, monthIndex, delta) {
 
 
 export function calculatePopupLeft({
-                                       calendarRect,
+                                       calendarHeaderRect,
                                        eventRect,
                                        popupRect,
                                        calendarSectionRect,
                                        calendarCellRect,
                                        colIndex,
+
+                                       moreEventPopupRect,
                                    }) {
+
+    if (window.innerWidth <= 1100) {
+        return window.innerWidth / 2 + 110;
+    }
+
     const GAP = 800;
 
-    const spaceLeft = calendarSectionRect.width - (calendarSectionRect.width - calendarCellRect.width * colIndex);
+    if (moreEventPopupRect) {
 
-    const spaceRight = calendarSectionRect.width - (spaceLeft + eventRect.width);
+        const rightSpace =
+            calendarHeaderRect.width -
+            (
+                moreEventPopupRect.left -
+                calendarHeaderRect.left +
+                moreEventPopupRect.width
+            );
+
+        if (rightSpace >= popupRect.width) {
+            return (
+                moreEventPopupRect.right -
+                calendarHeaderRect.left +
+                GAP
+            );
+        }
+
+        return (
+            moreEventPopupRect.left -
+            calendarHeaderRect.left -
+            popupRect.width +
+            GAP
+        );
+    }
+
+    const spaceLeft =
+        calendarSectionRect.width -
+        (
+            calendarSectionRect.width -
+            calendarCellRect.width * colIndex
+        );
+
+    const spaceRight =
+        calendarSectionRect.width -
+        (
+            spaceLeft +
+            eventRect.width
+        );
 
     if (popupRect.width <= spaceLeft) {
         return (
             eventRect.left -
-            calendarRect.left -
+            calendarHeaderRect.left -
             popupRect.width +
             GAP
         );
@@ -66,48 +109,88 @@ export function calculatePopupLeft({
     if (popupRect.width <= spaceRight) {
         return (
             eventRect.right -
-            calendarRect.left +
+            calendarHeaderRect.left +
             GAP
         );
     }
 
     return (
-        calendarRect.width / 2 -
+        calendarHeaderRect.width / 2 -
         popupRect.width / 2 +
         GAP
     );
 }
 
 export function calculatePopupTop({
-                                      calendarRect,
+                                      calendarHeaderRect,
                                       eventRect,
                                       popupRect,
-                                      calendarHeaderRect,
                                       calendarSectionRect,
                                       calendarRowRect,
+                                      moreEventPopupRect,
                                       rowIndex,
                                   }) {
-    const GAP = 12;
+    if (window.innerWidth <= 1100) {
+        return window.innerHeight / 2 - popupRect.height / 2;
+    }
 
-    const spaceBottom = (calendarSectionRect.height - calendarHeaderRect.height) - (calendarRowRect.height * (1 + rowIndex));
+    const MORE_EVENT_GAP = 65
 
+    if (moreEventPopupRect) {
+        const distanceFromCalendarTop =
+            eventRect.top - calendarHeaderRect.height;
 
-    if (spaceBottom > popupRect.height + GAP) {
+        const freeSpaceBottom =
+            calendarSectionRect.height -
+            (
+                distanceFromCalendarTop +
+                eventRect.height
+            );
+
+        if (freeSpaceBottom >= popupRect.height + MORE_EVENT_GAP) {
+            return (
+                eventRect.top -
+                calendarHeaderRect.top + MORE_EVENT_GAP
+            );
+        }
+
         return (
             eventRect.top -
-            calendarRect.top -
+            calendarHeaderRect.top -
+            popupRect.height +
+            MORE_EVENT_GAP
+        );
+    }
+
+    const EVENT_GAP = 12;
+
+    const spaceBottom =
+        (
+            calendarSectionRect.height -
+            calendarHeaderRect.height
+        ) -
+        (
+            calendarRowRect.height *
+            (1 + rowIndex)
+        );
+
+    if (spaceBottom > popupRect.height + EVENT_GAP) {
+        return (
+            eventRect.top -
+            calendarHeaderRect.top -
             popupRect.height +
             calendarHeaderRect.height +
             popupRect.height -
-            GAP
+            EVENT_GAP
         );
     }
+
     return (
         eventRect.top -
-        calendarRect.top -
+        calendarHeaderRect.top -
         popupRect.height +
         calendarHeaderRect.height -
-        GAP
+        EVENT_GAP
     );
 }
 
@@ -211,15 +294,14 @@ export function calculateMonthCellEventsLayout({
                                                    dayNumberHeight,
                                                    buttonHeight,
                                                }) {
-    const visibleEventsCount =
+    let visibleEventsCount =
         cellHeight <= 90
             ? 0
             : cellHeight <= 137
                 ? 1
                 : 2;
 
-    const hiddenEventsCount =
-        dayEventsCount - visibleEventsCount;
+    let hiddenEventsCount = dayEventsCount - visibleEventsCount;
 
     let buttonTop;
 
@@ -238,15 +320,19 @@ export function calculateMonthCellEventsLayout({
                 buttonTop =
                     cellHeight -
                     dayNumberHeight -
-                    buttonHeight;
+                    buttonHeight - 10;
             }
         } else {
             buttonTop = 0;
         }
     } else if (visibleEventsCount === 1) {
+        if(rowIndex === 0 && hiddenEventsCount > 0 && cellHeight <= 120) {
+            --visibleEventsCount;
+            ++hiddenEventsCount;
+        }
         buttonTop = Math.max(
             (rowIndex === 0 ? 55 : 35) +
-            35 -
+            45 -
             (137 - cellHeight),
             60
         );

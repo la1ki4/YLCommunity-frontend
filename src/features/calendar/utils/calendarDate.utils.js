@@ -1,4 +1,4 @@
-import {DOW_FULLNAME, MONTH_NAMES} from "@features/calendar/constants/calendar.constants.js";
+import {DOW_FULLNAME, DOW, MONTH_NAMES} from "@features/calendar/constants/calendar.constants.js";
 
 export function getMonday(date) {
     const d = new Date(date);
@@ -432,6 +432,10 @@ export function formatDateKey(date) {
     const year = date.getFullYear();
 
     return `${day}-${month}-${year}`;
+}
+
+export function dow_index(dow){
+
 }
 
 

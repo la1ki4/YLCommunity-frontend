@@ -257,6 +257,12 @@
     font-size: 12px;
     font-family: "Roboto-bold";
     margin-top: 8px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.morePopupEvent:hover{
+    transform: translateY(-2px);
 }
 
 .morePopupCloseButton{

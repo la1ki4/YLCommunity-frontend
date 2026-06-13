@@ -18,13 +18,17 @@ import {formatDateKey} from "@features/calendar/utils/calendarDate.utils.js";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 import {MoreEventsPopup} from "@widgets/Calendars/EventPopup/MoreEventsPopup.jsx";
 import {useClosePopupOnZoom} from "@features/calendar/hooks/useClosePopupOnZoom.js";
-import {useCalculateEventPopupPositionForMonthCalendar} from "@features/calendar/hooks/useCalculateEventPopupPosition.js";
+import {
+    useCalculateEventPopupPositionForMonthCalendar
+} from "@features/calendar/hooks/useCalculateEventPopupPosition.js";
 import {createEventPopupMonthHandler} from "@features/calendar/utils/eventPopup.utils.js";
 import {useCalculateMonthCellSize} from "@features/calendar/hooks/month/useCalculateMonthCellSize.js";
 import {useCalculateMonthEventSize} from "@features/calendar/hooks/month/useCalculateMonthEventSize.js";
 import {INITIAL_CELL_SIZE, INITIAL_ELEMENT_SIZES} from "@features/calendar/constants/monthCalendar.constants.js";
+import {useMoreEventPopupPosition} from "@features/calendar/hooks/month/useMoreEventPopupPosition.js";
+import {useWindowSize} from "@features/calendar/hooks/useWindowSize.js";
 
-export function MonthCalendar({view, onChangeView}) {
+export function MonthCalendar({view, onChangeView, mainRef}) {
     const calendar = useMonthGrid(view.year, view.monthIndex);
     const headerText = `${MONTH_NAMES[view.monthIndex]}, ${view.year}`;
 
@@ -78,7 +82,6 @@ export function MonthCalendar({view, onChangeView}) {
         setElementSizes,
     });
 
-
     const [selectedEvent, setSelectedEvent] = useState(null);
     const selectedEventRef = useRef(null);
     const selectedRowIndexRef = useRef(null);
@@ -96,7 +99,7 @@ export function MonthCalendar({view, onChangeView}) {
 
         selectedEventRef,
         selectedRowIndexRef,
-        selectedColIndexRef,
+        selectedColIndexRef
     });
 
     const [selectedMoreButton, setSelectedMoreButton] = useState(false);
@@ -127,6 +130,7 @@ export function MonthCalendar({view, onChangeView}) {
         onClose: closePopup,
     });
 
+    const moreEventPopupRef = useRef(null);
 
     useCalculateEventPopupPositionForMonthCalendar({
         selectedEvent,
@@ -137,6 +141,7 @@ export function MonthCalendar({view, onChangeView}) {
 
         calendarHeaderRef,
         calendarSectionRef,
+        moreEventPopupRef,
         calendarRowRef,
         cellRef,
 
@@ -151,8 +156,36 @@ export function MonthCalendar({view, onChangeView}) {
         setPopupTop,
     });
 
+    const [cellRowIndex, setCellRowIndex] = useState(0);
+    const [cellColIndex, setCellColIndex] = useState(0);
+    const [moreEventsPopupTop, setMoreEventsPopupTop] = useState(0);
+    const [moreEventsPopupLeft, setMoreEventsPopupLeft] = useState(0);
+
+    const windowSize = useWindowSize();
+
+    useMoreEventPopupPosition({
+        calendarHeaderRef,
+        cellRef,
+        moreEventPopupRef,
+        mainRef,
+
+        cellRowIndex,
+        cellColIndex,
+
+        windowWidth: windowSize.width,
+        windowHeight: windowSize.height,
+
+        setMoreEventsPopupTop,
+        setMoreEventsPopupLeft,
+    });
+
+    useClosePopupOnZoom({
+        isEnabled: selectedMoreButton,
+        onClose: closeMoreButton,
+    });
+
     const eventRefs = useRef({});
-    const morePopupRef = useRef(null);
+    const moreEventsRef = useRef({});
 
     return (
         <section className={MonthCalendarStyle.calendarSection} ref={calendarSectionRef}>
@@ -189,8 +222,8 @@ export function MonthCalendar({view, onChangeView}) {
                                 const currentDate = new Date(view.year, view.monthIndex, cell.label);
                                 const key = formatDateKey(currentDate);
                                 const dayEvents = sortEventsByDuration(
-                                        monthEventsGroup[key] || []
-                                    );
+                                    monthEventsGroup[key] || []
+                                );
 
                                 const {
                                     visibleEventsCount,
@@ -231,7 +264,11 @@ export function MonthCalendar({view, onChangeView}) {
                                             ref={dayNumberRef}
                                         />
                                         {dayEvents.slice(0, visibleEventsCount).map((event, index) => {
-                                            const {isRealStart,isWeekContinuation,durability} = calculateMonthEventDisplayData(event, currentDate);
+                                            const {
+                                                isRealStart,
+                                                isWeekContinuation,
+                                                durability
+                                            } = calculateMonthEventDisplayData(event, currentDate);
 
                                             if ((isRealStart || isWeekContinuation) && !cell.isOtherMonth) {
                                                 return (
@@ -281,15 +318,25 @@ export function MonthCalendar({view, onChangeView}) {
 
                                                         moreButtonRefs.current[`${rowIndex}-${colIndex}`] = el;
                                                     }}
-                                                    onClick={() =>
-                                                        openMoreButton(
+                                                    onClick={() => {
+                                                        setCellRowIndex(rowIndex);
+                                                        setCellColIndex(colIndex);
+                                                        return openMoreButton(
                                                             DOW[colIndex],
                                                             cell.label
                                                         )
                                                     }
+                                                    }
                                             >
-                                                <Text className={MonthCalendarStyle.dayEventButtonText} as={"div"}
-                                                      text={`${dayEvents.length - visibleEventsCount} more...`}/>
+                                                <Text
+                                                    className={MonthCalendarStyle.dayEventButtonText}
+                                                    as={"div"}
+                                                    text={
+                                                        cellSize.width < 70
+                                                            ? `${dayEvents.length - visibleEventsCount}...`
+                                                            : `${dayEvents.length - visibleEventsCount} more...`
+                                                    }
+                                                />
                                             </Button>
                                         )}
                                     </div>
@@ -306,6 +353,7 @@ export function MonthCalendar({view, onChangeView}) {
                     isVisible={isPopupVisible}
                     ref={popupRef}
                     eventRefs={eventRefs}
+                    moreEventsRef={moreEventsRef}
                     style={{
                         top: `${popupTop}px`,
                         left: `${popupLeft}px`,
@@ -320,7 +368,15 @@ export function MonthCalendar({view, onChangeView}) {
                     dayOfWeek={selectedMorePopupData?.dayOfWeek}
                     dayNumber={selectedMorePopupData?.dayNumber}
                     view={view}
-                    ref={morePopupRef}
+                    ref={moreEventPopupRef}
+                    onEventClick={openPopup}
+                    moreEventsRef={moreEventsRef}
+                    popupStyle={{
+                        position: "absolute",
+                        top: moreEventsPopupTop,
+                        left: moreEventsPopupLeft,
+                        transition: "top 220ms ease, left 220ms ease",
+                    }}
                 />
             )}
         </section>

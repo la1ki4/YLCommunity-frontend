@@ -41,11 +41,13 @@ export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({
                                                                            onClose,
                                                                            style,
                                                                            isVisible,
-                                                                           eventRefs}, ref){
+                                                                           eventRefs,
+                                                                           moreEventsRef
+                                                                       }, ref) {
 
     useOutsideClick({
         ref,
-        ignoreRefs: [eventRefs],
+        ignoreRefs: [eventRefs, moreEventsRef],
         isEnabled: isVisible,
         onOutsideClick: onClose,
     });
@@ -76,7 +78,8 @@ export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({
                 <Media image={signIcon} style={{marginRight: "20px"}}/>
                 <div className={calendarInfoPopupStyle.calendarInfoContent}>
                     <Text className={calendarInfoPopupStyle.calendarInfoTitle} text={event.title ?? "Event"}/>
-                    <Text className={calendarInfoPopupStyle.calendarInfoDate} text={formatEventDateRange(event.start, event.end)}/>
+                    <Text className={calendarInfoPopupStyle.calendarInfoDate}
+                          text={formatEventDateRange(event.start, event.end)}/>
                     <Button leftIcon={<Media image={linkIcon}/>} className={calendarInfoButtonStyle.buttonWithBorder}>
                         <Text className={calendarInfoPopupStyle.calendarInfoInviteText} text={"Invite via link"}/>
                     </Button>
@@ -84,7 +87,8 @@ export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({
             </div>
             <div className={calendarInfoPopupStyle.iconTextSection}>
                 <Media image={descriptionIcon} style={{marginRight: "20px", height: "18px"}}/>
-                <Text className={calendarInfoPopupStyle.calendarInfoBodyText} text={event.description || "No description"}/>
+                <Text className={calendarInfoPopupStyle.calendarInfoBodyText}
+                      text={event.description || "No description"}/>
             </div>
             <div className={calendarInfoPopupStyle.iconTextSection}>
                 <Media image={locationIcon} style={{marginRight: "20px", height: "18px"}}/>
