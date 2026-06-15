@@ -192,9 +192,15 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     background-color: #242424;
-    padding: 10px;
+    padding: 10px 4px;
     border-radius: 10px 10px 0 0;
     text-align: center;
+}
+
+@media (max-width: 1600px) {
+    .miniCalendarDaysOfWeekSection{
+        padding: 10px 1px;
+    }
 }
 
 .miniCalendarDayOfWeek{
@@ -221,7 +227,7 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     place-items: center;
-    padding: 10px;
+    padding: 4px;
 }
 
 .miniCalendarEmptyDay{

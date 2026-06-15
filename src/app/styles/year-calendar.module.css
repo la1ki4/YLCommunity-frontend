@@ -46,9 +46,15 @@
     width: 100%;
 }
 
+@media(min-width:1920px) {
+    .calendarSection{
+        width: 1700px;
+    }
+}
+
 .yearScroll{
     margin-top: 18px;
-    max-height: 75vh;
+    max-height: 80vh;
     overflow: auto;
 
     padding-right: 10px;
@@ -56,12 +62,18 @@
 
 .yearGrid{
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 18px;
 }
 
+@media (max-width: 1600px){
+    .yearGrid{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
 .yearScroll::-webkit-scrollbar{
-    width: 10px;
+    width: 8px;
 }
 .yearScroll::-webkit-scrollbar-thumb{
     background: rgba(255,255,255,.10);
@@ -72,15 +84,14 @@
     background: rgba(255,255,255,.02);
 }
 
-/* адаптив */
 @media (max-width: 1500px){
     .yearGrid{
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
-@media (max-width: 1300px){
+@media (max-width: 900px){
     .yearGrid{
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 }
 

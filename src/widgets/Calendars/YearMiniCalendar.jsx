@@ -71,7 +71,6 @@ export function YearMiniCalendar({ year, monthIndex, selected, onSelect }) {
                                             className={[
                                                 eventsPageStyle.miniCalendarDayNumber,
                                                 isOtherMonth && eventsPageStyle.miniCalendarOtherMonthText,
-                                                shouldHighlight && eventsPageStyle.miniCalendarTextDaySelected,
                                             ]
                                                 .filter(Boolean)
                                                 .join(" ")}
