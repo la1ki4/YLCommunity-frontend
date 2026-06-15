@@ -32,20 +32,88 @@ export function formatDateKey(dateString) {
     return `${day}-${month}-${year}`;
 }
 
+function isOverlapping(eventA, eventB) {
+    return (
+        eventA.startDate < eventB.endDate &&
+        eventA.endDate > eventB.startDate
+    );
+}
+
+function getDuration(event) {
+    return new Date(event.endDate).getTime() -
+        new Date(event.startDate).getTime();
+}
+
 export function groupEventsByDateMap(events) {
-    const map = new Map();
+    const dayMap = new Map();
 
     events.forEach(event => {
-        const key = formatDateKey(event.startDate);
+        const dateKey = formatDateKey(event.startDate);
 
-        if (!map.has(key)) {
-            map.set(key, []);
+        if (!dayMap.has(dateKey)) {
+            dayMap.set(dateKey, []);
         }
 
-        map.get(key).push(event);
+        dayMap.get(dateKey).push(event);
     });
 
-    return map;
+    const result = new Map();
+
+    dayMap.forEach((dayEvents, dateKey) => {
+        const groups = [];
+
+        dayEvents
+            .sort((a, b) => {
+                const startDiff =
+                    new Date(a.startDate) - new Date(b.startDate);
+
+                if (startDiff !== 0) {
+                    return startDiff;
+                }
+
+                return getDuration(b) - getDuration(a);
+            })
+            .forEach(event => {
+                let groupIndex = -1;
+
+                for (let i = 0; i < groups.length; i++) {
+                    const hasOverlap = groups[i].some(groupEvent =>
+                        isOverlapping(groupEvent, event)
+                    );
+
+                    if (hasOverlap) {
+                        groupIndex = i;
+                        break;
+                    }
+                }
+
+                if (groupIndex === -1) {
+                    groups.push([event]);
+                } else {
+                    groups[groupIndex].push(event);
+                }
+            });
+
+        groups.forEach((group, index) => {
+            group.sort((a, b) => {
+                const durationDiff =
+                    getDuration(b) - getDuration(a);
+
+                if (durationDiff !== 0) {
+                    return durationDiff;
+                }
+
+                return (
+                    new Date(a.startDate) -
+                    new Date(b.startDate)
+                );
+            });
+
+            result.set(`${dateKey}-${index}`, group);
+        });
+    });
+
+    return result;
 }
 
 export function buildLongEventSegments(longEvents, monday) {
@@ -159,7 +227,6 @@ export function longEventSegments(
 export function eventSizeAndPos({
                                     event,
                                     index,
-                                    eventsCount,
                                     selectedEvent,
                                 }) {
     const start = new Date(event.startDate);
@@ -184,8 +251,7 @@ export function eventSizeAndPos({
 
     const dayWidth = 100 / 7;
 
-    const width =
-        dayWidth / eventsCount;
+    const width = dayWidth / (index + 1);
 
     const left =
         dayWidth * dayIndex +

@@ -139,7 +139,7 @@ export function useSetDefaultEventTopPopupPosition({
                 visibleTop +
                 eventHeight;
         } else {
-            nextTop = 0;
+            nextTop = headerHeight + containerHeight / 2 - popupHeight / 2;
         }
 
         setPopupTop(nextTop);

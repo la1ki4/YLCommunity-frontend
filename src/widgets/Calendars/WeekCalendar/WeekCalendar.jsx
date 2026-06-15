@@ -230,7 +230,6 @@ export function WeekCalendarLayout(props) {
                                     } = eventSizeAndPos({
                                         event,
                                         index,
-                                        eventsCount: events.length,
                                         selectedEvent,
                                     });
 

@@ -65,42 +65,17 @@ export function calculateEventPositionAndSize({
                                                   event,
                                                   selectedEvent,
                                               }) {
-    const startMinutes =
-        getMinutesFromStartOfDay(
-            event.start
-        );
 
-    const durationMinutes =
-        (event.end - event.start) /
-        1000 /
-        60;
-
-    const top =
-        startMinutes *
-        PX_PER_MINUTE;
-
-    const height =
-        durationMinutes *
-        PX_PER_MINUTE;
-
+    const startMinutes = getMinutesFromStartOfDay(event.start);
+    const durationMinutes = (event.end - event.start) / 1000 / 60;
+    const top = startMinutes * PX_PER_MINUTE;
+    const height = durationMinutes * PX_PER_MINUTE;
     const reservedRight = 3;
     const overlapGap = 1;
-
-    const availableWidth =
-        100 -
-        reservedRight +
-        overlapGap;
-
-    const width =
-        availableWidth /
-        event.overlapCount;
-
-    const left =
-        (width - overlapGap) *
-        event.overlapIndex;
-
-    const isSelected =
-        selectedEvent === event;
+    const availableWidth = 100 - reservedRight + overlapGap;
+    const width = availableWidth / (event.overlapIndex + 1);
+    const left = (width - overlapGap) * event.overlapIndex;
+    const isSelected = selectedEvent === event;
 
     return {
         top,
