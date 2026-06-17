@@ -37,12 +37,16 @@
 }
 
 .calendarContainer{
+    position: absolute;
+    left: 0;
+    right: 0;
     padding:40px;
     background: #111111;
     border-radius: 24px;
 }
 
 .calendarSection{
+    position: relative;
     width: 100%;
 }
 

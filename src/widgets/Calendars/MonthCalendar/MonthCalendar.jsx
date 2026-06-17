@@ -364,7 +364,7 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
                 <MoreEventsPopup
                     isOpen={selectedMoreButton}
                     onClose={closeMoreButton}
-                    moreButtonRef={moreButtonRefs}
+                    ignoreRefs={moreButtonRefs}
                     dayOfWeek={selectedMorePopupData?.dayOfWeek}
                     dayNumber={selectedMorePopupData?.dayNumber}
                     view={view}

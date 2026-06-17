@@ -29,6 +29,11 @@ export function useOutsideClick({
         }
 
         const handleClickOutside = (event) => {
+
+            if (!ref?.current) {
+                return;
+            }
+
             const clickedInsidePopup =
                 ref.current?.contains(event.target);
 
@@ -80,14 +85,14 @@ export function useOutsideClick({
 }
 
 export function createEventPopupMonthHandler({
-                                             setIsPopupVisible,
-                                             setSelectedEvent,
-                                             setPopupPositionVersion,
+                                                 setIsPopupVisible,
+                                                 setSelectedEvent,
+                                                 setPopupPositionVersion,
 
-                                             selectedEventRef,
-                                             selectedRowIndexRef,
-                                             selectedColIndexRef,
-                                         }) {
+                                                 selectedEventRef,
+                                                 selectedRowIndexRef,
+                                                 selectedColIndexRef,
+                                             }) {
     const closePopup = () => {
         setIsPopupVisible(false);
 
@@ -124,9 +129,9 @@ export function createEventPopupMonthHandler({
 }
 
 export function createEventPopupHandlers({
-                                                 setIsPopupVisible,
-                                                 setSelectedEvent,
-                                             }) {
+                                             setIsPopupVisible,
+                                             setSelectedEvent,
+                                         }) {
     const closePopup = () => {
         setIsPopupVisible(false);
 

@@ -12,7 +12,8 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
                                                                        dayOfWeek,
                                                                        onClose,
                                                                        dayNumber,
-                                                                       moreButtonRef,
+                                                                       ignoreRefs,
+                                                                       dayButtonRef,
                                                                        popupStyle,
                                                                        view,
                                                                        onEventClick,
@@ -20,12 +21,14 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
                                                                    }, ref) {
 
     const date = useMemo(() => {
-        return new Date(
-            view.year,
-            view.monthIndex,
-            dayNumber
-        );
-    }, [view.year, view.monthIndex, dayNumber]);
+        if (view !== null){
+            return new Date(
+                view.year,
+                view.monthIndex,
+                dayNumber
+            );
+        }
+    }, [view, dayNumber]);
 
     const list = useEventsBetweenDates({
         startDate: date,
@@ -34,7 +37,7 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
 
     useOutsideClick({
         ref: ref,
-        ignoreRefs: [moreButtonRef],
+        ignoreRefs: [ignoreRefs, dayButtonRef],
         isEnabled: isOpen,
         onOutsideClick: onClose,
     });
