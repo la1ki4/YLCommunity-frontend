@@ -41,6 +41,8 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
         onOutsideClick: onClose,
     });
 
+    const hasEvents = list.length > 0;
+
     return (
         <Popup isOpen={isOpen} onClose={onClose} style={popupStyle}>
             <div className={MoreEventsPopupStyle.morePopupContent}
@@ -70,25 +72,34 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
                 </div>
 
                 <div className={MoreEventsPopupStyle.morePopupEvents}>
-                    {list.map((event) => (
-                        <div
-                            key={event.id}
-                            className={MoreEventsPopupStyle.morePopupEvent}
-                            onClick={(e) => {
-                                e.stopPropagation();
+                    {hasEvents ? (
+                        list.map((event) => (
+                            <div
+                                key={event.id}
+                                className={MoreEventsPopupStyle.morePopupEvent}
+                                onClick={(e) => {
+                                    e.stopPropagation();
 
-                                onEventClick?.(
-                                    event,
-                                    e.currentTarget
-                                );
-                            }}
-                            ref={(el) => {
-                                moreEventsRef.current[event.id] = el;
-                            }}
-                        >
-                            {event.title}
-                        </div>
-                    ))}
+                                    onEventClick?.(
+                                        event,
+                                        e.currentTarget
+                                    );
+                                }}
+                                ref={(el) => {
+                                    if (el) {
+                                        moreEventsRef.current[event.id] = el;
+                                    }
+                                }}
+                            >
+                                {event.title}
+                            </div>
+                        ))
+                    ) : (
+                        <Text
+                            text="There are no events for the selected date"
+                            className={MoreEventsPopupStyle.morePopupEmptyText}
+                        />
+                    )}
                 </div>
             </div>
         </Popup>

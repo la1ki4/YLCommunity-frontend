@@ -4,6 +4,12 @@
     z-index: 3;
 }
 
+.morePopupEmptyText{
+    color: white;
+    font-family: Roboto-light;
+    font-size: 14px;
+}
+
 .backdrop {
     position: fixed;
     inset: 0;
