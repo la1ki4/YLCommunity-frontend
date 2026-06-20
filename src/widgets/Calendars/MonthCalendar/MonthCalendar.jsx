@@ -103,6 +103,7 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
     });
 
     const [selectedMoreButton, setSelectedMoreButton] = useState(false);
+    const [isMorePopupVisible, setIsMorePopupVisible] = useState(false);
     const [selectedMorePopupData, setSelectedMorePopupData] = useState(null);
     const openMoreButton = (dayOfWeek, dayNumber) => {
 
@@ -115,7 +116,11 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
     }
 
     const closeMoreButton = () => {
-        setSelectedMoreButton(false);
+        setIsMorePopupVisible(false);
+
+        setTimeout(() => {
+            setSelectedMoreButton(false);
+        }, 220);
     };
 
     const popupRef = useRef(null);
@@ -187,6 +192,7 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
     const eventRefs = useRef({});
     const moreEventsRef = useRef({});
     const morePopupIgnoreRefs = [moreButtonRefs, popupRef];
+
 
     return (
         <section className={MonthCalendarStyle.calendarSection} ref={calendarSectionRef}>
@@ -322,6 +328,9 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
                                                     onClick={() => {
                                                         setCellRowIndex(rowIndex);
                                                         setCellColIndex(colIndex);
+                                                        requestAnimationFrame(() => {
+                                                            setIsMorePopupVisible(true);
+                                                        });
                                                         return openMoreButton(
                                                             DOW[colIndex],
                                                             cell.label
@@ -376,7 +385,13 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
                         position: "absolute",
                         top: moreEventsPopupTop,
                         left: moreEventsPopupLeft,
-                        transition: "top 220ms ease, left 220ms ease",
+
+                        opacity: isMorePopupVisible ? 1 : 0,
+                        transform: isMorePopupVisible
+                            ? "scale(1)"
+                            : "scale(0.95)",
+
+                        transition: `top 220ms ease, left 220ms ease, opacity 220ms ease, transform 220ms ease`,
                     }}
                 />
             )}

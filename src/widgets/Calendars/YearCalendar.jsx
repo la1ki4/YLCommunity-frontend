@@ -29,10 +29,15 @@ export function YearCalendar({year, onYearChangeView, selected, onSelect, apiRef
         apiRef.current = {scrollToMonth};
     }, [apiRef, monthRefs, scrollToMonth]);
 
-    const [selectedMoreButton, setSelectedMoreButton] = useState(false);
+    const [selectedMorePopupButton, setSelectedMorePopupButton] = useState(null);
+    const [isMorePopupVisible, setIsMorePopupVisible] = useState(false);
 
-    const closeMoreButton = () => {
-        setSelectedMoreButton(false);
+    const closeMorePopup = () => {
+        setIsMorePopupVisible(false);
+
+        setTimeout(() => {
+            setSelectedMorePopupButton(false);
+        }, 220)
     };
 
     const moreEventsRef = useRef({});
@@ -138,7 +143,8 @@ export function YearCalendar({year, onYearChangeView, selected, onSelect, apiRef
                                     setView={setView}
                                     selected={selected}
                                     onSelect={onSelect}
-                                    onSelectedMoreButton={setSelectedMoreButton}
+                                    onSelectedMoreButton={setSelectedMorePopupButton}
+                                    setIsMorePopupVisible={setIsMorePopupVisible}
                                 />
                             </div>
                         ))}
@@ -156,18 +162,24 @@ export function YearCalendar({year, onYearChangeView, selected, onSelect, apiRef
                     moreEventsRef={moreEventsRef}
                 />
             )}
-            {selectedMoreButton && (
+            {selectedMorePopupButton && (
                 <MoreEventsPopup
-                    isOpen={selectedMoreButton}
+                    isOpen={selectedMorePopupButton}
                     popupStyle={{
                         position: "absolute",
                         top: `${moreInfoPopupTop}px`,
                         left: `${moreInfoPopupLeft}px`,
-                        transition: "top 220ms ease, left 220ms ease",
-                        zIndex: 2
+                        zIndex: 2,
+
+                        opacity: isMorePopupVisible ? 1 : 0,
+                        transform: isMorePopupVisible
+                            ? "scale(1)"
+                            : "scale(0.95)",
+
+                        transition: `top 220ms ease, left 220ms ease, opacity 220ms ease, transform 220ms ease`,
                     }}
                     ignoreRefs={morePopupIgnoreRefs}
-                    onClose={closeMoreButton}
+                    onClose={closeMorePopup}
                     dayNumber={view.day}
                     moreEventsRef={moreEventsRef}
                     view={view}

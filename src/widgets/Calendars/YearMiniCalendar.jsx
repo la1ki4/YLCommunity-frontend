@@ -9,7 +9,7 @@ import { useNow } from "@features/calendar/hooks/useNow";
 import {buildMonthGrid} from "@features/calendar/utils/monthCalendar.utils.js";
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 
-export function YearMiniCalendar({ year, yearMiniCalendarRef, yearMiniCalendarWeekRef, dayButtonRefs, setView, monthIndex, selected, onSelect, onSelectedMoreButton }) {
+export function YearMiniCalendar({ year, yearMiniCalendarRef, yearMiniCalendarWeekRef, dayButtonRefs, setView, monthIndex, selected, onSelect, onSelectedMoreButton,setIsMorePopupVisible }) {
     const weeks = useMemo(() => buildMonthGrid(year, monthIndex), [year, monthIndex]);
     const today = useNow(MINICALENDAR_TICK_MS);
 
@@ -59,6 +59,9 @@ export function YearMiniCalendar({ year, yearMiniCalendarRef, yearMiniCalendarWe
                                             onSelect({ year, monthIndex, day });
                                             setView({ year, monthIndex, day });
                                             onSelectedMoreButton(true);
+                                            requestAnimationFrame(() => {
+                                                setIsMorePopupVisible(true);
+                                            });
                                         }}
                                         ref={(el) => {
                                             if (isOtherMonth) {
