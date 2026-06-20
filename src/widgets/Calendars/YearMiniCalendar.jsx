@@ -9,12 +9,12 @@ import { useNow } from "@features/calendar/hooks/useNow";
 import {buildMonthGrid} from "@features/calendar/utils/monthCalendar.utils.js";
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 
-export function YearMiniCalendar({ year, dayButtonRefs, setView, monthIndex, selected, onSelect, onSelectedMoreButton }) {
+export function YearMiniCalendar({ year, yearMiniCalendarRef, yearMiniCalendarWeekRef, dayButtonRefs, setView, monthIndex, selected, onSelect, onSelectedMoreButton }) {
     const weeks = useMemo(() => buildMonthGrid(year, monthIndex), [year, monthIndex]);
     const today = useNow(MINICALENDAR_TICK_MS);
 
     return (
-        <div className={eventsPageStyle.miniCalendarContainer}>
+        <div className={eventsPageStyle.miniCalendarContainer} ref={yearMiniCalendarRef}>
             <Text
                 className={eventsPageStyle.miniCalendarTextHeader}
                 text={MONTH_NAMES[monthIndex]}
@@ -33,7 +33,7 @@ export function YearMiniCalendar({ year, dayButtonRefs, setView, monthIndex, sel
 
                 <div className={eventsPageStyle.miniCalendarDaysLayer}>
                     {weeks.map((week, weekIdx) => (
-                        <div key={weekIdx} className={eventsPageStyle.miniCalendarWeekSection}>
+                        <div key={weekIdx} className={eventsPageStyle.miniCalendarWeekSection} ref={yearMiniCalendarWeekRef}>
                             {week.map((cell, idx) => {
                                 const isOtherMonth = cell.isOtherMonth;
                                 const day = Number(cell.label);
@@ -61,6 +61,9 @@ export function YearMiniCalendar({ year, dayButtonRefs, setView, monthIndex, sel
                                             onSelectedMoreButton(true);
                                         }}
                                         ref={(el) => {
+                                            if (isOtherMonth) {
+                                                return;
+                                            }
                                             dayButtonRefs.current[`${year}-${monthIndex}-${day}`] = el;
                                         }}
                                         className={[

@@ -13,7 +13,6 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
                                                                        onClose,
                                                                        dayNumber,
                                                                        ignoreRefs,
-                                                                       dayButtonRef,
                                                                        popupStyle,
                                                                        view,
                                                                        onEventClick,
@@ -21,7 +20,7 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
                                                                    }, ref) {
 
     const date = useMemo(() => {
-        if (view !== null){
+        if (view !== null) {
             return new Date(
                 view.year,
                 view.monthIndex,
@@ -37,7 +36,7 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
 
     useOutsideClick({
         ref: ref,
-        ignoreRefs: [ignoreRefs, dayButtonRef],
+        ignoreRefs: [ignoreRefs],
         isEnabled: isOpen,
         onOutsideClick: onClose,
     });

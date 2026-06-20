@@ -1,4 +1,4 @@
-import {DOW_FULLNAME, DOW, MONTH_NAMES} from "@features/calendar/constants/calendar.constants.js";
+import {DOW_FULLNAME, MONTH_NAMES} from "@features/calendar/constants/calendar.constants.js";
 
 export function getMonday(date) {
     const d = new Date(date);
@@ -434,8 +434,12 @@ export function formatDateKey(date) {
     return `${day}-${month}-${year}`;
 }
 
-export function dow_index(dow){
+export function getDayOfWeekShort({ year, monthIndex, day }) {
+    const date = new Date(year, monthIndex, day);
 
+    return date.toLocaleDateString("en-US", {
+        weekday: "short",
+    });
 }
 
 

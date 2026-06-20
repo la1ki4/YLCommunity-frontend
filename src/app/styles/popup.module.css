@@ -1,4 +1,4 @@
-.popupOverlay{
+.popupOverlay {
     border-radius: 10px;
     margin-bottom: 105px;
     z-index: 3;
@@ -44,7 +44,7 @@
     }
 }
 
-.calendarWeekDaysBlock{
+.calendarWeekDaysBlock {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     background-color: #242424;
@@ -53,14 +53,14 @@
     width: 103%;
 }
 
-.calendarDaysBlock{
+.calendarDaysBlock {
     background-color: #1B1B1B;
     border-radius: 0 0 10px 10px;
     overflow: hidden;
     width: 103%;
 }
 
-.calendarDaysButton{
+.calendarDaysButton {
     all: unset;
     box-sizing: border-box;
 
@@ -78,11 +78,11 @@
     border-radius: 50%;
 }
 
-.calendarOpacity{
+.calendarOpacity {
     opacity: 0.25;
 }
 
-.calendarDaySelected{
+.calendarDaySelected {
     background-color: #9EFF40;
 }
 
@@ -93,15 +93,15 @@
     padding: 0;
 }
 
-.calendarOtherMonthText{
+.calendarOtherMonthText {
     opacity: 0.55;
 }
 
-.calendarTextDaySelected{
+.calendarTextDaySelected {
     color: #1B1B1B;
 }
 
-.calendarWeekSection{
+.calendarWeekSection {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     place-items: center;
@@ -109,25 +109,25 @@
     gap: 17px;
 }
 
-.calendar{
+.calendar {
     position: absolute;
     z-index: 1;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
-.imageBtn svg{
+.imageBtn svg {
     width: 100%;
     height: 100%;
     display: block;
 }
 
-.imageBtn{
+.imageBtn {
     color: white;
     cursor: pointer;
     transition: 0.3s ease;
 }
 
-.header{
+.header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -137,21 +137,22 @@
     width: 103%;
 }
 
-.headerText{
+.headerText {
     color: white;
     font-family: "Roboto-light";
 }
 
-.btnBlock{
+.btnBlock {
     background: none;
     border: none;
     width: 15px;
 }
 
-.weekDaysText{
+.weekDaysText {
     color: white;
     font-family: "Roboto-regular";
 }
+
 .calendarInfoPopup {
     position: absolute;
     width: min(450px, calc(100% - 32px));
@@ -164,16 +165,15 @@
 
     opacity: 0;
     visibility: hidden;
-    transition:
-            top 0.22s ease,
-            opacity 0.22s ease,
-            transform 0.22s ease,
-            visibility 0.22s ease;
+    transition: top 0.22s ease,
+    opacity 0.22s ease,
+    transform 0.22s ease,
+    visibility 0.22s ease;
 
     transform: translateX(-50%) translateY(8px) scale(0.98);
 }
 
-.calendarInfoPopupVisible{
+.calendarInfoPopupVisible {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) translateY(0) scale(1);
@@ -226,7 +226,6 @@
 .morePopupContent {
     position: relative;
     background: #1c1c1c;
-    opacity: 0.95;
     padding: 16px;
     border-radius: 8px;
     width: 200px;
@@ -239,7 +238,7 @@
     align-items: center;
 }
 
-.morePopupHeaderText{
+.morePopupHeaderText {
     font-family: "Roboto-regular";
 }
 
@@ -248,7 +247,7 @@
     margin-top: 12px;
 }
 
-.morePopupEvent{
+.morePopupEvent {
     background-color: #9EFF40;
     padding: 4px;
     border-radius: 8px;
@@ -261,11 +260,11 @@
     transition: 0.3s ease;
 }
 
-.morePopupEvent:hover{
+.morePopupEvent:hover {
     transform: translateY(-2px);
 }
 
-.morePopupCloseButton{
+.morePopupCloseButton {
     position: absolute;
     top: 8px;
     right: 12px;
@@ -285,7 +284,7 @@
     transition: 0.3s ease;
 }
 
-.morePopupCloseButton:hover{
+.morePopupCloseButton:hover {
     color: rgba(255, 255, 255, 0.7);
 }
 

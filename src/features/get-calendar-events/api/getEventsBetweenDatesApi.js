@@ -11,6 +11,10 @@ function toYyyyMmDd(date) {
 
 export async function getEventsBetweenDates(startDate, endDate) {
 
+    if (!startDate || !endDate) {
+        return [];
+    }
+
     const start = toYyyyMmDd(startDate);
     const end = toYyyyMmDd(endDate);
 

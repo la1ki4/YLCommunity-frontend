@@ -186,6 +186,7 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
 
     const eventRefs = useRef({});
     const moreEventsRef = useRef({});
+    const morePopupIgnoreRefs = [moreButtonRefs, popupRef];
 
     return (
         <section className={MonthCalendarStyle.calendarSection} ref={calendarSectionRef}>
@@ -364,7 +365,7 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
                 <MoreEventsPopup
                     isOpen={selectedMoreButton}
                     onClose={closeMoreButton}
-                    ignoreRefs={moreButtonRefs}
+                    ignoreRefs={morePopupIgnoreRefs}
                     dayOfWeek={selectedMorePopupData?.dayOfWeek}
                     dayNumber={selectedMorePopupData?.dayNumber}
                     view={view}

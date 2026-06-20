@@ -28,34 +28,50 @@ export function useOutsideClick({
             return;
         }
 
-        const handleClickOutside = (event) => {
+        const containsTarget = (
+            ignoreItem,
+            target
+        ) => {
+            if (!ignoreItem) {
+                return false;
+            }
 
+            if (Array.isArray(ignoreItem)) {
+                return ignoreItem.some((item) =>
+                    containsTarget(item, target)
+                );
+            }
+
+            const current = ignoreItem.current;
+
+            if (!current) {
+                return false;
+            }
+
+            if (current instanceof HTMLElement) {
+                return current.contains(target);
+            }
+
+            return Object.values(current).some(
+                (element) =>
+                    element instanceof HTMLElement &&
+                    element.contains(target)
+            );
+        };
+
+        const handleClickOutside = (event) => {
             if (!ref?.current) {
                 return;
             }
 
             const clickedInsidePopup =
-                ref.current?.contains(event.target);
+                ref.current.contains(event.target);
 
-            const clickedInsideIgnored = ignoreRefs.some((ignoreRef) => {
-                const current = ignoreRef.current;
-
-                if (!current) {
-                    return false;
-                }
-
-                if (current instanceof HTMLElement) {
-                    return current.contains(event.target);
-                }
-
-                return Object.values(current).some(
-                    (element) => {
-                        return (
-                            element instanceof HTMLElement &&
-                            element.contains(event.target))
-                    }
+            const clickedInsideIgnored =
+                containsTarget(
+                    ignoreRefs,
+                    event.target
                 );
-            });
 
             if (
                 !clickedInsidePopup &&
@@ -152,6 +168,32 @@ export function createEventPopupHandlers({
     return {
         openPopup,
         closePopup,
+    };
+}
+
+export function createAnimatedPopupHandler({
+                                               setIsVisible,
+                                               setData,
+                                           }) {
+    const close = () => {
+        setIsVisible(false);
+
+        setTimeout(() => {
+            setData(null);
+        }, 220);
+    };
+
+    const open = (data) => {
+        setData(data);
+
+        requestAnimationFrame(() => {
+            setIsVisible(true);
+        });
+    };
+
+    return {
+        open,
+        close,
     };
 }
 
