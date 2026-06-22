@@ -27,6 +27,7 @@ import {useCalculateMonthEventSize} from "@features/calendar/hooks/month/useCalc
 import {INITIAL_CELL_SIZE, INITIAL_ELEMENT_SIZES} from "@features/calendar/constants/monthCalendar.constants.js";
 import {useMoreEventPopupPosition} from "@features/calendar/hooks/month/useMoreEventPopupPosition.js";
 import {useWindowSize} from "@features/calendar/hooks/useWindowSize.js";
+import {useCloseOnHandScroll} from "@features/calendar/hooks/useCloseOnHandScroll.js";
 
 export function MonthCalendar({view, onChangeView, mainRef}) {
     const calendar = useMonthGrid(view.year, view.monthIndex);
@@ -192,7 +193,19 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
     const eventRefs = useRef({});
     const moreEventsRef = useRef({});
     const morePopupIgnoreRefs = [moreButtonRefs, popupRef];
+    const monthBodyRef = useRef(null);
 
+    useCloseOnHandScroll({
+        scrollRef: mainRef,
+        isOpen: selectedMoreButton,
+        closePopup: closeMoreButton,
+    });
+
+    useCloseOnHandScroll({
+        scrollRef: mainRef,
+        isOpen: isPopupVisible,
+        closePopup,
+    });
 
     return (
         <section className={MonthCalendarStyle.calendarSection} ref={calendarSectionRef}>
@@ -221,7 +234,7 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
                 </div>
             </div>
 
-            <div className={MonthCalendarStyle.calendarGrid}>
+            <div className={MonthCalendarStyle.calendarGrid} ref={monthBodyRef}>
                 {calendar.map((week, rowIndex) => {
                     return (
                         <div key={rowIndex} className={MonthCalendarStyle.weekRow} ref={calendarRowRef}>

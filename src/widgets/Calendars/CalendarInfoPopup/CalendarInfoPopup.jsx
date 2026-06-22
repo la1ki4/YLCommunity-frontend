@@ -41,13 +41,12 @@ export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({
                                                                            onClose,
                                                                            style,
                                                                            isVisible,
-                                                                           eventRefs,
-                                                                           moreEventsRef
+                                                                           ignoreRefs,
                                                                        }, ref) {
 
     useOutsideClick({
         ref,
-        ignoreRefs: [eventRefs, moreEventsRef],
+        ignoreRefs: [ignoreRefs],
         isEnabled: isVisible,
         onOutsideClick: onClose,
     });

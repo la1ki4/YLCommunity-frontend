@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {Text} from "@shared/Text/Text.jsx";
 import {Button} from "@shared/Button/Button.jsx";
 import YearCalendarStyle from "@app/styles/year-calendar.module.css";
@@ -9,6 +9,8 @@ import {YearMiniCalendar} from "./YearMiniCalendar.jsx";
 import {MoreEventsPopup} from "@widgets/Calendars/EventPopup/MoreEventsPopup.jsx";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 import {useMoreEventsPopupPosition} from "@features/calendar/hooks/year/useMoreEventsPopupYearCalendarPosition.js";
+import {useClosePopupOnZoom} from "@features/calendar/hooks/useClosePopupOnZoom.js";
+import {useCloseOnHandScroll} from "@features/calendar/hooks/useCloseOnHandScroll.js";
 
 export function YearCalendar({year, onYearChangeView, selected, onSelect, apiRef}) {
     const scrollRef = useRef(null);
@@ -54,11 +56,13 @@ export function YearCalendar({year, onYearChangeView, selected, onSelect, apiRef
     const [moreInfoPopupTop, setMoreInfoPopupTop] = useState(0);
     const [moreInfoPopupLeft, setMoreInfoPopupLeft] = useState(0);
     const [monthCalendarPositionIndex, setMonthCalendarPositionIndex] = useState(0);
+    const calendarContainerRef = useRef(null);
 
     useMoreEventsPopupPosition({
         view,
         dayButtonRefs,
         morePopupRef,
+        calendarContainerRef,
         scrollRef,
         yearMiniCalendarRef,
         monthCalendarPositionIndex,
@@ -87,24 +91,68 @@ export function YearCalendar({year, onYearChangeView, selected, onSelect, apiRef
         }, 220);
     }, []);
 
-    const popupStyle = useMemo(() => {
-        if (!infoPopupAnchor) {
-            return {};
+    const [popupStyle, setPopupStyle] = useState({});
+
+    useLayoutEffect(() => {
+        if (!infoPopupAnchor || !infoPopupRef.current) {
+            return;
         }
 
         const rect = infoPopupAnchor.getBoundingClientRect();
+        const calendarContainerRect =
+            calendarContainerRef.current.getBoundingClientRect();
 
-        return {
-            position: "fixed",
-            top: rect.top,
-            left: rect.right + 12,
-            zIndex: 3,
-        };
-    }, [infoPopupAnchor]);
+        const infoPopupRect =
+            infoPopupRef.current.getBoundingClientRect();
+
+        if (window.innerWidth > 900) {
+            setPopupStyle({
+                position: "fixed",
+                top: rect.top,
+                left: rect.right + 12,
+                zIndex: 3,
+            });
+        } else {
+            setPopupStyle({
+                position: "absolute",
+                top:
+                    calendarContainerRect.height / 2 -
+                    infoPopupRect.height / 2,
+                left:
+                    window.innerWidth / 2 -
+                    infoPopupRect.width / 2,
+                zIndex: 3,
+            });
+        }
+    }, [
+        infoPopupAnchor,
+    ]);
+
+    useClosePopupOnZoom({
+        isEnabled: selectedEvent,
+        onClose: closePopup,
+    });
+
+    useClosePopupOnZoom({
+        isEnabled: selectedMorePopupButton,
+        onClose: closeMorePopup,
+    });
+
+    useCloseOnHandScroll({
+        scrollRef,
+        isOpen: isPopupVisible,
+        closePopup,
+    });
+
+    useCloseOnHandScroll({
+        scrollRef,
+        isOpen: selectedMorePopupButton,
+        closePopup: closeMorePopup,
+    });
 
     return (
         <section className={YearCalendarStyle.calendarSection}>
-            <div className={YearCalendarStyle.calendarContainer}>
+            <div className={YearCalendarStyle.calendarContainer} ref={calendarContainerRef}>
                 <div className={YearCalendarStyle.yearHeader}>
                     <div>
                         <Text text={String(year)} className={YearCalendarStyle.textHeader}/>

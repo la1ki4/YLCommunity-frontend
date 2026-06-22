@@ -24,12 +24,12 @@ import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarIn
 import {Button} from "@shared/Button/Button.jsx";
 import {useClosePopupOnZoom} from "@features/calendar/hooks/useClosePopupOnZoom.js";
 import {useLeftPosition, useTopPosition} from "@features/calendar/hooks/week/useWeekCalendarEventPopupPosition.js";
-import {useScrollWeekCalendarInside} from "@features/calendar/hooks/week/useWeekCalendarScrool.js";
 import {createEventPopupHandlers} from "@features/calendar/utils/eventPopup.utils.js";
+import {useCloseOnHandScroll} from "@features/calendar/hooks/useCloseOnHandScroll.js";
 
 export function WeekCalendarLayout(props) {
 
-    const {date, selected, onAnchorDateChange, onSelect, mainRef} = props;
+    const {date, selected, onAnchorDateChange, onSelect} = props;
 
     const [currentDate, setCurrentDate] = useState(() => date ?? new Date());
 
@@ -110,11 +110,12 @@ export function WeekCalendarLayout(props) {
 
     const weekBodyRef = useRef(null);
 
-    useScrollWeekCalendarInside({
-        weekBodyRef,
-        mainRef,
-        closePopup,
-    });
+    useCloseOnHandScroll({
+            scrollRef: weekBodyRef,
+            isOpen: selectedEvent,
+            closePopup,
+        }
+    )
 
     useClosePopupOnZoom({
         isEnabled: selectedEvent,
@@ -155,6 +156,10 @@ export function WeekCalendarLayout(props) {
         setPopupLeft,
     });
 
+    const eventRefs = useRef({});
+    const selectedLongEventNodeRef = useRef(null);
+    const ignorePopupRefs = [popupRef,eventRefs,selectedLongEventRef]
+
     return (
         <section className={eventsPageStyle.weekCalendar} ref={weekCalendarRef}>
             <div className={eventsPageStyle.weekTop}>
@@ -185,6 +190,17 @@ export function WeekCalendarLayout(props) {
                                         onClick={(e) => {
                                             selectedLongEventRef.current = e.currentTarget;
                                             openPopup(segment);
+                                        }}
+                                        ref={(el) => {
+                                            if (el) {
+                                                eventRefs.current[segment.id] = el;
+                                            } else {
+                                                delete eventRefs.current[segment.id];
+                                            }
+
+                                            if (selectedEvent === segment) {
+                                                selectedLongEventNodeRef.current = el;
+                                            }
                                         }}
                                     >
                                         {segment.title}
@@ -237,7 +253,17 @@ export function WeekCalendarLayout(props) {
                                         <CalendarEvent
                                             key={event.id}
                                             title={event.title}
-                                            ref={isSelected ? selectedEventNodeRef : null}
+                                            ref={(el) => {
+                                                if (el) {
+                                                    eventRefs.current[event.id] = el;
+                                                } else {
+                                                    delete eventRefs.current[event.id];
+                                                }
+
+                                                if (isSelected) {
+                                                    selectedEventNodeRef.current = el;
+                                                }
+                                            }}
                                             className={eventsPageStyle.weekEvent}
                                             style={{
                                                 top: `${top}px`,
@@ -266,6 +292,7 @@ export function WeekCalendarLayout(props) {
                     event={selectedEvent}
                     onClose={closePopup}
                     isVisible={isPopupVisible}
+                    ignoreRefs={ignorePopupRefs}
                     ref={popupRef}
                     style={{
                         top: `${popupTop}px`,

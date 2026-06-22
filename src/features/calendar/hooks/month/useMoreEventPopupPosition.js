@@ -21,8 +21,6 @@ export function useMoreEventPopupPosition({
         const mainNode = mainRef.current;
         const moreEventPopupNode = moreEventPopupRef.current;
 
-        console.log(moreEventPopupNode);
-
         if (
             !calendarHeaderNode ||
             !cellNode ||

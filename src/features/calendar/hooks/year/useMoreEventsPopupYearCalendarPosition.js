@@ -7,6 +7,8 @@ export function useMoreEventsPopupPosition({
                                                view,
                                                scrollRef,
                                                dayButtonRefs,
+                                               morePopupRef,
+                                               calendarContainerRef,
                                                yearMiniCalendarRef,
                                                monthCalendarPositionIndex,
                                                setMonthCalendarPositionIndex,
@@ -28,12 +30,18 @@ export function useMoreEventsPopupPosition({
         const yearMiniCalendarNode =
             yearMiniCalendarRef.current;
 
+        const morePopupNode = morePopupRef.current;
+
+        const calendarSectionNode = calendarContainerRef.current;
+
         const dow = getDayOfWeekShort(view);
         const dowIndex = DOW.indexOf(dow);
 
         if (
             !button ||
-            !yearMiniCalendarNode
+            !yearMiniCalendarNode ||
+            !morePopupNode ||
+            !calendarSectionNode
         ) {
             return;
         }
@@ -72,6 +80,9 @@ export function useMoreEventsPopupPosition({
         const yearMiniCalendarRect =
             yearMiniCalendarNode.getBoundingClientRect();
 
+        const morePopupRect = morePopupNode.getBoundingClientRect();
+        const calendarSectionRect = calendarSectionNode.getBoundingClientRect();
+
         const yearCalendarPos =
             (yearMiniCalendarRect.width + 18) *
             positionIndex;
@@ -80,25 +91,22 @@ export function useMoreEventsPopupPosition({
             (yearMiniCalendarRect.width / 7) *
             dowIndex;
 
-        setMoreInfoPopupTop(
-            buttonRect.top - buttonRect.height
-        );
+        if (window.innerWidth > 900) {
+            setMoreInfoPopupTop(
+                buttonRect.top - buttonRect.height
+            );
 
-        setMoreInfoPopupLeft(
-            -200 +
-            40 +
-            yearCalendarPos +
-            yearWeekCalendarButtonPos
-        );
-    }, [
-        view,
-        dayButtonRefs,
-        yearMiniCalendarRef,
-        monthCalendarPositionIndex,
-        setMonthCalendarPositionIndex,
-        setMoreInfoPopupTop,
-        setMoreInfoPopupLeft,
-    ]);
+            setMoreInfoPopupLeft(
+                -200 +
+                40 +
+                yearCalendarPos +
+                yearWeekCalendarButtonPos
+            );
+        } else {
+            setMoreInfoPopupTop(window.innerHeight / 2)
+            setMoreInfoPopupLeft(window.innerWidth / 2 - morePopupRect.width / 2 - calendarSectionRect.width / 2 + 110);
+        }
+    }, [view, dayButtonRefs, yearMiniCalendarRef, morePopupRef, calendarContainerRef, monthCalendarPositionIndex, setMonthCalendarPositionIndex, setMoreInfoPopupTop, setMoreInfoPopupLeft]);
 
     useLayoutEffect(() => {
         updatePosition();
@@ -114,7 +122,7 @@ export function useMoreEventsPopupPosition({
         node.addEventListener(
             "scroll",
             updatePosition,
-            { passive: true }
+            {passive: true}
         );
 
         return () => {

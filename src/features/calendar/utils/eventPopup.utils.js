@@ -28,6 +28,8 @@ export function useOutsideClick({
             return;
         }
 
+        console.log(ignoreRefs);
+
         const containsTarget = (
             ignoreItem,
             target
@@ -168,32 +170,6 @@ export function createEventPopupHandlers({
     return {
         openPopup,
         closePopup,
-    };
-}
-
-export function createAnimatedPopupHandler({
-                                               setIsVisible,
-                                               setData,
-                                           }) {
-    const close = () => {
-        setIsVisible(false);
-
-        setTimeout(() => {
-            setData(null);
-        }, 220);
-    };
-
-    const open = (data) => {
-        setData(data);
-
-        requestAnimationFrame(() => {
-            setIsVisible(true);
-        });
-    };
-
-    return {
-        open,
-        close,
     };
 }
 

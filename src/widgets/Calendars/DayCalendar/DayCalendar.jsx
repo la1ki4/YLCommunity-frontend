@@ -19,8 +19,8 @@ import {
     useSetDefaultEventTopPopupPosition,
     useSetLongEventTopPopupPosition
 } from "@features/calendar/hooks/day/usePopupPosition.js";
-import {useRemoveEventPopupOnScrollAndClick} from "@features/calendar/hooks/day/useRemoveEventPopup.js";
 import {createEventPopupHandlers} from "@features/calendar/utils/eventPopup.utils.js";
+import {useCloseOnHandScroll} from "@features/calendar/hooks/useCloseOnHandScroll.js";
 
 export function DayCalendar({date, onChangeDate, onSelect}) {
 
@@ -55,6 +55,8 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
     const [popupTop, setPopupTop] = useState(0);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const selectedLongEventNodeRef = useRef(null);
+    const eventRefs = useRef({});
+    const popupIgnoreRefs = [eventRefs, popupRef,];
 
     const {
         openPopup,
@@ -64,10 +66,11 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
         setSelectedEvent,
     });
 
-    useRemoveEventPopupOnScrollAndClick({
-        dayBodyRef,
+    useCloseOnHandScroll({
+        scrollRef: dayBodyRef,
+        isOpen: isPopupVisible,
         closePopup,
-    });
+    })
 
     useSetDefaultEventTopPopupPosition({
         selectedEvent,
@@ -110,7 +113,17 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                                 type="button"
                                 key={`${event.startDate}-${event.endDate}-${index}`}
                                 className={`${eventsPageStyle.dayLongEvent} ${buttonStyle.dayLongEventButton}`}
-                                ref={selectedEvent === event ? selectedLongEventNodeRef : null}
+                                ref={(el) => {
+                                    if (el) {
+                                        eventRefs.current[event.id] = el;
+                                    } else {
+                                        delete eventRefs.current[event.id];
+                                    }
+
+                                    if (selectedEvent === event) {
+                                        selectedLongEventNodeRef.current = el;
+                                    }
+                                }}
                                 onClick={() => openPopup(event)}
                             >
                                 {event.title}
@@ -151,7 +164,17 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                             return (
                                 <CalendarEvent
                                     key={index}
-                                    ref={isSelected ? selectedEventNodeRef : null}
+                                    ref={(el) => {
+                                        if (el) {
+                                            eventRefs.current[event.id] = el;
+                                        } else {
+                                            delete eventRefs.current[event.id];
+                                        }
+
+                                        if (isSelected) {
+                                            selectedEventNodeRef.current = el;
+                                        }
+                                    }}
                                     className={eventsPageStyle.dayEvent}
                                     style={{
                                         top: `${top}px`,
@@ -182,6 +205,7 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
                     onClose={() => {
                         closePopup()
                     }}
+                    ignoreRefs={popupIgnoreRefs}
                     isVisible={isPopupVisible}
                     style={{top: `${popupTop}px` , left: `50%` }}
                     ref={popupRef}
