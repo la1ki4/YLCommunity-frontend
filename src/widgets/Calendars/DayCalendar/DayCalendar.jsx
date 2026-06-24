@@ -1,4 +1,4 @@
-import {useMemo, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import eventsPageStyle from "@app/styles/events.module.css";
 import buttonStyle from "@app/styles/button.module.css";
 import {NOW_TICK_MS} from "@features/calendar/constants/calendar.constants.js";
@@ -8,8 +8,8 @@ import {
 } from "@features/calendar/utils/dayCalendar.utils.js";
 import {useElementHeight} from "@features/calendar/hooks/useElementHeight.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
-import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js"
-import {useDivideCalendarEvents} from "@features/get-calendar-events/hooks/useDivideCalendarEvents.js"
+import {useEventsBetweenDates} from "@features/calendar/requests/get-calendar-events/hooks/useEventsBetweenDates.js"
+import {useDivideCalendarEvents} from "@features/calendar/requests/get-calendar-events/hooks/useDivideCalendarEvents.js"
 import {isSameDay} from "@features/calendar/utils/dateMatch.utils.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {DayCalendarHeader} from "@widgets/Calendars/DayCalendar/components/DayCalendarHeader.jsx";
@@ -21,6 +21,10 @@ import {
 } from "@features/calendar/hooks/day/usePopupPosition.js";
 import {createEventPopupHandlers} from "@features/calendar/utils/eventPopup.utils.js";
 import {useCloseOnHandScroll} from "@features/calendar/hooks/useCloseOnHandScroll.js";
+import {handleDeleteEvent} from "@features/calendar/requests/delete-calendar-event/services/deleteEventHandler.js";
+import {useDeleteKey} from "@features/calendar/hooks/useDeleteKey.js";
+import {useDeleteEvent} from "@features/calendar/hooks/useDeleteEvent.js";
+import {deleteEvent} from "@features/calendar/requests/delete-calendar-event/api/delete-event-api.js";
 
 export function DayCalendar({date, onChangeDate, onSelect}) {
 
@@ -41,7 +45,13 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
     const nowTop = gridHeight > 0 ? (minutesFromStartOfDay / (24 * 60)) * gridHeight : 0;
     const showNowLine = isSameDay(viewDate, now);
     const [selectedEvent, setSelectedEvent] = useState(null);
-    const events = useEventsBetweenDates({startDate: viewDate, endDate: viewDate});
+
+    const serverEvents = useEventsBetweenDates({startDate: viewDate, endDate: viewDate});
+    const [events, setEvents] = useState([]);
+    useEffect(() => {
+        setEvents(serverEvents);
+    }, [serverEvents]);
+
     const {timelineEvents, longEvents} = useDivideCalendarEvents({events, viewDate});
     const sortedEvents = useMemo(
         () => prepareDayEvents(timelineEvents),
@@ -100,6 +110,17 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
     useClosePopupOnZoom({
         isEnabled: isPopupVisible,
         onClose: closePopup,
+    });
+
+    const removeEvent = useDeleteEvent({
+        setEvents,
+        closePopup,
+    });
+
+    useDeleteKey(() => {
+        if (selectedEvent) {
+           removeEvent(selectedEvent.id).then();
+        }
     });
 
     return (
@@ -202,6 +223,7 @@ export function DayCalendar({date, onChangeDate, onSelect}) {
             {selectedEvent && (
                 <CalendarInfoPopup
                     event={selectedEvent}
+                    onDelete={removeEvent}
                     onClose={() => {
                         closePopup()
                     }}

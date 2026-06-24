@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {handleCreateEvent} from "@features/create-calendar-events/services/createEventHandler";
+import {handleCreateEvent} from "@features/calendar/requests/create-calendar-events/services/createEventHandler";
 import {CITIES_BY_COUNTRY, GMT_OPTIONS} from "@features/calendar/constants/calendar.constants.js";
 import {
     formatDateToPopupString,
@@ -27,7 +27,6 @@ export function useEventPopupForm({isOpen, onClose}) {
     const [endTime, setEndTime] = useState(initialEndDateTime.time);
     const [timeZone, setTimeZone] = useState(getDefaultGMT());
     const [isOpenTimeZone, setIsOpenTimeZone] = useState(false);
-
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [validationErrors, setValidationErrors] = useState({

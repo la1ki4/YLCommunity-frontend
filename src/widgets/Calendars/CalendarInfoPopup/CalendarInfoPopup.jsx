@@ -12,6 +12,7 @@ import userIcon from "@app/assets/user.svg"
 import {Media} from "@shared/Image/Media.jsx";
 import {Text} from "@shared/Text/Text.jsx";
 import {useOutsideClick} from "@features/calendar/utils/eventPopup.utils.js";
+import {handleDeleteEvent} from "@features/calendar/requests/delete-calendar-event/services/deleteEventHandler.js";
 
 function formatEventDateRange(start, end) {
     if (!(start instanceof Date) || !(end instanceof Date)) {
@@ -38,6 +39,7 @@ function formatEventDateRange(start, end) {
 
 export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({
                                                                            event,
+                                                                           onDelete,
                                                                            onClose,
                                                                            style,
                                                                            isVisible,
@@ -58,6 +60,20 @@ export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({
     const location = [event?.country, event?.city].filter(Boolean).join(", ");
     const ownerName = [event?.owner?.firstName, event?.owner?.lastName].filter(Boolean).join(" ");
 
+    const handleDelete = async (e) => {
+        e.stopPropagation();
+
+        try {
+            await handleDeleteEvent(event.id);
+
+            onDelete?.(event.id);
+
+            onClose?.();
+        } catch (error) {
+            console.error("Failed to delete event:", error);
+        }
+    };
+
     return (
         <div
             className={[
@@ -70,7 +86,7 @@ export const CalendarInfoPopup = forwardRef(function CalendarInfoPopup({
         >
             <div className={calendarInfoPopupStyle.calendarInfoHeader}>
                 <Button className={calendarInfoButtonStyle.newPopupButton} leftIcon={<Media image={editIcon}/>}/>
-                <Button className={calendarInfoButtonStyle.newPopupButton} leftIcon={<Media image={deleteIcon}/>}/>
+                <Button className={calendarInfoButtonStyle.newPopupButton} leftIcon={<Media image={deleteIcon} onClick={handleDelete}/>}/>
                 <Button className={calendarInfoButtonStyle.calendarInfoCloseButton} onClick={onClose}>✕</Button>
             </div>
             <div className={calendarInfoPopupStyle.iconTextSection}>

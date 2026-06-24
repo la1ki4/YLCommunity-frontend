@@ -11,6 +11,8 @@ import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarIn
 import {useMoreEventsPopupPosition} from "@features/calendar/hooks/year/useMoreEventsPopupYearCalendarPosition.js";
 import {useClosePopupOnZoom} from "@features/calendar/hooks/useClosePopupOnZoom.js";
 import {useCloseOnHandScroll} from "@features/calendar/hooks/useCloseOnHandScroll.js";
+import {useEventsBetweenDates} from "@features/calendar/requests/get-calendar-events/hooks/useEventsBetweenDates.js";
+import {useDeleteEvent} from "@features/calendar/hooks/useDeleteEvent.js";
 
 export function YearCalendar({year, onYearChangeView, selected, onSelect, apiRef}) {
     const scrollRef = useRef(null);
@@ -58,6 +60,39 @@ export function YearCalendar({year, onYearChangeView, selected, onSelect, apiRef
     const [monthCalendarPositionIndex, setMonthCalendarPositionIndex] = useState(0);
     const calendarContainerRef = useRef(null);
 
+    const date = useMemo(() => {
+        if (view !== null) {
+            return new Date(
+                view.year,
+                view.monthIndex,
+                view.day,
+            );
+        }
+    },[view]);
+
+    const serverEvents = useEventsBetweenDates({
+        startDate: date,
+        endDate: date,
+    });
+
+    const [events, setEvents] = useState([]);
+    const closePopup = useCallback(() => {
+        setPopupVisible(false);
+
+        setTimeout(() => {
+            setSelectedEvent(null);
+            setInfoPopupAnchor(null);
+        }, 220);
+    }, []);
+
+    useEffect(() => {
+        setEvents(serverEvents);
+    }, [serverEvents])
+    const removeEvent = useDeleteEvent({
+        setEvents,
+        closePopup,
+    });
+
     useMoreEventsPopupPosition({
         view,
         dayButtonRefs,
@@ -81,14 +116,6 @@ export function YearCalendar({year, onYearChangeView, selected, onSelect, apiRef
         requestAnimationFrame(() => {
             setPopupVisible(true);
         });
-    }, []);
-    const closePopup = useCallback(() => {
-        setPopupVisible(false);
-
-        setTimeout(() => {
-            setSelectedEvent(null);
-            setInfoPopupAnchor(null);
-        }, 220);
     }, []);
 
     const [popupStyle, setPopupStyle] = useState({});
@@ -202,6 +229,7 @@ export function YearCalendar({year, onYearChangeView, selected, onSelect, apiRef
             {selectedEvent && (
                 <CalendarInfoPopup
                     ref={infoPopupRef}
+                    onDelete={removeEvent}
                     eventRefs={infoPopupRef}
                     event={selectedEvent}
                     isVisible={isPopupVisible}
@@ -229,6 +257,7 @@ export function YearCalendar({year, onYearChangeView, selected, onSelect, apiRef
                     ignoreRefs={morePopupIgnoreRefs}
                     onClose={closeMorePopup}
                     dayNumber={view.day}
+                    events={events}
                     moreEventsRef={moreEventsRef}
                     view={view}
                     onEventClick={openPopup}

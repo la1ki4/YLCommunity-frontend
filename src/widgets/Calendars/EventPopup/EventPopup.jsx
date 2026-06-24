@@ -3,7 +3,7 @@ import {InputField} from "@shared/Input/Input.jsx";
 import {Media} from "@shared/Image/Media.jsx";
 import {Text} from "@shared/Text/Text.jsx";
 import CalendarPopup from "@widgets/Popup/CalendarPopup.jsx";
-import {useUserFullName} from "@features/get-calendar-user/load/getUserFullname.js";
+import {useUserFullName} from "@features/calendar/requests/get-calendar-user/load/getUserFullname.js";
 
 import userIcon from "@app/assets/user.svg";
 

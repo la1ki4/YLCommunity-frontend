@@ -28,8 +28,6 @@ export function useOutsideClick({
             return;
         }
 
-        console.log(ignoreRefs);
-
         const containsTarget = (
             ignoreItem,
             target

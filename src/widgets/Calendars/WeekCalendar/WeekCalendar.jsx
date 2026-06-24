@@ -17,8 +17,8 @@ import {
 import {useElementHeight} from "@features/calendar/hooks/useElementHeight.js";
 import {useNow} from "@features/calendar/hooks/useNow.js";
 import WeekCalendarHeader from "@widgets/Calendars/WeekCalendar/components/WeekCalendarHeader.jsx";
-import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js";
-import {useDivideCalendarEvents} from "@features/get-calendar-events/hooks/useDivideCalendarEvents.js";
+import {useEventsBetweenDates} from "@features/calendar/requests/get-calendar-events/hooks/useEventsBetweenDates.js";
+import {useDivideCalendarEvents} from "@features/calendar/requests/get-calendar-events/hooks/useDivideCalendarEvents.js";
 import {CalendarEvent} from "@widgets/Calendars/DayCalendar/components/CalendarEvent.jsx";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 import {Button} from "@shared/Button/Button.jsx";
@@ -26,6 +26,8 @@ import {useClosePopupOnZoom} from "@features/calendar/hooks/useClosePopupOnZoom.
 import {useLeftPosition, useTopPosition} from "@features/calendar/hooks/week/useWeekCalendarEventPopupPosition.js";
 import {createEventPopupHandlers} from "@features/calendar/utils/eventPopup.utils.js";
 import {useCloseOnHandScroll} from "@features/calendar/hooks/useCloseOnHandScroll.js";
+import {useDeleteEvent} from "@features/calendar/hooks/useDeleteEvent.js";
+import {useDeleteKey} from "@features/calendar/hooks/useDeleteKey.js";
 
 export function WeekCalendarLayout(props) {
 
@@ -46,15 +48,44 @@ export function WeekCalendarLayout(props) {
         [currentDate]
     );
 
-    const events = useEventsBetweenDates({
+    const serverEvents = useEventsBetweenDates({
         startDate: monday,
         endDate: sunday
     });
+    
+    const [events, setEvents] = useState([]);
+    
+    useEffect(() => {
+        setEvents(serverEvents);
+    }, [serverEvents])
 
     const {timelineEvents, longEvents} = useDivideCalendarEvents({
         events,
         startDate: monday,
         endDate: sunday
+    });
+
+    const [selectedEvent, setSelectedEvent] = useState(null);
+
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+    const {
+        openPopup,
+        closePopup,
+    } = createEventPopupHandlers({
+        setIsPopupVisible,
+        setSelectedEvent,
+    });
+
+    const removeEvent = useDeleteEvent({
+        setEvents,
+        closePopup,
+    });
+
+    useDeleteKey(() => {
+        if (selectedEvent) {
+            removeEvent(selectedEvent.id).then();
+        }
     });
 
     const now = useNow(NOW_TICK_MS);
@@ -96,17 +127,6 @@ export function WeekCalendarLayout(props) {
     }, [longEventSegmentsData]);
 
 
-    const [selectedEvent, setSelectedEvent] = useState(null);
-
-    const [isPopupVisible, setIsPopupVisible] = useState(false);
-
-    const {
-        openPopup,
-        closePopup,
-    } = createEventPopupHandlers({
-        setIsPopupVisible,
-        setSelectedEvent,
-    });
 
     const weekBodyRef = useRef(null);
 
@@ -290,6 +310,7 @@ export function WeekCalendarLayout(props) {
             {selectedEvent && (
                 <CalendarInfoPopup
                     event={selectedEvent}
+                    onDelete={removeEvent}
                     onClose={closePopup}
                     isVisible={isPopupVisible}
                     ignoreRefs={ignorePopupRefs}

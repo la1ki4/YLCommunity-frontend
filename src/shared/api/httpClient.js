@@ -29,27 +29,33 @@ export async function request(url, options = {}) {
     return response;
 }
 
-export async function getJson(url, options = {}) {
-    const response = await request(url, {
-        method: "GET",
-        ...options,
-    });
-
-    return response.json();
-}
-
-export async function postJson(url, body, options = {}) {
+async function sendJson(method, url, body, options = {}) {
     const headers = {
         "Content-Type": "application/json",
         ...(options.headers || {}),
     };
 
     const response = await request(url, {
-        method: "POST",
+        method,
         ...options,
         headers,
-        body: JSON.stringify(body),
+        body: body !== undefined ? JSON.stringify(body) : undefined,
     });
 
     return response.json();
 }
+
+export const postJson = (url, body, options) =>
+    sendJson("POST", url, body, options);
+
+export const getJson = (url, body, options) =>
+    sendJson("GET", url, body, options);
+
+export const putJson = (url, body, options) =>
+    sendJson("PUT", url, body, options);
+
+export const patchJson = (url, body, options) =>
+    sendJson("PATCH", url, body, options);
+
+export const deleteJson = (url, body, options) =>
+    sendJson("DELETE", url, body, options);

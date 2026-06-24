@@ -12,8 +12,8 @@ import {
     shiftMonth, sortEventsByDuration
 } from "@features/calendar/utils/monthCalendar.utils.js";
 import {useMonthGrid} from "@features/calendar/hooks/month/useMonthGrid.js";
-import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js";
-import {useMemo, useRef, useState} from "react";
+import {useEventsBetweenDates} from "@features/calendar/requests/get-calendar-events/hooks/useEventsBetweenDates.js";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {formatDateKey} from "@features/calendar/utils/calendarDate.utils.js";
 import {CalendarInfoPopup} from "@widgets/Calendars/CalendarInfoPopup/CalendarInfoPopup.jsx";
 import {MoreEventsPopup} from "@widgets/Calendars/EventPopup/MoreEventsPopup.jsx";
@@ -28,6 +28,8 @@ import {INITIAL_CELL_SIZE, INITIAL_ELEMENT_SIZES} from "@features/calendar/const
 import {useMoreEventPopupPosition} from "@features/calendar/hooks/month/useMoreEventPopupPosition.js";
 import {useWindowSize} from "@features/calendar/hooks/useWindowSize.js";
 import {useCloseOnHandScroll} from "@features/calendar/hooks/useCloseOnHandScroll.js";
+import {useDeleteEvent} from "@features/calendar/hooks/useDeleteEvent.js";
+import {useDeleteKey} from "@features/calendar/hooks/useDeleteKey.js";
 
 export function MonthCalendar({view, onChangeView, mainRef}) {
     const calendar = useMonthGrid(view.year, view.monthIndex);
@@ -41,7 +43,39 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
         return new Date(view.year, view.monthIndex + 1, 0);
     }, [view.year, view.monthIndex]);
 
-    const monthEvents = useEventsBetweenDates({startDate: startDate, endDate: endDate});
+    const serverEvents = useEventsBetweenDates({startDate: startDate, endDate: endDate});
+    const [monthEvents, setMonthEvents] = useState([]);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const selectedEventRef = useRef(null);
+    const selectedRowIndexRef = useRef(null);
+    const selectedColIndexRef = useRef(null);
+    const [popupPositionVersion, setPopupPositionVersion] = useState(0);
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+    const {
+        openPopup,
+        closePopup,
+    } = createEventPopupMonthHandler({
+        setIsPopupVisible,
+        setSelectedEvent,
+        setPopupPositionVersion,
+
+        selectedEventRef,
+        selectedRowIndexRef,
+        selectedColIndexRef
+    });
+    useEffect(() => {
+        setMonthEvents(serverEvents);
+    }, [serverEvents])
+    const removeEvent = useDeleteEvent({
+        setMonthEvents,
+        closePopup,
+    });
+    useDeleteKey(() => {
+        if (selectedEvent) {
+            removeEvent(selectedEvent.id).then();
+        }
+    });
 
     const monthEventsGroup = monthEvents.reduce((acc, event) => {
         const currentDate = new Date(event.startDate);
@@ -81,26 +115,6 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
         dayNumberRef,
         measureButtonRef,
         setElementSizes,
-    });
-
-    const [selectedEvent, setSelectedEvent] = useState(null);
-    const selectedEventRef = useRef(null);
-    const selectedRowIndexRef = useRef(null);
-    const selectedColIndexRef = useRef(null);
-    const [popupPositionVersion, setPopupPositionVersion] = useState(0);
-    const [isPopupVisible, setIsPopupVisible] = useState(false);
-
-    const {
-        openPopup,
-        closePopup,
-    } = createEventPopupMonthHandler({
-        setIsPopupVisible,
-        setSelectedEvent,
-        setPopupPositionVersion,
-
-        selectedEventRef,
-        selectedRowIndexRef,
-        selectedColIndexRef
     });
 
     const [selectedMoreButton, setSelectedMoreButton] = useState(false);
@@ -207,6 +221,7 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
         closePopup,
     });
 
+    const popupIngoreRefs = [moreEventsRef, popupRef, eventRefs];
     return (
         <section className={MonthCalendarStyle.calendarSection} ref={calendarSectionRef}>
             <div className={MonthCalendarStyle.calendarHeader} ref={calendarHeaderRef}>
@@ -372,11 +387,11 @@ export function MonthCalendar({view, onChangeView, mainRef}) {
             {selectedEvent && (
                 <CalendarInfoPopup
                     event={selectedEvent}
+                    onDelete={removeEvent}
                     onClose={closePopup}
                     isVisible={isPopupVisible}
+                    ignoreRefs={popupIngoreRefs}
                     ref={popupRef}
-                    eventRefs={eventRefs}
-                    moreEventsRef={moreEventsRef}
                     style={{
                         top: `${popupTop}px`,
                         left: `${popupLeft}px`,

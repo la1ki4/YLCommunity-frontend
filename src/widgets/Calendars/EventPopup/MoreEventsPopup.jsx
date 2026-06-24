@@ -3,7 +3,7 @@ import {forwardRef} from "react";
 import {Text} from "@shared/Text/Text.jsx"
 import MoreEventsPopupStyle from "@app/styles/popup.module.css";
 import {useMemo} from "react";
-import {useEventsBetweenDates} from "@features/get-calendar-events/hooks/useEventsBetweenDates.js";
+import {useEventsBetweenDates} from "@features/calendar/requests/get-calendar-events/hooks/useEventsBetweenDates.js";
 import {Button} from "@shared/Button/Button.jsx";
 import {useOutsideClick} from "@features/calendar/utils/eventPopup.utils.js";
 
@@ -13,26 +13,12 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
                                                                        onClose,
                                                                        dayNumber,
                                                                        ignoreRefs,
+                                                                       events,
                                                                        popupStyle,
                                                                        view,
                                                                        onEventClick,
                                                                        moreEventsRef
                                                                    }, ref) {
-
-    const date = useMemo(() => {
-        if (view !== null) {
-            return new Date(
-                view.year,
-                view.monthIndex,
-                dayNumber
-            );
-        }
-    }, [view, dayNumber]);
-
-    const list = useEventsBetweenDates({
-        startDate: date,
-        endDate: date,
-    });
 
     useOutsideClick({
         ref: ref,
@@ -41,7 +27,7 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
         onOutsideClick: onClose,
     });
 
-    const hasEvents = list.length > 0;
+    const hasEvents = events.length > 0;
 
     return (
         <Popup isOpen={isOpen} onClose={onClose} style={popupStyle}>
@@ -73,7 +59,7 @@ export const MoreEventsPopup = forwardRef(function MoreEventsPopup({
 
                 <div className={MoreEventsPopupStyle.morePopupEvents}>
                     {hasEvents ? (
-                        list.map((event) => (
+                        events.map((event) => (
                             <div
                                 key={event.id}
                                 className={MoreEventsPopupStyle.morePopupEvent}

@@ -1,4 +1,4 @@
-import {createEvent} from "@features/create-calendar-events/api/createEventApi.js";
+import {createEvent} from "@features/calendar/requests/create-calendar-events/api/createEventApi.js";
 import {formattedToISO} from "@features/calendar/utils/calendarDate.utils.js";
 import {getCountryAndCityFromFormat} from "@features/calendar/utils/eventPopup.utils.js";
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUserFullNameApi } from "@features/get-calendar-user/api/getUserFullNameApi.js";
+import { getUserFullNameApi } from "@features/calendar/requests/get-calendar-user/api/getUserFullNameApi.js";
 
 export function useUserFullName() {
     const [userFullName, setUserFullName] = useState("");
