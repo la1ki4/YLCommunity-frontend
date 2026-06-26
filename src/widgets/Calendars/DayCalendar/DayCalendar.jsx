@@ -21,10 +21,8 @@ import {
 } from "@features/calendar/hooks/day/usePopupPosition.js";
 import {createEventPopupHandlers} from "@features/calendar/utils/eventPopup.utils.js";
 import {useCloseOnHandScroll} from "@features/calendar/hooks/useCloseOnHandScroll.js";
-import {handleDeleteEvent} from "@features/calendar/requests/delete-calendar-event/services/deleteEventHandler.js";
 import {useDeleteKey} from "@features/calendar/hooks/useDeleteKey.js";
 import {useDeleteEvent} from "@features/calendar/hooks/useDeleteEvent.js";
-import {deleteEvent} from "@features/calendar/requests/delete-calendar-event/api/delete-event-api.js";
 
 export function DayCalendar({date, onChangeDate, onSelect}) {
 
