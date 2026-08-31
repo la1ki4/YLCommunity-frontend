@@ -1,4 +1,4 @@
-export async function getUserFullNameApi(){
+export async function getUserDataApi(){
     const response = await fetch(`http://localhost:8082/calendar/get-user`, {
         method: "GET",
         headers: {

@@ -8,13 +8,17 @@ import {
     syncEventRange,
 } from "@features/calendar/utils/calendarDate.utils.js";
 import {useOutsideClose} from "@widgets/Calendars/EventPopup/model/useOutsideClose.js";
+import {useUserTimeZoneLocation} from "@features/location/getUserTimeZoneLocation.js";
 
-function getDefaultGMT() {
-    const offset = -new Date().getTimezoneOffset();
-    const sign = offset >= 0 ? "+" : "-";
-    const hours = String(Math.floor(Math.abs(offset) / 60)).padStart(2, "0");
+function getGMT(timeZone) {
+    const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone,
+        timeZoneName: "longOffset",
+    }).formatToParts(new Date());
 
-    return `GMT${sign}${hours}`;
+    return parts.find(
+        part => part.type === "timeZoneName"
+    )?.value;
 }
 
 export function useEventPopupForm({isOpen, onClose}) {
@@ -25,7 +29,18 @@ export function useEventPopupForm({isOpen, onClose}) {
     const [endDate, setEndDate] = useState(initialEndDateTime.date);
     const [startTime, setStartTime] = useState(initialStartDateTime.time);
     const [endTime, setEndTime] = useState(initialEndDateTime.time);
-    const [timeZone, setTimeZone] = useState(getDefaultGMT());
+    const {userTimezoneLocation} = useUserTimeZoneLocation();
+    const [timeZone, setTimeZone] = useState("");
+
+    useEffect(() => {
+        if (!userTimezoneLocation) return;
+
+        const fullGmt = getGMT(userTimezoneLocation);
+        const gmt = fullGmt.slice(0,-3);
+
+        setTimeZone(gmt);
+    }, [userTimezoneLocation]);
+
     const [isOpenTimeZone, setIsOpenTimeZone] = useState(false);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -93,7 +108,6 @@ export function useEventPopupForm({isOpen, onClose}) {
         setEndDate(nextEndDateTime.date);
         setStartTime(nextStartDateTime.time);
         setEndTime(nextEndDateTime.time);
-        setTimeZone(getDefaultGMT());
         setCountry(locationOptions[0] ?? "");
 
         setOpenCalendar(null);

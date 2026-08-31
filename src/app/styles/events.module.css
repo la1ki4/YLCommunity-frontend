@@ -102,6 +102,7 @@
 
 .locationWrapper {
     position: relative;
+    display: flex;
 }
 
 @media (max-width: 640px) {

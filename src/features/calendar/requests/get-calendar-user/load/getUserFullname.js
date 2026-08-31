@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUserFullNameApi } from "@features/calendar/requests/get-calendar-user/api/getUserFullNameApi.js";
+import { getUserDataApi } from "@features/calendar/requests/get-calendar-user/api/getUserDataApi.js";
 
 export function useUserFullName() {
     const [userFullName, setUserFullName] = useState("");
@@ -14,7 +14,7 @@ export function useUserFullName() {
                 setIsLoadingUser(true);
                 setUserError(null);
 
-                const user = await getUserFullNameApi();
+                const user = await getUserDataApi();
 
                 if (!isMounted) return;
 

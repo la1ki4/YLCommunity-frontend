@@ -45,7 +45,7 @@ export function EventPopup({isOpen, onClose}) {
                     <div className={`${eventsPageStyle.createOwnerBlock}`}>
                         <Text
                             className={eventsPageStyle.s_text}
-                            text="Owner"
+                            text="Event creator"
                             style={{color: "rgba(255,255,255,0.25)"}}
                         />
                         <Text
